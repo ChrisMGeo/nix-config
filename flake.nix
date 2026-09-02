@@ -8,6 +8,8 @@
       url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    codex-cli-nix.url = "github:sadjow/codex-cli-nix";
   };
 
   outputs = {
