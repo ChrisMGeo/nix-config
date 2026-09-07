@@ -19,6 +19,8 @@ let
 
   subDirsIf = dir: if builtins.pathExists dir then subDirs dir else [ ];
 
+  nixFilesIf = dir: if builtins.pathExists dir then nixFilesIn dir else [ ];
+
   platformClass = {
     nixos = "nixos";
     wsl = "nixos";
@@ -33,7 +35,7 @@ let
         else throw "unknown platform directory '${platform}' in ${toString machineDir} (expected darwin, nixos or wsl)")
       (subDirs machineDir);
 
-  features = nixFilesIn ./features;
+  features = class: nixFilesIn ./features ++ nixFilesIf (./features + "/${class}");
 
   mkHost = class: modules: platformDir: hostName:
     let
@@ -62,7 +64,7 @@ let
       inherit hostName class;
       system = buildSystem {
         modules =
-          features
+          features class
           ++ modules
           ++ nixFilesIn hostDir
           ++ [
