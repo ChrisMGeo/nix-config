@@ -39,9 +39,17 @@ let
     let
       hostDir = platformDir + "/hosts/${hostName}";
       usersDir = hostDir + "/users";
+      userNames = subDirsIf usersDir;
       userModules = userName: {
         name = userName;
-        value.imports = nixFilesIn (usersDir + "/${userName}");
+        value = {
+          imports = nixFilesIn (usersDir + "/${userName}");
+          home.username = nixlib.mkDefault userName;
+          home.homeDirectory = nixlib.mkDefault
+            (if class == "darwin" then "/Users/${userName}" else "/home/${userName}");
+          home.stateVersion = nixlib.mkDefault "26.05";
+          programs.home-manager.enable = nixlib.mkDefault true;
+        };
       };
       buildSystem = if class == "darwin"
         then inputs.darwin.lib.darwinSystem
@@ -59,14 +67,21 @@ let
           ++ nixFilesIn hostDir
           ++ [
             homeManagerModule
+            (nixlib.optionalAttrs (class == "nixos") {
+              system.stateVersion = nixlib.mkDefault "26.05";
+              users.users = builtins.listToAttrs
+                (map (userName: {
+                  name = userName;
+                  value.isNormalUser = nixlib.mkDefault true;
+                }) userNames);
+            })
             {
               nixpkgs.hostPlatform = nixlib.mkDefault
                 (if class == "darwin" then "aarch64-darwin" else "x86_64-linux");
               networking.hostName = nixlib.mkDefault hostName;
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
-              home-manager.users = builtins.listToAttrs
-                (map userModules (subDirsIf usersDir));
+              home-manager.users = builtins.listToAttrs (map userModules userNames);
             }
           ];
       };
