@@ -89,6 +89,7 @@ let
               networking.hostName = nixlib.mkDefault hostName;
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
+              home-manager.extraSpecialArgs = { inherit inputs; };
               home-manager.users = builtins.listToAttrs (map userModules userNames);
             }
           ];
