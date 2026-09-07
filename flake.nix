@@ -9,29 +9,15 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    flake-parts.url = "github:hercules-ci/flake-parts";
+
     codex-cli-nix.url = "github:sadjow/codex-cli-nix";
   };
 
-  outputs = {
-    nixpkgs,
-    home-manager,
-    ...
-  }:
-  {
-    nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-
-      modules = [
-        ./configuration.nix
-
-        home-manager.nixosModules.home-manager
-
-        {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.users.chrismg = import ./home.nix;
-        }
-      ];
+  outputs =
+    inputs@{ flake-parts, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      systems = [ "x86_64-linux" ];
+      imports = [ ./modules/machines.nix ];
     };
-  };
 }
