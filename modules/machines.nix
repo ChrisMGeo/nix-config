@@ -77,6 +77,12 @@ let
                   value.isNormalUser = nixlib.mkDefault true;
                 }) userNames);
             })
+            (nixlib.optionalAttrs (class == "darwin") {
+              system.stateVersion = nixlib.mkDefault 7;
+            })
+            (nixlib.optionalAttrs (class == "darwin" && userNames != [ ]) {
+              system.primaryUser = nixlib.mkDefault (nixlib.head userNames);
+            })
             {
               nixpkgs.hostPlatform = nixlib.mkDefault
                 (if class == "darwin" then "aarch64-darwin" else "x86_64-linux");
