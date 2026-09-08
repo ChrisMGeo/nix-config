@@ -8,6 +8,4 @@
     layout = "us";
     variant = "";
   };
-
-  programs.firefox.enable = true;
 }
