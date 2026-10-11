@@ -11,6 +11,7 @@ Home Manager settings for the user `chrismg` on the host `nixos`.
 | `niri.nix` | Writes `~/.config/niri/config.kdl`: layout, window corners, and every key binding. |
 | `shell.nix` | Turns on zsh and the starship prompt. |
 | `theme.nix` | Loads Stylix and sets the black monochrome color scheme and the Iosevka fonts. |
+| `vicinae.nix` | Sets up the Vicinae app launcher and runs its server as a systemd user service. |
 
 `default.nix` takes Codex, OpenCode, and Claude Code from the llm-agents flake. It takes Zed from nixpkgs-unstable. It takes Brave from the stable nixpkgs set.
 

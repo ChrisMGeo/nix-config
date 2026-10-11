@@ -2,7 +2,7 @@
 
 This repository describes the operating system and user setup for the computers it manages. Nix builds each system from these files. Given the same pinned versions in `flake.lock`, the same files always produce the same system.
 
-Today the repository manages one computer, `reatan-x7-00`, with one NixOS host named `nixos`. That host runs the niri desktop with the kitty terminal, themed by Stylix. It also has PipeWire audio, Firefox, Brave, the Zed editor, zsh with starship, and three AI coding agents: Codex, OpenCode, and Claude Code.
+Today the repository manages one computer, `reatan-x7-00`, with one NixOS host named `nixos`. That host runs the niri desktop with the Vicinae launcher and the kitty terminal, themed by Stylix. It also has PipeWire audio, Firefox, Brave, the Zed editor, zsh with starship, and three AI coding agents: Codex, OpenCode, and Claude Code.
 
 New to Nix? Read the glossary below first. Then read the layout and the loading order. Coding agents should start at [AGENTS.md](AGENTS.md).
 
@@ -64,7 +64,8 @@ New to Nix? Read the glossary below first. Then read the layout and the loading 
                                 ├── kitty/          The kitty tab bar.
                                 ├── niri.nix        niri settings and key bindings.
                                 ├── shell.nix       zsh and starship.
-                                └── theme.nix       Stylix colors and fonts.
+                                ├── theme.nix       Stylix colors and fonts.
+                                └── vicinae.nix     App launcher.
 ```
 
 Each folder also has an `AGENTS.md` that describes its files.

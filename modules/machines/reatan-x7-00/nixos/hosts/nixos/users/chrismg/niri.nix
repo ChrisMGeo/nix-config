@@ -16,8 +16,9 @@
 
 # `let ... in` defines local names. The names exist only between `let` and `in`.
 let
-  # Full paths to the programs that niri starts. `getExe` returns the path of a
-  # package's main program.
+  # Full paths to the programs that the key bindings start. `getExe` returns the
+  # path of a package's main program.
+  vicinae = lib.getExe config.programs.vicinae.package;
   kitty = lib.getExe config.programs.kitty.package;
 
   # Changes the volume of the default speaker or microphone. Part of WirePlumber,
@@ -89,6 +90,7 @@ let
     binds = workspaceBinds // laptopBinds // {
       # Programs.
       "Mod+Return".spawn = [ kitty ];
+      "Mod+D".spawn = [ vicinae "toggle" ];
 
       # Windows.
       "Mod+Q"."close-window" = { };
