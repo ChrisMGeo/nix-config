@@ -9,7 +9,7 @@ The QML files for the Quickshell bar of the user `chrismg`. These files are not 
 | `shell.qml` | The entry point. Follows niri workspaces and windows through `niri msg -j event-stream`, and tracks the media player and widget positions. Places every panel, with one bar per monitor that shows only that monitor's workspaces. |
 | `qmldir` | Lists the components in this folder and marks the singletons. |
 | `TopBar.qml` | The bar at the top of the screen: workspaces, system usage gauges, and the settings and power buttons. |
-| `PowerMenu.qml` | The menu under the power button: log out, restart, and shut down. Each action needs a second click within 3 seconds. |
+| `PowerMenu.qml` | The menu under the power button: lock, log out, restart, and shut down. Lock acts at once. The others need a second click within 3 seconds. |
 | `SettingsDrawer.qml` | The drawer that opens from the bar: network, Bluetooth, audio, and power. |
 | `SettingsSection.qml` | One expandable row in the settings drawer. |
 | `Capabilities.qml` | Singleton. Checks whether power-profiles-daemon is running. |

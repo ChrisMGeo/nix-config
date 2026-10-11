@@ -4,9 +4,9 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 
-// The menu under the bar's power button: log out, restart, and shut down.
-// Each action asks for a second click within a few seconds, so one stray click
-// does nothing.
+// The menu under the bar's power button: lock, log out, restart, and shut down.
+// Lock acts on the first click. The others ask for a second click within a few
+// seconds, so one stray click does nothing.
 PanelWindow {
     id: root
 
@@ -16,6 +16,14 @@ PanelWindow {
     signal closeRequested()
 
     readonly property var actions: [
+        {
+            id: "lock",
+            label: "Lock",
+            glyph: "",
+            // Asks logind to lock. swayidle then starts swaylock. See ../lock.nix.
+            command: ["loginctl", "lock-session"],
+            confirm: false
+        },
         {
             id: "logout",
             label: "Log out",
@@ -38,7 +46,8 @@ PanelWindow {
     ]
 
     function activate(action) {
-        if (armedAction !== action.id) {
+        // `confirm: false` skips the second click. Every other action needs it.
+        if (action.confirm !== false && armedAction !== action.id) {
             armedAction = action.id;
             disarmTimer.restart();
             return;

@@ -48,6 +48,11 @@
   # rights. GNOME had its own prompt, but niri does not.
   security.soteria.enable = true;
 
+  # Lets swaylock, the lock screen, check the user's password. Without this PAM
+  # entry swaylock cannot unlock the session. The niri module already adds it,
+  # but the lock screen depends on it, so it is set here on purpose.
+  security.pam.services.swaylock = { };
+
   # dconf stores settings for GTK programs. Home Manager writes the GTK theme
   # there, so it must exist without GNOME.
   programs.dconf.enable = true;

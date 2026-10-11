@@ -23,6 +23,7 @@ let
   # `getExe'` returns the path of a named program inside a package, for packages
   # that hold more than one program.
   swaync-client = lib.getExe' config.services.swaync.package "swaync-client";
+  loginctl = "${osConfig.systemd.package}/bin/loginctl";
 
   # Changes the volume of the default speaker or microphone. Part of WirePlumber,
   # which PipeWire uses. See audio.nix.
@@ -163,6 +164,9 @@ let
 
       # Shows a list of the key bindings.
       "Mod+Shift+Slash"."show-hotkey-overlay" = { };
+
+      # Locks the screen. See lock.nix.
+      "Mod+Alt+L".spawn = [ loginctl "lock-session" ];
 
       # Leaves niri and returns to the login screen. niri asks first.
       "Mod+Shift+E".quit = { };

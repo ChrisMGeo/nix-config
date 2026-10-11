@@ -10,7 +10,7 @@ Settings for every NixOS host on the machine `reatan-x7-00`. Each `.nix` file he
 | `audio.nix` | Turns on PipeWire as the sound server and turns off PulseAudio. |
 | `bluetooth.nix` | Turns on Bluetooth. |
 | `browsers.nix` | Installs Firefox for every user. |
-| `desktop.nix` | Turns on the niri desktop, the greetd login screen with tuigreet, xwayland-satellite for X11 apps, and the Soteria password prompt. |
+| `desktop.nix` | Turns on the niri desktop, the greetd login screen with tuigreet, xwayland-satellite for X11 apps, the Soteria password prompt, and the PAM entry that lets swaylock unlock. |
 | `form-factor.nix` | Marks this machine as a desktop with `machine.formFactor`. |
 | `keyboard.nix` | Sets the US keyboard layout for the console and the desktop. |
 | `power.nix` | Turns on UPower and power-profiles-daemon, and turns off sleep. |
