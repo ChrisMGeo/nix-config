@@ -11,5 +11,6 @@ in
     agents.opencode
     agents.claude-code
     pkgs.brave
+    pkgs.zed-editor
   ];
 }
