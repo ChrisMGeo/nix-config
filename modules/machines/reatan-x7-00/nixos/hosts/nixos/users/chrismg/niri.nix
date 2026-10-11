@@ -71,6 +71,13 @@ let
     # request look as before.
     "prefer-no-csd" = { };
 
+    # The mouse pointer niri draws, the same one Stylix sets for apps. See
+    # theme.nix. niri also passes it on to apps it starts.
+    cursor = {
+      "xcursor-theme" = config.stylix.cursor.name;
+      "xcursor-size" = config.stylix.cursor.size;
+    };
+
     # Rounds the corners of every window, and cuts the window's content to match.
     "window-rule" = {
       "geometry-corner-radius" = 12;

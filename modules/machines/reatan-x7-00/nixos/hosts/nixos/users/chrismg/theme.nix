@@ -59,6 +59,29 @@
       sizes.popups = 13;
     };
 
+    # The icon theme for GTK and Qt apps and notifications. Without one, apps
+    # fall back to `hicolor`, which has almost no icons, so many show a broken
+    # image. Papirus is complete and has dark variants. `override` builds the
+    # package with a different input. `color = "grey"` recolors its folder
+    # icons to match the black and white scheme.
+    icons = {
+      enable = true;
+      package = pkgs.papirus-icon-theme.override { color = "grey"; };
+      # The variant used with a dark or a light color scheme. polarity above
+      # picks dark.
+      dark = "Papirus-Dark";
+      light = "Papirus-Light";
+    };
+
+    # The mouse pointer. Bibata Modern Classic is a plain black pointer with a
+    # white outline. niri.nix uses the same name and size.
+    cursor = {
+      package = pkgs.bibata-cursors;
+      name = "Bibata-Modern-Classic";
+      # Size in pixels.
+      size = 24;
+    };
+
     # Theme GTK and Qt apps too. Stylix does not always turn these on by itself
     # outside a full desktop such as GNOME.
     targets.gtk.enable = true;

@@ -13,7 +13,7 @@ Home Manager settings for the user `chrismg` on the host `nixos`.
 | `notifications.nix` | Runs SwayNotificationCenter for notification popups and the notification panel, with rounded, outlined cards in the Stylix colors. |
 | `quickshell.nix` | Runs the Quickshell bar as a systemd user service, installs it from the `quickshell/` folder with the Font Awesome icon font, and generates its `Theme.qml`, which also holds the paths to cava and `quickshell/cava.conf` for the audio visualizer. |
 | `shell.nix` | Turns on zsh and the starship prompt. |
-| `theme.nix` | Loads Stylix and sets the black monochrome color scheme and the Iosevka fonts. |
+| `theme.nix` | Loads Stylix and sets the black monochrome color scheme, the Iosevka fonts, the Papirus-Dark icon theme with grey folders, and the Bibata cursor. |
 | `vicinae.nix` | Sets up the Vicinae app launcher and runs its server as a systemd user service. |
 
 `default.nix` takes Codex, OpenCode, and Claude Code from the llm-agents flake. It takes Zed from nixpkgs-unstable. It takes Brave from the stable nixpkgs set.
