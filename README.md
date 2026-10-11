@@ -44,7 +44,7 @@ New to Nix? Read the glossary below first. Then read the layout and the loading 
     └── machines/
         └── reatan-x7-00/           One physical computer.
             └── nixos/              Settings for NixOS hosts on this computer.
-                ├── admin.nix       The login account details.
+                ├── admin.nix       The login account details and the zsh login shell.
                 ├── audio.nix       PipeWire sound.
                 ├── browsers.nix    Firefox.
                 ├── desktop.nix     GNOME and the GDM login screen.
@@ -57,7 +57,8 @@ New to Nix? Read the glossary below first. Then read the layout and the loading 
                         ├── hardware-configuration.nix  Generated hardware settings. Do not edit.
                         └── users/
                             └── chrismg/                Home Manager settings for one user.
-                                └── default.nix
+                                ├── default.nix     Packages.
+                                └── shell.nix       zsh and starship.
 ```
 
 Each folder also has an `AGENTS.md` that describes its files.

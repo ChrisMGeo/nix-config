@@ -6,7 +6,7 @@ Settings for every NixOS host on the machine `reatan-x7-00`. Each `.nix` file he
 
 | File | What it does |
 | --- | --- |
-| `admin.nix` | Adds details to the login account `chrismg` and puts it in the `networkmanager` and `wheel` groups. |
+| `admin.nix` | Adds details to the login account `chrismg`, puts it in the `networkmanager` and `wheel` groups, and makes zsh its login shell. |
 | `audio.nix` | Turns on PipeWire as the sound server and turns off PulseAudio. |
 | `browsers.nix` | Installs Firefox for every user. |
 | `desktop.nix` | Turns on the GNOME desktop and the GDM login screen. |
