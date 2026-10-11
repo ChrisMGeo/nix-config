@@ -64,6 +64,13 @@ let
     # Use the same keyboard layout as the rest of the system, set in keyboard.nix.
     input.keyboard.xkb.layout = osConfig.services.xserver.xkb.layout;
 
+    # Asks apps not to draw their own window frame: shadows, rounded corners, and
+    # resize borders. niri then draws the focus ring right at the window's edge,
+    # and the corner rule below rounds every window the same way. GTK apps keep
+    # their header bar, because it holds their buttons. Apps that ignore the
+    # request look as before.
+    "prefer-no-csd" = { };
+
     # Rounds the corners of every window, and cuts the window's content to match.
     "window-rule" = {
       "geometry-corner-radius" = 12;
