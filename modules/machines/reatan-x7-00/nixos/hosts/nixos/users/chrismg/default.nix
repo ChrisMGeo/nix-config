@@ -3,6 +3,7 @@
 let
   system = pkgs.stdenv.hostPlatform.system;
   agents = inputs.llm-agents.packages.${system};
+  unstable = inputs.nixpkgs-unstable.legacyPackages.${system};
 in
 
 {
@@ -11,6 +12,6 @@ in
     agents.opencode
     agents.claude-code
     pkgs.brave
-    pkgs.zed-editor
+    unstable.zed-editor
   ];
 }
