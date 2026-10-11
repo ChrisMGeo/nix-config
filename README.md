@@ -53,6 +53,7 @@ New to Nix? Read the glossary below first. Then read the layout and the loading 
                 ├── desktop.nix     niri and the greetd login screen.
                 ├── form-factor.nix Marks this machine as a desktop.
                 ├── keyboard.nix    US keyboard layout.
+                ├── power.nix       Power services and no sleep.
                 ├── printing.nix    CUPS printing.
                 └── hosts/
                     └── nixos/      The host named `nixos`.

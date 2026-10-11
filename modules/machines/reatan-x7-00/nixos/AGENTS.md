@@ -13,6 +13,7 @@ Settings for every NixOS host on the machine `reatan-x7-00`. Each `.nix` file he
 | `desktop.nix` | Turns on the niri desktop, the greetd login screen with tuigreet, xwayland-satellite for X11 apps, and the Soteria password prompt. |
 | `form-factor.nix` | Marks this machine as a desktop with `machine.formFactor`. |
 | `keyboard.nix` | Sets the US keyboard layout for the console and the desktop. |
+| `power.nix` | Turns on UPower and power-profiles-daemon, and turns off sleep. |
 | `printing.nix` | Turns on CUPS printing. |
 
 ## Subdirectories
