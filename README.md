@@ -48,6 +48,7 @@ New to Nix? Read the glossary below first. Then read the layout and the loading 
             └── nixos/              Settings for NixOS hosts on this computer.
                 ├── admin.nix       The login account details and the zsh login shell.
                 ├── audio.nix       PipeWire sound.
+                ├── bluetooth.nix   Bluetooth.
                 ├── browsers.nix    Firefox.
                 ├── desktop.nix     niri and the greetd login screen.
                 ├── form-factor.nix Marks this machine as a desktop.

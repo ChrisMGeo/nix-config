@@ -8,6 +8,7 @@ Settings for every NixOS host on the machine `reatan-x7-00`. Each `.nix` file he
 | --- | --- |
 | `admin.nix` | Adds details to the login account `chrismg`, puts it in the `networkmanager` and `wheel` groups, and makes zsh its login shell. |
 | `audio.nix` | Turns on PipeWire as the sound server and turns off PulseAudio. |
+| `bluetooth.nix` | Turns on Bluetooth. |
 | `browsers.nix` | Installs Firefox for every user. |
 | `desktop.nix` | Turns on the niri desktop, the greetd login screen with tuigreet, xwayland-satellite for X11 apps, and the Soteria password prompt. |
 | `form-factor.nix` | Marks this machine as a desktop with `machine.formFactor`. |
