@@ -2,7 +2,7 @@
 
 This repository describes the operating system and user setup for the computers it manages. Nix builds each system from these files. Given the same pinned versions in `flake.lock`, the same files always produce the same system.
 
-Today the repository manages one computer, `reatan-x7-00`, with one NixOS host named `nixos`. That host runs the GNOME desktop with PipeWire audio, Firefox, Brave, the Zed editor, and three AI coding agents: Codex, OpenCode, and Claude Code.
+Today the repository manages one computer, `reatan-x7-00`, with one NixOS host named `nixos`. That host runs the niri desktop with the kitty terminal, themed by Stylix. It also has PipeWire audio, Firefox, Brave, the Zed editor, zsh with starship, and three AI coding agents: Codex, OpenCode, and Claude Code.
 
 New to Nix? Read the glossary below first. Then read the layout and the loading order. Coding agents should start at [AGENTS.md](AGENTS.md).
 
@@ -25,6 +25,7 @@ New to Nix? Read the glossary below first. Then read the layout and the loading 
 | `stateVersion` | The release a host was first installed with. Nix uses it to keep old defaults for existing data. Do not change it. |
 | `lib.mkDefault` | Marks a value as a default. Another file can set a different value, and the other value wins. |
 | Form factor | Whether a machine is a desktop or a laptop. Set with `machine.formFactor`. Laptops get automatic power profiles. |
+| niri | The Wayland compositor that draws and arranges windows. It places windows in columns on a strip that scrolls sideways. |
 | Stylix | A tool that applies one color scheme and one set of fonts to many programs at once. |
 
 ## Layout
@@ -48,7 +49,7 @@ New to Nix? Read the glossary below first. Then read the layout and the loading 
                 ├── admin.nix       The login account details and the zsh login shell.
                 ├── audio.nix       PipeWire sound.
                 ├── browsers.nix    Firefox.
-                ├── desktop.nix     GNOME and the GDM login screen.
+                ├── desktop.nix     niri and the greetd login screen.
                 ├── form-factor.nix Marks this machine as a desktop.
                 ├── keyboard.nix    US keyboard layout.
                 ├── printing.nix    CUPS printing.
@@ -172,6 +173,7 @@ Create a folder at `hosts/<host>/users/<login>/` with a `default.nix` file. The 
 - Do not change a `stateVersion` value after the first install. Changing it can change defaults and break existing data.
 - The `wsl` folder is built as NixOS, but no WSL support module is loaded. A WSL host needs its own WSL setup.
 - The `darwin` code path exists, but no macOS machine is defined yet.
+- A change to the login screen or the desktop stops the running desktop if you apply it with `switch`. Use `sudo nixos-rebuild boot --flake .#nixos` and then reboot.
 - When Home Manager would replace a file it did not create, such as an existing `~/.zshrc`, it renames the old file to `<name>.hm-backup`. If that backup already exists, the older one is kept as `<name>.hm-backup.~1~`, then `~2~`, and so on. Delete old backups once you no longer need them.
 
 ## Learn more
