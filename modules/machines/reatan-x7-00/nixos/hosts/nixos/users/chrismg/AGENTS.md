@@ -9,6 +9,7 @@ Home Manager settings for the user `chrismg` on the host `nixos`.
 | `default.nix` | Installs packages for this user only: Codex, OpenCode, Claude Code, Brave, and Zed. |
 | `kitty.nix` | Sets up the kitty terminal and links its custom tab bar from `kitty/tab_bar.py`. |
 | `niri.nix` | Writes `~/.config/niri/config.kdl`: layout, window corners, and every key binding. |
+| `notifications.nix` | Runs SwayNotificationCenter for notification popups and the notification panel, with rounded, outlined cards in the Stylix colors. |
 | `shell.nix` | Turns on zsh and the starship prompt. |
 | `theme.nix` | Loads Stylix and sets the black monochrome color scheme and the Iosevka fonts. |
 | `vicinae.nix` | Sets up the Vicinae app launcher and runs its server as a systemd user service. |

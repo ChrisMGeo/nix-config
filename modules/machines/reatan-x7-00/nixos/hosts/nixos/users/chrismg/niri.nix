@@ -20,6 +20,9 @@ let
   # path of a package's main program.
   vicinae = lib.getExe config.programs.vicinae.package;
   kitty = lib.getExe config.programs.kitty.package;
+  # `getExe'` returns the path of a named program inside a package, for packages
+  # that hold more than one program.
+  swaync-client = lib.getExe' config.services.swaync.package "swaync-client";
 
   # Changes the volume of the default speaker or microphone. Part of WirePlumber,
   # which PipeWire uses. See audio.nix.
@@ -91,6 +94,8 @@ let
       # Programs.
       "Mod+Return".spawn = [ kitty ];
       "Mod+D".spawn = [ vicinae "toggle" ];
+      # Opens or closes the notification panel. See notifications.nix.
+      "Mod+N".spawn = [ swaync-client "-t" "-sw" ];
 
       # Windows.
       "Mod+Q"."close-window" = { };
