@@ -7,9 +7,8 @@
 # colors and the paths to cava, the audio visualizer, and its settings file,
 # quickshell/cava.conf. The bar runs as a systemd user service from login.
 #
-# The bar works on any computer. It shows the battery and power profile controls
-# only when `machine.formFactor` is "laptop". See
-# modules/features/nixos/form-factor.nix.
+# The bar works on any computer. It shows the battery level only when
+# `machine.formFactor` is "laptop". See modules/features/nixos/form-factor.nix.
 #
 # `{ config, osConfig, pkgs, ... }:` makes this file a function. `config` is this
 # user's final Home Manager settings. `osConfig` is the whole system's final
@@ -101,8 +100,9 @@ let
         // Exact store paths, so the visualizer does not depend on any profile.
         property string cavaCommand: "${pkgs.cava}/bin/cava"
         property string cavaConfig: "${cavaConfig}"
-        // True on laptops. Desktops hide the battery and power profile controls.
-        property bool showPower: ${if osConfig.machine.formFactor == "laptop" then "true" else "false"}
+        // True on laptops. Desktops hide the battery level. The power profile switch
+        // shows on every machine that runs power-profiles-daemon.
+        property bool showBattery: ${if osConfig.machine.formFactor == "laptop" then "true" else "false"}
         property real uiScale: 1.15
 
         function scaled(value) {

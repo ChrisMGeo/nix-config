@@ -19,6 +19,9 @@ PanelWindow {
     readonly property bool batteryAvailable: UPower.displayDevice !== null
         && UPower.displayDevice.ready
         && UPower.displayDevice.isPresent
+    // Theme.showBattery is false on desktops. A UPS or a wireless mouse can
+    // still look like a battery there, so its level stays hidden.
+    readonly property bool showBattery: Theme.showBattery && batteryAvailable
     readonly property bool powerProfilesAvailable: Capabilities.powerProfiles
 
     signal closeRequested()
@@ -283,13 +286,12 @@ PanelWindow {
 
                     SettingsSection {
                         width: parent.width
-                        // Theme.showPower is false on desktop machines, which hides
-                        // battery and power profile controls they do not need.
-                        visible: Theme.showPower
-                            && (root.batteryAvailable || root.powerProfilesAvailable)
+                        // The profile switch shows wherever power-profiles-daemon
+                        // runs. The battery level shows only on laptops.
+                        visible: root.showBattery || root.powerProfilesAvailable
                         expandable: root.powerProfilesAvailable
                         title: "Power"
-                        subtitle: root.batteryAvailable
+                        subtitle: root.showBattery
                             ? `${Math.round(UPower.displayDevice.percentage * 100)}% battery`
                             : PowerProfile.toString(PowerProfiles.profile)
                         iconGlyph: "\uf0e7"

@@ -11,7 +11,7 @@
   services.upower.enable = true;
 
   # power-profiles-daemon switches between performance, balanced, and power-saver.
-  # The bar can change the profile on laptops.
+  # The bar's settings drawer shows the profile and switches it.
   services.power-profiles-daemon.enable = true;
 
   # Refuses every kind of sleep, so nothing can suspend this desktop.
