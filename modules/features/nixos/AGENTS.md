@@ -7,10 +7,12 @@ Settings for NixOS hosts. These files load on top of the shared `features/*.nix`
 | File | What it does |
 | --- | --- |
 | `base.nix` | Turns on NetworkManager and sets the US English locale. |
+| `form-factor.nix` | Declares `machine.formFactor`, "desktop" or "laptop". On laptops it switches to the performance profile on the charger and to power-saver on battery. |
 
 ## Rules
 
 - Put only NixOS options here. An option from nix-darwin does not exist on NixOS, so it fails.
+- Declare an option here, but set a machine-specific value in the machine folder. For example, `reatan-x7-00/nixos/form-factor.nix` sets `machine.formFactor` for reatan-x7-00.
 
 ## Keeping this file current
 

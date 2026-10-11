@@ -24,6 +24,7 @@ New to Nix? Read the glossary below first. Then read the layout and the loading 
 | Home Manager | A tool that manages one user's packages and dotfiles. It runs as part of the NixOS build. |
 | `stateVersion` | The release a host was first installed with. Nix uses it to keep old defaults for existing data. Do not change it. |
 | `lib.mkDefault` | Marks a value as a default. Another file can set a different value, and the other value wins. |
+| Form factor | Whether a machine is a desktop or a laptop. Set with `machine.formFactor`. Laptops get automatic power profiles. |
 
 ## Layout
 
@@ -38,7 +39,8 @@ New to Nix? Read the glossary below first. Then read the layout and the loading 
     ├── features/                   Settings for every host.
     │   ├── base.nix                Packages, flakes, and time zone for all platforms.
     │   └── nixos/                  Settings for NixOS hosts only.
-    │       └── base.nix            NetworkManager and locale.
+    │       ├── base.nix            NetworkManager and locale.
+    │       └── form-factor.nix     The desktop or laptop setting, and laptop power profiles.
     └── machines/
         └── reatan-x7-00/           One physical computer.
             └── nixos/              Settings for NixOS hosts on this computer.
@@ -46,6 +48,7 @@ New to Nix? Read the glossary below first. Then read the layout and the loading 
                 ├── audio.nix       PipeWire sound.
                 ├── browsers.nix    Firefox.
                 ├── desktop.nix     GNOME and the GDM login screen.
+                ├── form-factor.nix Marks this machine as a desktop.
                 ├── keyboard.nix    US keyboard layout.
                 ├── printing.nix    CUPS printing.
                 └── hosts/

@@ -10,6 +10,7 @@ Settings for every NixOS host on the machine `reatan-x7-00`. Each `.nix` file he
 | `audio.nix` | Turns on PipeWire as the sound server and turns off PulseAudio. |
 | `browsers.nix` | Installs Firefox for every user. |
 | `desktop.nix` | Turns on the GNOME desktop and the GDM login screen. |
+| `form-factor.nix` | Marks this machine as a desktop with `machine.formFactor`. |
 | `keyboard.nix` | Sets the US keyboard layout for the console and the desktop. |
 | `printing.nix` | Turns on CUPS printing. |
 
