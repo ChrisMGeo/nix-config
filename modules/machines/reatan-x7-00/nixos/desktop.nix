@@ -38,6 +38,12 @@
     };
   };
 
+  environment.systemPackages = [
+    # Lets older X11 programs run under niri. niri starts it on demand when it
+    # finds it on the PATH.
+    pkgs.xwayland-satellite
+  ];
+
   # Soteria shows the password prompt when a program asks for administrator
   # rights. GNOME had its own prompt, but niri does not.
   security.soteria.enable = true;
