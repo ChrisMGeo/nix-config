@@ -9,6 +9,7 @@ in
   home.packages = [
     agents.codex
     agents.opencode
+    agents.claude-code
     pkgs.brave
   ];
 }
