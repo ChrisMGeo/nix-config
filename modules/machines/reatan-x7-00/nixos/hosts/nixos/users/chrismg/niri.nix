@@ -72,6 +72,8 @@ let
     layout = {
       # Space between windows, and between windows and the screen edge, in pixels.
       gaps = 16;
+      # A negative top strut cancels the top gap. The bar already leaves room.
+      struts.top = -16;
       # A thin outline around the focused window of each monitor. The monitor
       # that has the keyboard uses the active color, a mid gray. The others use
       # the inactive color, a darker gray, so you can see which monitor typing

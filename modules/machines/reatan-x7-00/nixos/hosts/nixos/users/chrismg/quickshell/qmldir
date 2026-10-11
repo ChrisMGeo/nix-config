@@ -1,0 +1,15 @@
+singleton Theme 1.0 Theme.qml
+singleton AudioSpectrum 1.0 AudioSpectrum.qml
+singleton Capabilities 1.0 Capabilities.qml
+singleton SystemUsage 1.0 SystemUsage.qml
+AudioVisualizer 1.0 AudioVisualizer.qml
+ClockCard 1.0 ClockCard.qml
+DraggablePanel 1.0 DraggablePanel.qml
+IconButton 1.0 IconButton.qml
+MediaCard 1.0 MediaCard.qml
+PowerMenu 1.0 PowerMenu.qml
+SettingsDrawer 1.0 SettingsDrawer.qml
+SettingsSection 1.0 SettingsSection.qml
+TopBar 1.0 TopBar.qml
+UiText 1.0 UiText.qml
+UsageGauge 1.0 UsageGauge.qml

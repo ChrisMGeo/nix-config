@@ -2,7 +2,7 @@
 
 This repository describes the operating system and user setup for the computers it manages. Nix builds each system from these files. Given the same pinned versions in `flake.lock`, the same files always produce the same system.
 
-Today the repository manages one computer, `reatan-x7-00`, with one NixOS host named `nixos`. That host runs the niri desktop with the Vicinae launcher, SwayNotificationCenter, and the kitty terminal, themed by Stylix. It also has PipeWire audio, Firefox, Brave, the Zed editor, zsh with starship, and three AI coding agents: Codex, OpenCode, and Claude Code.
+Today the repository manages one computer, `reatan-x7-00`, with one NixOS host named `nixos`. That host runs the niri desktop with a Quickshell bar, the Vicinae launcher, SwayNotificationCenter, and the kitty terminal, themed by Stylix. It also has PipeWire audio, Firefox, Brave, the Zed editor, zsh with starship, and three AI coding agents: Codex, OpenCode, and Claude Code.
 
 New to Nix? Read the glossary below first. Then read the layout and the loading order. Coding agents should start at [AGENTS.md](AGENTS.md).
 
@@ -24,7 +24,7 @@ New to Nix? Read the glossary below first. Then read the layout and the loading 
 | Home Manager | A tool that manages one user's packages and dotfiles. It runs as part of the NixOS build. |
 | `stateVersion` | The release a host was first installed with. Nix uses it to keep old defaults for existing data. Do not change it. |
 | `lib.mkDefault` | Marks a value as a default. Another file can set a different value, and the other value wins. |
-| Form factor | Whether a machine is a desktop or a laptop. Set with `machine.formFactor`. Laptops get automatic power profiles. |
+| Form factor | Whether a machine is a desktop or a laptop. Set with `machine.formFactor`. Laptops get battery controls in the bar and automatic power profiles. |
 | niri | The Wayland compositor that draws and arranges windows. It places windows in columns on a strip that scrolls sideways. |
 | Stylix | A tool that applies one color scheme and one set of fonts to many programs at once. |
 
@@ -64,6 +64,8 @@ New to Nix? Read the glossary below first. Then read the layout and the loading 
                                 ├── kitty/          The kitty tab bar.
                                 ├── niri.nix        niri settings and key bindings.
                                 ├── notifications.nix  SwayNotificationCenter.
+                                ├── quickshell.nix  The bar.
+                                ├── quickshell/     The bar's QML files.
                                 ├── shell.nix       zsh and starship.
                                 ├── theme.nix       Stylix colors and fonts.
                                 └── vicinae.nix     App launcher.

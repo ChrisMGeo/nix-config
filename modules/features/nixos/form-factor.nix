@@ -3,6 +3,10 @@
 # host, because this file sits in features/nixos/. Each machine sets its own value
 # in its platform folder, for example reatan-x7-00/nixos/form-factor.nix.
 #
+# Other files read the value to decide what to show or turn on. The Quickshell bar
+# reads it through Home Manager's `osConfig` to hide the battery and power profile
+# controls on desktops.
+#
 # `{ config, lib, pkgs, ... }:` makes this file a function. `config` is the whole
 # system's final settings, `lib` is the nixpkgs helper library, and `pkgs` is the
 # package set.
