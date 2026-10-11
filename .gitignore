@@ -1,0 +1,4 @@
+# Links that `nix build` and `nixos-rebuild build` leave in the current folder.
+# They point into the Nix store and must never be committed.
+result
+result-*

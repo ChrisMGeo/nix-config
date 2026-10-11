@@ -36,6 +36,7 @@ New to Nix? Read the glossary below first. Then read the layout and the loading 
 ├── flake.lock                      Exact versions of every input. Generated.
 ├── README.md                       This file.
 ├── AGENTS.md                       Instructions for coding agents.
+├── .gitignore                      Keeps `nix build` result links out of git.
 └── modules/
     ├── machines.nix                Finds machines, hosts, and users from folder names.
     ├── features/                   Settings for every host.
