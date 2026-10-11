@@ -164,6 +164,7 @@ Create a folder at `hosts/<host>/users/<login>/` with a `default.nix` file. The 
 - Do not change a `stateVersion` value after the first install. Changing it can change defaults and break existing data.
 - The `wsl` folder is built as NixOS, but no WSL support module is loaded. A WSL host needs its own WSL setup.
 - The `darwin` code path exists, but no macOS machine is defined yet.
+- When Home Manager would replace a file it did not create, such as an existing `~/.zshrc`, it renames the old file to `<name>.hm-backup`. If that backup already exists, the older one is kept as `<name>.hm-backup.~1~`, then `~2~`, and so on. Delete old backups once you no longer need them.
 
 ## Learn more
 

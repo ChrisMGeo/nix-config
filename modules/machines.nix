@@ -159,8 +159,9 @@ let
               system.primaryUser = nixlib.mkDefault (nixlib.head userNames);
             })
 
-            # Settings shared by every host.
-            {
+            # Settings shared by every host. Written as a function so it can use
+            # `pkgs`, the host's package set, which NixOS passes to every module.
+            ({ pkgs, ... }: {
               # The CPU and operating system the host runs on.
               nixpkgs.hostPlatform = nixlib.mkDefault
                 (if class == "darwin" then "aarch64-darwin" else "x86_64-linux");
@@ -172,11 +173,20 @@ let
               home-manager.useGlobalPkgs = true;
               # Installs each user's packages under /etc/profiles/per-user/<name>.
               home-manager.useUserPackages = true;
+              # When Home Manager would replace a file it did not create, such as
+              # an existing ~/.zshrc, it runs this script on the old file instead
+              # of stopping with an error. Home Manager adds the file's path as the
+              # last argument, `$1`. The script renames the file to
+              # <name>.hm-backup. `--backup=numbered` keeps an older backup as
+              # <name>.hm-backup.~1~, ~2~, and so on, instead of failing.
+              home-manager.backupCommand = pkgs.writeShellScript "home-manager-backup" ''
+                exec ${pkgs.coreutils}/bin/mv --backup=numbered --no-target-directory -- "$1" "$1.hm-backup"
+              '';
               # Makes `inputs` available as an argument in Home Manager modules.
               home-manager.extraSpecialArgs = { inherit inputs; };
               # One Home Manager configuration for each user folder.
               home-manager.users = builtins.listToAttrs (map userModules userNames);
-            }
+            })
           ];
       };
     };
