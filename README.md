@@ -59,6 +59,8 @@ New to Nix? Read the glossary below first. Then read the layout and the loading 
                         └── users/
                             └── chrismg/                Home Manager settings for one user.
                                 ├── default.nix     Packages.
+                                ├── kitty.nix       Terminal.
+                                ├── kitty/          The kitty tab bar.
                                 ├── shell.nix       zsh and starship.
                                 └── theme.nix       Stylix colors and fonts.
 ```
