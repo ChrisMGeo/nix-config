@@ -62,6 +62,7 @@ New to Nix? Read the glossary below first. Then read the layout and the loading 
                                 ├── default.nix     Packages.
                                 ├── kitty.nix       Terminal.
                                 ├── kitty/          The kitty tab bar.
+                                ├── niri.nix        niri settings and key bindings.
                                 ├── shell.nix       zsh and starship.
                                 └── theme.nix       Stylix colors and fonts.
 ```
