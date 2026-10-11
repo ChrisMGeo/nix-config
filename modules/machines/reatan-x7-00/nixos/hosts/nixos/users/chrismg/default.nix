@@ -2,12 +2,13 @@
 
 let
   system = pkgs.stdenv.hostPlatform.system;
+  agents = inputs.llm-agents.packages.${system};
 in
 
 {
   home.packages = [
-    inputs.nixpkgs-unstable.legacyPackages.${system}.codex
-    inputs.nixpkgs-unstable.legacyPackages.${system}.opencode
+    agents.codex
+    agents.opencode
     pkgs.brave
   ];
 }
