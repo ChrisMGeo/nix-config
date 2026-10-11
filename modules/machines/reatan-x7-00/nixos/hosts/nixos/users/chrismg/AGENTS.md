@@ -8,6 +8,7 @@ Home Manager settings for the user `chrismg` on the host `nixos`.
 | --- | --- |
 | `default.nix` | Installs packages for this user only: Codex, OpenCode, Claude Code, Brave, and Zed. |
 | `shell.nix` | Turns on zsh and the starship prompt. |
+| `theme.nix` | Loads Stylix and sets the black monochrome color scheme and the Iosevka fonts. |
 
 `default.nix` takes Codex, OpenCode, and Claude Code from the llm-agents flake. It takes Zed from nixpkgs-unstable. It takes Brave from the stable nixpkgs set.
 

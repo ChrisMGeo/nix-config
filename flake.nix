@@ -31,6 +31,14 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    stylix = {
+      # Stylix applies one color scheme and one set of fonts to many programs at
+      # once, such as kitty, GTK and Qt apps, and the notification center.
+      url = "github:nix-community/stylix/release-26.05";
+      # Same as Home Manager above: share one nixpkgs.
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     darwin = {
       # nix-darwin is the macOS version of NixOS. No macOS machine is defined yet,
       # but the module code is ready for one.

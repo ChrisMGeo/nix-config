@@ -25,6 +25,7 @@ New to Nix? Read the glossary below first. Then read the layout and the loading 
 | `stateVersion` | The release a host was first installed with. Nix uses it to keep old defaults for existing data. Do not change it. |
 | `lib.mkDefault` | Marks a value as a default. Another file can set a different value, and the other value wins. |
 | Form factor | Whether a machine is a desktop or a laptop. Set with `machine.formFactor`. Laptops get automatic power profiles. |
+| Stylix | A tool that applies one color scheme and one set of fonts to many programs at once. |
 
 ## Layout
 
@@ -58,7 +59,8 @@ New to Nix? Read the glossary below first. Then read the layout and the loading 
                         └── users/
                             └── chrismg/                Home Manager settings for one user.
                                 ├── default.nix     Packages.
-                                └── shell.nix       zsh and starship.
+                                ├── shell.nix       zsh and starship.
+                                └── theme.nix       Stylix colors and fonts.
 ```
 
 Each folder also has an `AGENTS.md` that describes its files.
