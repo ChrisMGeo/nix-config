@@ -13,7 +13,7 @@ Home Manager settings for the user `chrismg` on the host `nixos`.
 | `notifications.nix` | Runs SwayNotificationCenter for notification popups and the notification panel, with rounded, outlined cards in the Stylix colors. |
 | `quickshell.nix` | Runs the Quickshell bar as a systemd user service, installs it from the `quickshell/` folder with the Font Awesome icon font, and generates its `Theme.qml`, which also holds the paths to cava and `quickshell/cava.conf` for the audio visualizer. |
 | `shell.nix` | Turns on zsh with Ctrl and Alt arrow keys for moving by word, Shift keys for selecting text, and the starship prompt. |
-| `theme.nix` | Loads Stylix and sets the black monochrome color scheme, the Iosevka fonts, the Papirus-Dark icon theme with grey folders, and the Bibata cursor. |
+| `theme.nix` | Loads Stylix, which makes the colors from the wallpaper with the backgrounds replaced by black and near-black, and sets the Iosevka fonts, the Papirus-Dark icon theme with grey folders, and the Bibata cursor. |
 | `vicinae.nix` | Sets up the Vicinae app launcher and runs its server as a systemd user service. |
 | `wallpaper.nix` | Picks a picture from the root `wallpapers/` folder as the Stylix wallpaper and runs wpaperd to draw it behind the windows. swaylock also shows it. |
 

@@ -17,9 +17,9 @@ let
 in
 {
   # The wallpaper picture. Stylix passes it to the programs it themes: wpaperd
-  # below, and swaylock in lock.nix, which shows it on the lock screen. The
-  # colors stay the ones set in theme.nix, because base16Scheme is set there.
-  stylix.image = wallpapers.wallhaven-5yzd29;
+  # below, and swaylock in lock.nix, which shows it on the lock screen. Stylix
+  # also makes the color scheme from it, because theme.nix sets no fixed scheme.
+  stylix.image = wallpapers.wallhaven-gwd987;
 
   # Fills each monitor with the picture and keeps its proportions. Parts that do
   # not fit the screen are cut off.

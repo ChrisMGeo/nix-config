@@ -80,7 +80,7 @@ New to Nix? Read the glossary below first. Then read the layout and the loading 
                                 ├── quickshell.nix  The bar.
                                 ├── quickshell/     The bar's QML files.
                                 ├── shell.nix       zsh and starship.
-                                ├── theme.nix       Stylix colors and fonts.
+                                ├── theme.nix       Stylix colors from the wallpaper, and fonts.
                                 ├── vicinae.nix     App launcher.
                                 └── wallpaper.nix   Picks a wallpaper, drawn by wpaperd.
 ```

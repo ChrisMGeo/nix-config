@@ -24,12 +24,31 @@
     # Dark mode, for programs that pick a light or dark variant.
     polarity = "dark";
 
-    # A Base16 scheme is 16 colors, base00 to base0F. base00 to base07 run from
-    # the background to the brightest text. base08 to base0F are accent colors.
-    # This one is black and white only, with gray in place of the accents. It
-    # lives in the root `themes/` folder so other users can reuse it.
-    # `inputs.self` is this repository, and `import` loads the scheme file.
-    base16Scheme = import "${inputs.self}/themes/black-monochrome.nix";
+    # No base16Scheme is set here, so Stylix makes the 16 colors from the
+    # wallpaper picture set in wallpaper.nix. It picks dark colors because
+    # polarity above is "dark". A Base16 scheme is 16 colors, base00 to base0F.
+    # base00 to base07 run from the background to the brightest text. base08 to
+    # base0F are accent colors.
+    #
+    # To use a fixed scheme instead, set base16Scheme to one from the root
+    # `themes/` folder. `inputs.self` is this repository. Example:
+    #
+    #   base16Scheme = import "${inputs.self}/themes/black-monochrome.nix";
+
+    # Replaces some of the colors Stylix made from the wallpaper. The wallpapers
+    # used here sit on a pure black background, but Stylix makes a lighter,
+    # tinted background. base00 to base02 are the backgrounds, from darkest to
+    # lightest, so they are set to black and two very dark plum tints, chosen
+    # for the cherry blossom wallpaper wallhaven-gwd987. The text and accent
+    # colors, base03 to base0F, stay as Stylix made them.
+    override = {
+      # The main background of windows, the bar, and the lock screen.
+      base00 = "000000";
+      # A slightly lighter background, for panels and the status line.
+      base01 = "120f13";
+      # Selected text and the outline of unfocused windows.
+      base02 = "2a232c";
+    };
 
     # Iosevka for every kind of text. `package` is what gets installed. `name` is
     # the font family name that programs ask for.
@@ -46,7 +65,7 @@
     # fall back to `hicolor`, which has almost no icons, so many show a broken
     # image. Papirus is complete and has dark variants. `override` builds the
     # package with a different input. `color = "grey"` recolors its folder
-    # icons to match the black and white scheme.
+    # icons to a neutral gray, which suits any color scheme.
     icons = {
       enable = true;
       package = pkgs.papirus-icon-theme.override { color = "grey"; };
