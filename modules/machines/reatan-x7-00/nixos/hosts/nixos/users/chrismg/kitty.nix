@@ -10,9 +10,11 @@
     # Installs kitty and writes ~/.config/kitty/kitty.conf.
     enable = true;
 
-    # `null` leaves kitty's own shell integration setting alone, so kitty uses
-    # its built-in default.
-    shellIntegration.mode = null;
+    # Shell integration is left at the Home Manager default, "no-rc". The
+    # nixpkgs build of kitty also defaults to "no-rc", so kitty never loads the
+    # integration on its own. Home Manager loads it from ~/.zshrc instead.
+    # Without it, kitty cannot tell when zsh is idle at a prompt, and it asks
+    # for confirmation every time a window closes.
 
     settings = {
       # No title bar. The tab bar below shows the tabs instead.
@@ -26,6 +28,15 @@
       tab_bar_min_tabs = 1;
       # "custom" draws tabs with the tab_bar.py file below.
       tab_bar_style = "custom";
+    };
+
+    # kitty uses Ctrl+Shift+Left and Ctrl+Shift+Right to switch tabs. An empty
+    # action removes those shortcuts, so the keys go to zsh, which uses them
+    # to select a word at a time. See shell.nix. Ctrl+Tab and Ctrl+Shift+Tab
+    # still switch tabs.
+    keybindings = {
+      "ctrl+shift+left" = "";
+      "ctrl+shift+right" = "";
     };
   };
 
