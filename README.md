@@ -38,6 +38,10 @@ New to Nix? Read the glossary below first. Then read the layout and the loading 
 ├── README.md                       This file.
 ├── AGENTS.md                       Instructions for coding agents.
 ├── .gitignore                      Keeps `nix build` result links out of git.
+├── wallpapers/                     Wallpaper pictures any user can pick. Not loaded as modules.
+│   ├── default.nix                 Maps each wallpaper's name to its picture.
+│   ├── wallhaven-5yzd29.png        White cherry blossoms on black.
+│   └── wallhaven-gwd987.jpg        A pink cherry blossom branch on black.
 └── modules/
     ├── machines.nix                Finds machines, hosts, and users from folder names.
     ├── features/                   Settings for every host.
@@ -73,7 +77,8 @@ New to Nix? Read the glossary below first. Then read the layout and the loading 
                                 ├── quickshell/     The bar's QML files.
                                 ├── shell.nix       zsh and starship.
                                 ├── theme.nix       Stylix colors and fonts.
-                                └── vicinae.nix     App launcher.
+                                ├── vicinae.nix     App launcher.
+                                └── wallpaper.nix   Picks a wallpaper, drawn by wpaperd.
 ```
 
 Each folder also has an `AGENTS.md` that describes its files.

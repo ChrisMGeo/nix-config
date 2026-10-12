@@ -15,6 +15,7 @@ Home Manager settings for the user `chrismg` on the host `nixos`.
 | `shell.nix` | Turns on zsh with Ctrl and Alt arrow keys for moving by word, Shift keys for selecting text, and the starship prompt. |
 | `theme.nix` | Loads Stylix and sets the black monochrome color scheme, the Iosevka fonts, the Papirus-Dark icon theme with grey folders, and the Bibata cursor. |
 | `vicinae.nix` | Sets up the Vicinae app launcher and runs its server as a systemd user service. |
+| `wallpaper.nix` | Picks a picture from the root `wallpapers/` folder as the Stylix wallpaper and runs wpaperd to draw it behind the windows. swaylock also shows it. |
 
 `default.nix` takes Codex, OpenCode, and Claude Code from the llm-agents flake. It takes Zed from nixpkgs-unstable. It takes Brave from the stable nixpkgs set.
 

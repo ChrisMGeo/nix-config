@@ -22,8 +22,9 @@ let
   loginctl = "${osConfig.systemd.package}/bin/loginctl";
 in
 {
-  # The lock screen. Stylix sets its colors. See theme.nix. swaylock checks the
-  # password through PAM, which desktop.nix sets up.
+  # The lock screen. Stylix sets its colors and its background picture. See
+  # theme.nix and wallpaper.nix. swaylock checks the password through PAM, which
+  # desktop.nix sets up.
   programs.swaylock = {
     enable = true;
     settings = {
