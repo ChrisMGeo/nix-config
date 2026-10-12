@@ -14,4 +14,12 @@
 
   # A photo of a pink cherry blossom branch on black, from wallhaven.cc.
   wallhaven-gwd987 = ./wallhaven-gwd987.jpg;
+
+  # A crowned knight in armor and a red cloak raising a sword, at the right
+  # edge of a black background, from wallhaven.cc.
+  wallhaven-d88253 = ./wallhaven-d88253.png;
+
+  # A photo of a snow-covered mountain peak in sunlight, with shadowed brown
+  # slopes in front and a dark gray sky, from wallhaven.cc.
+  wallhaven-oglrv9 = ./wallhaven-oglrv9.jpg;
 }
