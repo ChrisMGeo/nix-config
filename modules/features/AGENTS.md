@@ -6,7 +6,7 @@ Settings for every host. Each `.nix` file directly in this folder loads for ever
 
 | File | What it does |
 | --- | --- |
-| `base.nix` | Allows unfree packages, turns on flakes, sets the time zone, and installs `vim` and `git` for every user. |
+| `base.nix` | Allows unfree packages, turns on flakes, adds Numtide's binary cache for the AI coding agents, sets the time zone, and installs `vim` and `git` for every user. |
 
 ## Subdirectories
 

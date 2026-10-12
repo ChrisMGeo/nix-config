@@ -16,6 +16,18 @@
     "flakes"
   ];
 
+  # A binary cache is a server with packages already built. Nix downloads from
+  # it instead of compiling. Numtide's cache holds the AI coding agents from the
+  # llm-agents input, so Codex does not compile from source on every update.
+  # `extra-` adds to the default cache, cache.nixos.org, instead of replacing it.
+  # The key proves that a download really came from Numtide. Both values come
+  # from llm-agents' own flake.nix. The README's "First build on a new computer"
+  # repeats them, so change both places together.
+  nix.settings.extra-substituters = [ "https://cache.numtide.com" ];
+  nix.settings.extra-trusted-public-keys = [
+    "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
+  ];
+
   # Sets the clock to US Eastern time.
   time.timeZone = "America/New_York";
 

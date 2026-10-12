@@ -24,6 +24,7 @@ New to Nix? Read the glossary below first. Then read the layout and the loading 
 | Home Manager | A tool that manages one user's packages and dotfiles. It runs as part of the NixOS build. |
 | `stateVersion` | The release a host was first installed with. Nix uses it to keep old defaults for existing data. Do not change it. |
 | `lib.mkDefault` | Marks a value as a default. Another file can set a different value, and the other value wins. |
+| Binary cache | A server with packages already built. Nix downloads from it instead of compiling. cache.nixos.org is the default. This repository also uses Numtide's cache for the AI coding agents. |
 | Form factor | Whether a machine is a desktop or a laptop. Set with `machine.formFactor`. Laptops get battery controls in the bar and automatic power profiles. |
 | niri | The Wayland compositor that draws and arranges windows. It places windows in columns on a strip that scrolls sideways. |
 | Stylix | A tool that applies one color scheme and one set of fonts to many programs at once. |
@@ -40,7 +41,7 @@ New to Nix? Read the glossary below first. Then read the layout and the loading 
 └── modules/
     ├── machines.nix                Finds machines, hosts, and users from folder names.
     ├── features/                   Settings for every host.
-    │   ├── base.nix                Packages, flakes, and time zone for all platforms.
+    │   ├── base.nix                Packages, flakes, binary caches, and time zone for all platforms.
     │   └── nixos/                  Settings for NixOS hosts only.
     │       ├── base.nix            NetworkManager and locale.
     │       └── form-factor.nix     The desktop or laptop setting, and laptop power profiles.
@@ -165,7 +166,26 @@ Create a `.nix` file in `modules/features/`. For a setting that only NixOS suppo
 
 4. Add a `users/<login>/default.nix` file for each user who needs Home Manager settings.
 5. Run `git add` on the new files. Nix ignores files that git does not track. See the list below.
-6. Build the host with `sudo nixos-rebuild switch --flake .#<name>`.
+6. Build the host. The first build needs the command in [First build on a new computer](#first-build-on-a-new-computer), with `.#<name>` in place of `.#nixos`.
+
+### First build on a new computer
+
+The first time you build this configuration on a computer, run this instead of the usual command:
+
+```sh
+sudo nixos-rebuild switch --flake .#nixos \
+  --option extra-substituters https://cache.numtide.com \
+  --option extra-trusted-public-keys niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g=
+```
+
+`modules/features/base.nix` adds Numtide's binary cache, which holds the AI coding agents already built. That setting reaches `/etc/nix/nix.conf` only after the first build finishes, so the first build does not know about the cache yet. Without these two options, it compiles Codex from source, which can take half an hour.
+
+- `extra-substituters` adds Numtide's cache for this one command, next to cache.nixos.org.
+- `extra-trusted-public-keys` is Numtide's signing key. Nix uses it to check that each download really came from Numtide.
+
+Both values match `modules/features/base.nix`, which copies them from the llm-agents flake. If you change them there, change them here too. After the first build, the usual `sudo nixos-rebuild switch --flake .#nixos` uses the cache by itself.
+
+The options work because `sudo` runs the command as root, and Nix accepts cache settings from root. Run as a normal user, Nix ignores them.
 
 ### Add a user
 
