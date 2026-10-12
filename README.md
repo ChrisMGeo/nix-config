@@ -38,6 +38,8 @@ New to Nix? Read the glossary below first. Then read the layout and the loading 
 ├── README.md                       This file.
 ├── AGENTS.md                       Instructions for coding agents.
 ├── .gitignore                      Keeps `nix build` result links out of git.
+├── themes/                         Color schemes any user can pick. Not loaded as modules.
+│   └── black-monochrome.nix        Black and white, with gray accents.
 ├── wallpapers/                     Wallpaper pictures any user can pick. Not loaded as modules.
 │   ├── default.nix                 Maps each wallpaper's name to its picture.
 │   ├── wallhaven-5yzd29.png        White cherry blossoms on black.

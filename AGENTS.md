@@ -7,6 +7,7 @@ Read this file first. Then read the `AGENTS.md` in each folder you change. Each 
 ## Subdirectories
 
 - [modules/](modules/AGENTS.md): the loader and every setting it loads.
+- [themes/](themes/AGENTS.md): color schemes that any host or user can use.
 - [wallpapers/](wallpapers/AGENTS.md): wallpaper pictures that any host or user can use.
 
 ## Keeping these files current

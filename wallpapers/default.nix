@@ -9,7 +9,7 @@
 # this file. When a setting uses it, Nix copies only that picture into the store.
 {
   # White cherry blossoms on black, from wallhaven.cc. It matches the black
-  # monochrome color scheme in theme.nix.
+  # monochrome color scheme in themes/black-monochrome.nix.
   wallhaven-5yzd29 = ./wallhaven-5yzd29.png;
 
   # A photo of a pink cherry blossom branch on black, from wallhaven.cc.
