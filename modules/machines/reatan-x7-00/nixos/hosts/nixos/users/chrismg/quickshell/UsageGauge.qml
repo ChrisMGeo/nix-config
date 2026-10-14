@@ -1,5 +1,6 @@
 import QtQuick
 import Quickshell
+import Quickshell.Wayland
 
 Item {
     id: root
@@ -50,6 +51,8 @@ Item {
     }
 
     PopupWindow {
+        id: tooltip
+
         anchor.item: root
         anchor.edges: Edges.Bottom
         anchor.gravity: Edges.Bottom
@@ -58,6 +61,14 @@ Item {
         color: "transparent"
         implicitWidth: popupText.implicitWidth + Theme.scaled(18)
         implicitHeight: popupText.implicitHeight + Theme.scaled(12)
+
+        // Blurs what is behind the tooltip, for a frosted glass look. See
+        // Theme.panel.
+        BackgroundEffect.blurRegion: Region {
+            width: tooltip.width
+            height: tooltip.height
+            radius: Theme.radius - 4
+        }
 
         Rectangle {
             anchors.fill: parent

@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Wayland
 
 // The menu under the bar's power button: lock, log out, restart, and shut down.
 // Lock acts on the first click. The others ask for a second click within a few
@@ -77,6 +78,15 @@ PanelWindow {
     margins {
         top: Theme.barHeight + Theme.outerMargin * 2
         right: Theme.outerMargin
+    }
+
+    // Asks niri to blur what is behind the whole window, with the same rounded
+    // corners as the panel, for a frosted glass look. Theme.panel is
+    // see-through, so the blur shows. Only this region is blurred.
+    BackgroundEffect.blurRegion: Region {
+        width: root.width
+        height: root.height
+        radius: Theme.radius
     }
 
     Timer {

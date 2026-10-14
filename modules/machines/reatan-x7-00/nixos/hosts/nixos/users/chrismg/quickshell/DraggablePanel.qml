@@ -1,5 +1,6 @@
 import QtQuick
 import Quickshell
+import Quickshell.Wayland
 
 PanelWindow {
     id: root
@@ -37,6 +38,15 @@ PanelWindow {
             root.screen.width - root.width,
             root.screen.width * root.positionLeft + panelDrag.persistentTranslation.x
         )))
+    }
+
+    // Asks niri to blur what is behind the whole window, with the same rounded
+    // corners as the panel, for a frosted glass look. Theme.panel is
+    // see-through, so the blur shows. Only this region is blurred.
+    BackgroundEffect.blurRegion: Region {
+        width: root.width
+        height: root.height
+        radius: Theme.radius
     }
 
     DragHandler {

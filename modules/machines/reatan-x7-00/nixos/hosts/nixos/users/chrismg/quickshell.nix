@@ -110,7 +110,12 @@ let
         }
 
         // Stylix Base16 colors.
-        property color panel: ${color "base00"}
+        // Panels are see-through, like kitty in kitty.nix. niri blurs what
+        // shows through, so they look like dark frosted glass. Each window asks
+        // for the blur with BackgroundEffect.blurRegion.
+        property real panelOpacity: 0.8
+        property color panelSolid: ${color "base00"}
+        property color panel: Qt.rgba(panelSolid.r, panelSolid.g, panelSolid.b, panelOpacity)
         property color panelOverlay: Qt.rgba(panel.r, panel.g, panel.b, 0.65)
         property color surface: ${color "base01"}
         property color surfaceRaised: ${color "base02"}

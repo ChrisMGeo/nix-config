@@ -106,6 +106,18 @@ let
           "background-effect".blur = true;
         };
       }
+      # The Quickshell bar and its panels ask for blur themselves, only behind
+      # their see-through black backgrounds. See quickshell/TopBar.qml. niri
+      # normally blurs only the wallpaper there, even when a window is in
+      # between. `xray false` blurs the windows below too, so the bar looks
+      # like glass over whatever it covers. "quickshell" is the name Quickshell
+      # gives its windows, shown by `niri msg layers`.
+      {
+        "layer-rule" = {
+          match._props.namespace = "^quickshell$";
+          "background-effect".xray = false;
+        };
+      }
     ];
 
     # How niri blurs, for every window that a rule above blurs. More passes and

@@ -8,6 +8,7 @@ import Quickshell.Bluetooth
 import Quickshell.Networking
 import Quickshell.Services.Pipewire
 import Quickshell.Services.UPower
+import Quickshell.Wayland
 
 PanelWindow {
     id: root
@@ -25,6 +26,15 @@ PanelWindow {
     readonly property bool powerProfilesAvailable: Capabilities.powerProfiles
 
     signal closeRequested()
+
+    // Asks niri to blur what is behind the whole window, with the same rounded
+    // corners as the panel, for a frosted glass look. Theme.panel is
+    // see-through, so the blur shows. Only this region is blurred.
+    BackgroundEffect.blurRegion: Region {
+        width: root.width
+        height: root.height
+        radius: Theme.radius
+    }
 
     PwObjectTracker {
         objects: [Pipewire.defaultAudioSink]

@@ -30,6 +30,7 @@ The QML files for the Quickshell bar of the user `chrismg`. These files are not 
 - Change the number of visualizer bars with `spectrumBars` in `../quickshell.nix`. It fills in both `cava.conf` and `Theme.qml`.
 - `Theme.showBattery` is true only when `machine.formFactor` is "laptop". Hide any laptop-only control behind it.
 - When you add a QML file, list it in `qmldir` too.
+- `Theme.panel` is see-through. A new window that draws it needs a `BackgroundEffect.blurRegion` that covers the panel with the same corner radius, or it looks dim instead of frosted. The blur shows only where that region is.
 - The bar supports niri only. It reads workspaces and windows with `niri msg` and has no code for other compositors.
 
 ## Keeping this file current

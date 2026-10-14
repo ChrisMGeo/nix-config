@@ -4,6 +4,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Services.SystemTray
+import Quickshell.Wayland
 
 PanelWindow {
     id: root
@@ -76,6 +77,37 @@ PanelWindow {
         }
     }
 
+    // Asks niri to blur what is behind each of the three panels, with their
+    // rounded corners, for a frosted glass look. The gaps between panels stay
+    // clear. Theme.panel is see-through, so the blur shows. `slide.y` moves
+    // the blur with the panels while they slide in and out. A child Region adds
+    // its area to the one above it, and the empty top Region adds nothing.
+    BackgroundEffect.blurRegion: Region {
+        Region {
+            x: trayPanel.x
+            y: Theme.barTopGap + slide.y
+            width: trayPanel.visible ? trayPanel.width : 0
+            height: Theme.barHeight
+            radius: Theme.radius
+        }
+
+        Region {
+            x: workspacePanel.x
+            y: Theme.barTopGap + slide.y
+            width: workspacePanel.width
+            height: Theme.barHeight
+            radius: Theme.radius
+        }
+
+        Region {
+            x: statusPanel.x
+            y: Theme.barTopGap + slide.y
+            width: statusPanel.width
+            height: Theme.barHeight
+            radius: Theme.radius
+        }
+    }
+
     // Tracks whether the mouse is over the window's mask.
     Item {
         anchors.fill: parent
@@ -115,6 +147,8 @@ PanelWindow {
         // what is drawn without moving the panels themselves, so the mask above
         // keeps the panels' resting place.
         transform: Translate {
+            id: slide
+
             y: root.revealed ? 0 : -(Theme.barTopGap + Theme.barHeight)
 
             Behavior on y {
