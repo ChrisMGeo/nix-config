@@ -6,7 +6,7 @@ Base16 color schemes that any host or user can use with Stylix. This folder sits
 
 | File | What it does |
 | --- | --- |
-| `black-monochrome.nix` | A black and white scheme, with gray in place of the accent colors. Not used by anyone now. `chrismg` used it before switching to colors made from the wallpaper. |
+| `black-monochrome.nix` | A black and white scheme, with gray in place of the accent colors. Used by `chrismg` on the host `nixos`. |
 
 ## Rules
 

@@ -5,8 +5,8 @@
 # panel that keeps past notifications and a do-not-disturb switch. Mod+N opens
 # the panel. See niri.nix.
 #
-# The look is plain and dark: a dark panel, a thin outline, and rounded
-# corners. The colors come from Stylix. See theme.nix.
+# The look is plain and dark: a black panel, a thin gray outline, and
+# rounded corners. The colors come from Stylix. See theme.nix.
 #
 # `{ config, lib, ... }:` makes this file a function. `config` is this user's
 # final Home Manager settings. `lib` is the nixpkgs helper library.
@@ -104,7 +104,7 @@ in
           padding: 4px 12px 4px 12px;
         }
 
-        /* One thin, dim outline. Stylix draws a second, bright one on the inner
+        /* One thin gray outline. Stylix draws a second, bright one on the inner
            box, which this removes. */
         .notification-row .notification-background .notification {
           border: 1px solid var(--noti-border-color);

@@ -9,7 +9,7 @@ Wallpaper pictures that any host or user can use. This folder sits outside `modu
 | `default.nix` | Maps each wallpaper's name to its picture. A module loads it with `import "${inputs.self}/wallpapers"`. |
 | `wallhaven-5yzd29.png` | White cherry blossoms on black. Not used by anyone now. |
 | `wallhaven-d88253.png` | A crowned knight with a red cloak and a raised sword, on black. Not used by anyone now. |
-| `wallhaven-gwd987.jpg` | A photo of a pink cherry blossom branch on black. Used by `chrismg` on the host `nixos`, whose colors Stylix makes from it. |
+| `wallhaven-gwd987.jpg` | A photo of a pink cherry blossom branch on black. Used by `chrismg` on the host `nixos`. |
 | `wallhaven-oglrv9.jpg` | A photo of a snow-covered mountain peak in sunlight under a dark gray sky. Not used by anyone now. |
 
 ## Rules
