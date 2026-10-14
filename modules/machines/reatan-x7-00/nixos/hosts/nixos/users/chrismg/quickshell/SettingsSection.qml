@@ -15,7 +15,9 @@ Rectangle {
 
     implicitHeight: contents.implicitHeight
     radius: Theme.radius - 3
-    color: Theme.surface
+    // No fill, so the drawer's frosted glass shows through. An open section
+    // still gets the accent outline below.
+    color: "transparent"
     border.color: expanded ? Theme.accent : "transparent"
     border.width: Theme.compactOutlineWidth
 

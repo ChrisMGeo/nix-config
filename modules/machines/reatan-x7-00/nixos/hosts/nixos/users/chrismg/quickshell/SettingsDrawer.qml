@@ -91,7 +91,9 @@ PanelWindow {
                 Layout.fillWidth: true
                 Layout.preferredHeight: Theme.scaled(70)
                 radius: Theme.radius - 3
-                color: Theme.surface
+                // No fill, like the sections below, so the drawer's frosted
+                // glass shows through.
+                color: "transparent"
 
                 Rectangle {
                     id: avatar
