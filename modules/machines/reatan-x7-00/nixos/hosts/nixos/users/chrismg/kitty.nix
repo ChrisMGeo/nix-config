@@ -40,6 +40,12 @@
     };
   };
 
+  # How opaque kitty's background is, from 0 (invisible) to 1 (solid). Stylix
+  # writes it into kitty.conf as background_opacity. At 0.8 the background stays
+  # mostly black, and niri blurs what shows through, so it looks like dark
+  # frosted glass. See the kitty window rule in niri.nix. Text stays solid.
+  stylix.opacity.terminal = 0.8;
+
   # The custom tab bar, written in Python. It draws each tab as a separate
   # rounded capsule. kitty loads it because tab_bar_style is "custom". `source`
   # links the file from kitty/tab_bar.py in this folder.

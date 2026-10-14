@@ -80,10 +80,41 @@ let
       "xcursor-size" = config.stylix.cursor.size;
     };
 
-    # Rounds the corners of every window, and cuts the window's content to match.
-    "window-rule" = {
-      "geometry-corner-radius" = 12;
-      "clip-to-geometry" = true;
+    # Window rules. KDL repeats a node to give several rules, but a Nix set
+    # cannot hold the same name twice, so `toKDL` writes each set in the
+    # `_children` list as its own node.
+    _children = [
+      # Rounds the corners of every window, and cuts the window's content to
+      # match.
+      {
+        "window-rule" = {
+          "geometry-corner-radius" = 12;
+          "clip-to-geometry" = true;
+          # niri normally fills the whole area behind a window with the focus
+          # ring color, not only a frame around it. A see-through window, such
+          # as kitty, then looks gray. This keeps the ring a thin frame.
+          "draw-border-with-background" = false;
+        };
+      }
+      # Blurs what shows through kitty's see-through background, for a frosted
+      # glass look. kitty.nix makes the background see-through. `match` picks
+      # windows by app ID, a regular expression. `_props` becomes a KDL
+      # property: `app-id="^kitty$"`.
+      {
+        "window-rule" = {
+          match._props."app-id" = "^kitty$";
+          "background-effect".blur = true;
+        };
+      }
+    ];
+
+    # How niri blurs, for every window that a rule above blurs. More passes and
+    # a larger offset give a softer, wider blur. Noise adds a faint grain, which
+    # makes the blur look like frosted glass instead of smeared paint.
+    blur = {
+      passes = 3;
+      offset = 3.0;
+      noise = 3.0e-2;
     };
 
     layout = {
