@@ -11,6 +11,15 @@ ShellRoot {
     property bool settingsVisible: false
     property bool mediaVisible: false
     property bool powerMenuVisible: false
+    // The bar floats over windows and hides until something shows it. See
+    // barShownOn() below. Hovering the top edge of a screen also shows it, which
+    // TopBar.qml handles by itself.
+    // True after the toggle key, Mod+B in niri.nix, until it is pressed again.
+    property bool barPinned: false
+    // True while niri's overview, Mod+O, is open.
+    property bool overviewOpen: false
+    // The monitor whose workspace just changed. Its bar shows for a moment.
+    property string barPeekOutput: ""
     property var targetScreen: Quickshell.screens.length > 0 ? Quickshell.screens[0] : null
     property var workspaceRecords: []
     property var windowRecords: []
@@ -81,6 +90,17 @@ ShellRoot {
         return occupied;
     }
 
+    // Whether the bar on one monitor is shown, apart from hovering. The settings
+    // drawer and the power menu keep it shown while they are open, because they
+    // open from its buttons.
+    function barShownOn(outputName) {
+        return barPinned
+            || overviewOpen
+            || (barPeek.running && barPeekOutput === outputName)
+            || settingsVisible
+            || powerMenuVisible;
+    }
+
     function showOn(target) {
         if (target)
             targetScreen = target;
@@ -143,6 +163,13 @@ ShellRoot {
                     : workspace.is_active,
                 is_focused: focused ? workspace.id === activated.id : workspace.is_focused
             }));
+
+            // Show that monitor's bar for a moment, so you can see where you are.
+            barPeekOutput = activated.output;
+            barPeek.restart();
+        } else if (event.OverviewOpenedOrClosed) {
+            // niri sends the current state first, then every change.
+            overviewOpen = event.OverviewOpenedOrClosed.is_open;
         } else if (event.WindowsChanged) {
             // The full window list, sent first.
             windowRecords = event.WindowsChanged.windows;
@@ -185,6 +212,23 @@ ShellRoot {
         interval: 1000
     }
 
+    // How long the bar stays after a workspace change, in milliseconds.
+    Timer {
+        id: barPeek
+
+        interval: 1500
+    }
+
+    // `quickshell ipc -c chrismg call bar toggle` runs toggle() below. niri.nix
+    // binds it to Mod+B.
+    IpcHandler {
+        target: "bar"
+
+        function toggle(): void {
+            root.barPinned = !root.barPinned;
+        }
+    }
+
     IpcHandler {
         target: "shell"
 
@@ -212,6 +256,7 @@ ShellRoot {
             TopBar {
                 screen: screenShell.modelData
                 // `name` is the screen's connector name, such as "DP-1".
+                shown: root.barShownOn(screenShell.modelData.name)
                 workspaces: root.workspacesOn(screenShell.modelData.name)
                 activeWorkspace: root.activeWorkspaceOn(screenShell.modelData.name)
                 occupiedWorkspaces: root.occupiedWorkspacesOn(screenShell.modelData.name)

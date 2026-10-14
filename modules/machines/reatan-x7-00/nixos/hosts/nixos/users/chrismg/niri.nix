@@ -24,6 +24,8 @@ let
   # that hold more than one program.
   swaync-client = lib.getExe' config.services.swaync.package "swaync-client";
   loginctl = "${osConfig.systemd.package}/bin/loginctl";
+  # Sends commands to the running Quickshell bar. See quickshell.nix.
+  quickshell = lib.getExe' config.programs.quickshell.package "quickshell";
 
   # Changes the volume of the default speaker or microphone. Part of WirePlumber,
   # which PipeWire uses. See audio.nix.
@@ -86,9 +88,9 @@ let
 
     layout = {
       # Space between windows, and between windows and the screen edge, in pixels.
+      # The Quickshell bar floats over windows and reserves no space, so the top
+      # edge gets the same gap as the others.
       gaps = 16;
-      # A negative top strut cancels the top gap. The bar already leaves room.
-      struts.top = -16;
       # A 2 pixel outline around the focused window of each monitor, thick
       # enough to spot at a glance. The monitor that has the keyboard uses the
       # active color, a mid gray. The others use the inactive color, a darker
@@ -113,6 +115,10 @@ let
       "Mod+D".spawn = [ vicinae "toggle" ];
       # Opens or closes the notification panel. See notifications.nix.
       "Mod+N".spawn = [ swaync-client "-t" "-sw" ];
+      # Keeps the Quickshell bar shown, or lets it hide again. It also shows in
+      # the overview, when the mouse touches the top edge, and for a moment
+      # after a workspace change. See quickshell/shell.qml.
+      "Mod+B".spawn = [ quickshell "ipc" "-c" "chrismg" "call" "bar" "toggle" ];
 
       # Windows.
       "Mod+Q"."close-window" = { };

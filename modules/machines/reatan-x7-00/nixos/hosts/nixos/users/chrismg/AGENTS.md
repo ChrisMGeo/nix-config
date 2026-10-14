@@ -9,7 +9,7 @@ Home Manager settings for the user `chrismg` on the host `nixos`.
 | `default.nix` | Installs packages for this user only: Codex, OpenCode, Claude Code, Brave, and Zed. |
 | `kitty.nix` | Sets up the kitty terminal, frees Ctrl+Shift+Left and Right for zsh, and links its custom tab bar from `kitty/tab_bar.py`. |
 | `lock.nix` | Sets up swaylock as the lock screen and swayidle to start it when the session is locked. There are no idle timers. |
-| `niri.nix` | Writes `~/.config/niri/config.kdl`: layout, window corners, and every key binding. |
+| `niri.nix` | Writes `~/.config/niri/config.kdl`: layout, window corners, and every key binding, including Mod+B, which pins the Quickshell bar on screen. |
 | `notifications.nix` | Runs SwayNotificationCenter for notification popups and the notification panel, with rounded, outlined cards in the Stylix colors. |
 | `quickshell.nix` | Runs the Quickshell bar as a systemd user service, installs it from the `quickshell/` folder with the Font Awesome icon font, and generates its `Theme.qml`, which also holds the paths to cava and `quickshell/cava.conf` for the audio visualizer. |
 | `shell.nix` | Turns on zsh with Ctrl and Alt arrow keys for moving by word, Shift keys for selecting text, and the starship prompt. |
