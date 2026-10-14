@@ -34,24 +34,45 @@ PanelWindow {
         right: Theme.outerMargin
     }
 
+    // The bar is drawn as three separate panels with empty space between them:
+    // the tray on the left, the workspaces in the center, and the gauges and
+    // buttons on the right. They share this one window, so the space niri
+    // reserves for the bar and the place where menus open stay the same.
+
+    // Space between a panel's outline and its contents, in pixels.
+    readonly property int sectionPadding: 6
+
+    // The left panel: one button per tray icon. It hides when no program shows
+    // a tray icon, so no empty panel is left behind.
     Rectangle {
-        anchors.fill: parent
+        anchors {
+            left: parent.left
+            top: parent.top
+            bottom: parent.bottom
+        }
+        // As wide as the icons, at most a third of the bar. Extra icons are cut
+        // off.
+        width: Math.min(trayRow.implicitWidth, Math.floor(root.width * 0.32)) + root.sectionPadding * 2
+        visible: trayRepeater.count > 0
         radius: Theme.radius
         color: Theme.panel
         border.color: Theme.outline
         border.width: Theme.outlineWidth
+        clip: true
 
         Row {
+            id: trayRow
+
             anchors {
                 left: parent.left
-                leftMargin: 6
+                leftMargin: root.sectionPadding
                 verticalCenter: parent.verticalCenter
             }
-            width: Math.floor(root.width * 0.32)
             spacing: 2
-            clip: true
 
             Repeater {
+                id: trayRepeater
+
                 model: SystemTray.items
 
                 IconButton {
@@ -79,8 +100,24 @@ PanelWindow {
                 }
             }
         }
+    }
+
+    // The center panel: the workspace buttons of this monitor.
+    Rectangle {
+        anchors {
+            horizontalCenter: parent.horizontalCenter
+            top: parent.top
+            bottom: parent.bottom
+        }
+        width: workspaceRow.implicitWidth + root.sectionPadding * 2
+        radius: Theme.radius
+        color: Theme.panel
+        border.color: Theme.outline
+        border.width: Theme.outlineWidth
 
         Row {
+            id: workspaceRow
+
             anchors.centerIn: parent
             spacing: 4
 
@@ -134,11 +171,28 @@ PanelWindow {
                 }
             }
         }
+    }
+
+    // The right panel: the audio visualizer, the usage gauges, and the
+    // settings and power buttons.
+    Rectangle {
+        anchors {
+            right: parent.right
+            top: parent.top
+            bottom: parent.bottom
+        }
+        width: statusRow.implicitWidth + root.sectionPadding * 2
+        radius: Theme.radius
+        color: Theme.panel
+        border.color: Theme.outline
+        border.width: Theme.outlineWidth
 
         RowLayout {
+            id: statusRow
+
             anchors {
                 right: parent.right
-                rightMargin: 6
+                rightMargin: root.sectionPadding
                 verticalCenter: parent.verticalCenter
             }
             spacing: 2
