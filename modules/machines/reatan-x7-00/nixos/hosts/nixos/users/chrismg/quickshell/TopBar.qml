@@ -39,7 +39,7 @@ PanelWindow {
         radius: Theme.radius
         color: Theme.panel
         border.color: Theme.outline
-        border.width: Theme.compactOutlineWidth
+        border.width: Theme.outlineWidth
 
         Row {
             anchors {

@@ -89,12 +89,12 @@ let
       gaps = 16;
       # A negative top strut cancels the top gap. The bar already leaves room.
       struts.top = -16;
-      # A thin outline around the focused window of each monitor. The monitor
-      # that has the keyboard uses the active color, base03, a muted tone. The
-      # others use the inactive color, base02, which is darker, so you can see
-      # which monitor typing goes to.
+      # A 2 pixel outline around the focused window of each monitor, thick
+      # enough to spot at a glance. The monitor that has the keyboard uses the
+      # active color, a mid gray. The others use the inactive color, a darker
+      # gray, so you can see which monitor typing goes to.
       "focus-ring" = {
-        width = 1;
+        width = 2;
         "active-color" = colors.base03;
         "inactive-color" = colors.base02;
       };
