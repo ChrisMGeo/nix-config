@@ -124,7 +124,7 @@ PanelWindow {
     }
 
     // The bar is drawn as two separate panels with empty space between them:
-    // the workspaces in the center, and the visualizer, tray, gauges, and
+    // the workspaces on the left, and the visualizer, tray, gauges, and
     // buttons on the right. They share this one window, so menus open in the
     // same place as before.
     Item {
@@ -156,12 +156,12 @@ PanelWindow {
             NumberAnimation { duration: 180 }
         }
 
-        // The center panel: the workspace buttons of this monitor.
+        // The left panel: the workspace buttons of this monitor.
         Rectangle {
             id: workspacePanel
 
             anchors {
-                horizontalCenter: parent.horizontalCenter
+                left: parent.left
                 top: parent.top
                 bottom: parent.bottom
             }
