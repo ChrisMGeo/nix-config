@@ -35,6 +35,10 @@ in
     # Web browser, from the stable nixpkgs set (`pkgs`).
     pkgs.brave
 
+    # Prints system details, such as the OS, kernel, and memory, next to a logo.
+    # From the stable nixpkgs set.
+    pkgs.fastfetch
+
     # Zed code editor, from nixpkgs-unstable.
     unstable.zed-editor
   ];
