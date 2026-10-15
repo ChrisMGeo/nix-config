@@ -11,13 +11,17 @@
 # The bar works on any computer. It shows the battery level only when
 # `machine.formFactor` is "laptop". See modules/features/nixos/form-factor.nix.
 #
-# `{ config, osConfig, pkgs, ... }:` makes this file a function. `config` is this
-# user's final Home Manager settings. `osConfig` is the whole system's final
-# settings. `pkgs` is the package set.
-{ config, osConfig, pkgs, ... }:
+# `{ config, osConfig, inputs, pkgs, ... }:` makes this file a function.
+# `config` is this user's final Home Manager settings. `osConfig` is the whole
+# system's final settings. `inputs` is the flake's inputs. `pkgs` is the
+# package set.
+{ config, osConfig, inputs, pkgs, ... }:
 
 # `let ... in` defines local names. The names exist only between `let` and `in`.
 let
+  # The nixpkgs-unstable package set. See default.nix.
+  unstable = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+
   # The Stylix colors as "#rrggbb" strings.
   colors = config.lib.stylix.colors.withHashtag;
   # Turns a Stylix color slot, such as "base00", into a quoted QML string.
@@ -224,6 +228,11 @@ in
   # by its store path.
   programs.quickshell = {
     enable = true;
+    # Quickshell 0.3.1 or newer from nixpkgs-unstable. 0.3.0, in the stable
+    # set, crashes when a Wi-Fi access point drops out of range, which the
+    # network list in the settings drawer makes common. Go back to `pkgs` once
+    # stable has 0.3.1.
+    package = unstable.quickshell;
     # The folder name under ~/.config/quickshell that the service loads.
     activeConfig = "chrismg";
     systemd.enable = true;
