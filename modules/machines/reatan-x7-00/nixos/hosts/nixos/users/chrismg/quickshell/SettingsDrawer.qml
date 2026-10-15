@@ -199,22 +199,10 @@ PanelWindow {
                         iconGlyph: "\uf1eb"
 
                         contentComponent: Component {
-                            RowLayout {
+                            WifiNetworks {
                                 width: sections.width
-                                height: Theme.scaled(48)
-
-                                UiText {
-                                    Layout.leftMargin: 12
-                                    Layout.fillWidth: true
-                                    text: "Wireless networking"
-                                    color: Theme.textMuted
-                                }
-
-                                Switch {
-                                    Layout.rightMargin: 8
-                                    checked: Networking.wifiEnabled
-                                    onToggled: Networking.wifiEnabled = checked
-                                }
+                                device: root.wifiDevice
+                                scanning: root.visible
                             }
                         }
                     }
@@ -230,25 +218,10 @@ PanelWindow {
                         iconFontFamily: Theme.brandIconFontFamily
 
                         contentComponent: Component {
-                            RowLayout {
+                            BluetoothDevices {
                                 width: sections.width
-                                height: Theme.scaled(48)
-
-                                UiText {
-                                    Layout.leftMargin: 12
-                                    Layout.fillWidth: true
-                                    text: root.bluetoothAdapter
-                                        ? `${root.bluetoothAdapter.devices.values.filter(device => device.connected).length} connected`
-                                        : "Bluetooth unavailable"
-                                    color: Theme.textMuted
-                                }
-
-                                Switch {
-                                    Layout.rightMargin: 8
-                                    enabled: root.bluetoothAdapter !== null
-                                    checked: root.bluetoothAdapter ? root.bluetoothAdapter.enabled : false
-                                    onToggled: root.bluetoothAdapter.enabled = checked
-                                }
+                                adapter: root.bluetoothAdapter
+                                active: root.visible
                             }
                         }
                     }

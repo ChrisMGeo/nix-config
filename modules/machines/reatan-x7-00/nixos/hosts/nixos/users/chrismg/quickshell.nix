@@ -4,8 +4,9 @@
 # Quickshell draws desktop panels from QML files. The QML files live in the
 # quickshell/ folder next to this file. This file copies them to
 # ~/.config/quickshell/chrismg and adds a generated Theme.qml with the Stylix
-# colors and the paths to cava, the audio visualizer, and its settings file,
-# quickshell/cava.conf. The bar runs as a systemd user service from login.
+# colors, the paths to cava, the audio visualizer, and its settings file,
+# quickshell/cava.conf, and the paths to nmcli and a script that joins
+# enterprise Wi-Fi networks. The bar runs as a systemd user service from login.
 #
 # The bar works on any computer. It shows the battery level only when
 # `machine.formFactor` is "laptop". See modules/features/nixos/form-factor.nix.
@@ -82,6 +83,48 @@ let
       >/dev/null 2>&1
   '';
 
+  # The nmcli that matches the NetworkManager the system runs. The settings
+  # drawer uses it to rescan for Wi-Fi networks.
+  nmcli = "${osConfig.networking.networkmanager.package}/bin/nmcli";
+
+  # Saves and joins an enterprise Wi-Fi network, such as eduroam, that logs in
+  # with a username and a password. Quickshell can only join networks that use
+  # one password, so the settings drawer runs this for the others.
+  #
+  # Arguments: the network name, the Wi-Fi card name, and the username. The
+  # password comes as one line on stdin, so it never shows in the process list.
+  # It uses PEAP with MSCHAPv2, which most of these networks use.
+  # `password-flags 0` lets NetworkManager save the password, so the next
+  # connection does not ask again. The password reaches NetworkManager through
+  # `passwd-file`, which nmcli reads from stdin here. If a saved connection with
+  # the name exists, its settings are updated instead of adding a second one.
+  # `''${...}` keeps Nix from reading a shell `${...}` as its own.
+  wifiEnterpriseJoin = pkgs.writeShellScript "quickshell-wifi-enterprise-join" ''
+    set -eu
+    ssid=$1
+    interface=$2
+    identity=$3
+    IFS= read -r password
+
+    settings=(
+      wifi-sec.key-mgmt wpa-eap
+      802-1x.eap peap
+      802-1x.phase2-auth mschapv2
+      802-1x.identity "$identity"
+      802-1x.password-flags 0
+    )
+
+    if ${nmcli} connection show id "$ssid" >/dev/null 2>&1; then
+      ${nmcli} connection modify id "$ssid" "''${settings[@]}"
+    else
+      ${nmcli} connection add type wifi con-name "$ssid" ifname "$interface" \
+        ssid "$ssid" "''${settings[@]}"
+    fi
+
+    printf '802-1x.password:%s\n' "$password" \
+      | ${nmcli} --wait 45 connection up id "$ssid" passwd-file /dev/stdin
+  '';
+
   # Theme.qml holds every color, size, and font that the other QML files use.
   # It is generated here so the colors match Stylix. `${...}` inserts a Nix value
   # into the text.
@@ -97,6 +140,8 @@ let
         property string brandIconFontFamily: "Font Awesome 7 Brands"
         property string systemUsageCommand: "${systemUsageReader}"
         property string powerProfilesCommand: "${powerProfilesProbe}"
+        property string nmcliCommand: "${nmcli}"
+        property string wifiEnterpriseCommand: "${wifiEnterpriseJoin}"
         // Exact store paths, so the visualizer does not depend on any profile.
         property string cavaCommand: "${pkgs.cava}/bin/cava"
         property string cavaConfig: "${cavaConfig}"

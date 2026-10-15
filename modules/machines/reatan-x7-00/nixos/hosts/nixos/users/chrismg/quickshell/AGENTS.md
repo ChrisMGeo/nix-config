@@ -12,6 +12,8 @@ The QML files for the Quickshell bar of the user `chrismg`. These files are not 
 | `TrayMenu.qml` | The drop-down under the bar's tray button, with one row per tray icon, or "No tray icons" when there are none. Left click activates a program, middle click runs its second action, and right click opens its own menu. |
 | `PowerMenu.qml` | The menu under the power button: lock, log out, restart, and shut down. Lock acts at once. The others need a second click within 3 seconds. |
 | `SettingsDrawer.qml` | The drawer that opens from the bar: network, Bluetooth, audio, and power. |
+| `WifiNetworks.qml` | The open Wi-Fi section of the settings drawer. Lists the networks in range and joins one on click. Asks for a password, or for a username and password on enterprise networks, under the row of a new secured network. Has buttons to rescan, disconnect, and forget a saved network, and shows why a join failed. |
+| `BluetoothDevices.qml` | The open Bluetooth section of the settings drawer. Lists paired devices with Connect and Disconnect buttons. Scan lists nearby devices, and Pair pairs, trusts, and connects one. Scanning stops after a minute or when the drawer closes. |
 | `SettingsSection.qml` | One expandable row in the settings drawer. |
 | `Capabilities.qml` | Singleton. Checks whether power-profiles-daemon is running. |
 | `SystemUsage.qml` | Singleton. Reads CPU, memory, and GPU use from the script in `../quickshell.nix`. |
@@ -23,6 +25,7 @@ The QML files for the Quickshell bar of the user `chrismg`. These files are not 
 | `MediaCard.qml` | The now-playing widget, shown while media plays. |
 | `DraggablePanel.qml` | A desktop widget that you can drag. Saves its position. |
 | `IconButton.qml` | A round button with one icon. |
+| `TextButton.qml` | A small rounded button with a word on it, such as "Join". |
 | `UiText.qml` | Text in the theme font and color. |
 
 ## Rules
