@@ -18,7 +18,7 @@ let
 
   # The name of the chosen wallpaper in wallpapers/default.nix. Change it to
   # switch wallpapers.
-  name = "wallhaven-gwd987";
+  name = "wallhaven-1q2kd9";
 
   # The chosen wallpaper, at full size. `wallpapers.${name}` looks up the entry
   # whose name is the value of `name`.
@@ -34,7 +34,7 @@ let
   # screen looks soft and grainy. ImageMagick's Lanczos filter reads every pixel
   # instead. Each step of the command:
   #   -colorspace RGB, then sRGB  shrinks in linear light, so dark edges do not
-  #                               spread into bright petals.
+  #                               spread into bright areas.
   #   -resize WxH^                shrinks until the picture covers the screen.
   #   -unsharp                    sharpens fine detail a little, because the
   #                               picture is slightly soft even at full size.

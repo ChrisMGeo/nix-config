@@ -22,4 +22,9 @@
   # A photo of a snow-covered mountain peak in sunlight, with shadowed brown
   # slopes in front and a dark gray sky, from wallhaven.cc.
   wallhaven-oglrv9 = ./wallhaven-oglrv9.jpg;
+
+  # A stylized black and white portrait of a woman with her head tilted back,
+  # on the right half of a black background, from wallhaven.cc. This copy was
+  # upscaled to 3840x2160 with waifu2x. It matches the black monochrome scheme.
+  wallhaven-1q2kd9 = ./wallhaven-1q2kd9.png;
 }
