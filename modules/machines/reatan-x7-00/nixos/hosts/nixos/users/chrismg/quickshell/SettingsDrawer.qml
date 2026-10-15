@@ -234,36 +234,44 @@ PanelWindow {
                         iconGlyph: "\uf028"
 
                         contentComponent: Component {
-                            RowLayout {
+                            Column {
                                 width: sections.width
-                                height: Theme.scaled(52)
 
-                                UiText {
-                                    Layout.leftMargin: 12
-                                    text: root.audioSink && root.audioSink.audio && root.audioSink.audio.muted
-                                        ? "Muted"
-                                        : "Volume"
-                                    color: Theme.textMuted
+                                RowLayout {
+                                    width: parent.width
+                                    height: Theme.scaled(52)
+
+                                    UiText {
+                                        Layout.leftMargin: 12
+                                        text: root.audioSink && root.audioSink.audio && root.audioSink.audio.muted
+                                            ? "Muted"
+                                            : "Volume"
+                                        color: Theme.textMuted
+                                    }
+
+                                    Slider {
+                                        Layout.fillWidth: true
+                                        from: 0
+                                        to: 1
+                                        enabled: root.audioSink !== null && root.audioSink.audio !== null
+                                        value: root.audioSink && root.audioSink.audio ? root.audioSink.audio.volume : 0
+                                        onMoved: root.audioSink.audio.volume = value
+                                    }
+
+                                    IconButton {
+                                        Layout.rightMargin: 8
+                                        enabled: root.audioSink !== null && root.audioSink.audio !== null
+                                        glyph: root.audioSink && root.audioSink.audio && root.audioSink.audio.muted
+                                            ? "\uf6a9"
+                                            : "\uf028"
+                                        glyphFontFamily: Theme.iconFontFamily
+                                        tooltip: "Toggle mute"
+                                        onClicked: root.audioSink.audio.muted = !root.audioSink.audio.muted
+                                    }
                                 }
 
-                                Slider {
-                                    Layout.fillWidth: true
-                                    from: 0
-                                    to: 1
-                                    enabled: root.audioSink !== null && root.audioSink.audio !== null
-                                    value: root.audioSink && root.audioSink.audio ? root.audioSink.audio.volume : 0
-                                    onMoved: root.audioSink.audio.volume = value
-                                }
-
-                                IconButton {
-                                    Layout.rightMargin: 8
-                                    enabled: root.audioSink !== null && root.audioSink.audio !== null
-                                    glyph: root.audioSink && root.audioSink.audio && root.audioSink.audio.muted
-                                        ? "\uf6a9"
-                                        : "\uf028"
-                                    glyphFontFamily: Theme.iconFontFamily
-                                    tooltip: "Toggle mute"
-                                    onClicked: root.audioSink.audio.muted = !root.audioSink.audio.muted
+                                AudioOutputs {
+                                    width: parent.width
                                 }
                             }
                         }

@@ -2,6 +2,7 @@ singleton Theme 1.0 Theme.qml
 singleton AudioSpectrum 1.0 AudioSpectrum.qml
 singleton Capabilities 1.0 Capabilities.qml
 singleton SystemUsage 1.0 SystemUsage.qml
+AudioOutputs 1.0 AudioOutputs.qml
 AudioVisualizer 1.0 AudioVisualizer.qml
 BluetoothDevices 1.0 BluetoothDevices.qml
 ClockCard 1.0 ClockCard.qml
