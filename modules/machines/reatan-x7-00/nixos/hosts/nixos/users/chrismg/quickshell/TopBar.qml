@@ -3,7 +3,6 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
-import Quickshell.Services.SystemTray
 import Quickshell.Wayland
 
 PanelWindow {
@@ -16,9 +15,11 @@ PanelWindow {
     // Set by shell.qml: true while the toggle key, the overview, a workspace
     // change, or an open drawer asks for the bar.
     property bool shown: false
+    // Whether the tray drop-down is open. The tray button toggles it.
+    property bool trayOpen: false
     // Whether the bar is on screen. Hovering the top edge, or the bar itself,
-    // also keeps it there.
-    readonly property bool revealed: shown || hover.hovered || hideDelay.running
+    // also keeps it there, and so does an open tray drop-down.
+    readonly property bool revealed: shown || trayOpen || hover.hovered || hideDelay.running
     // Space between a panel's outline and its contents, in pixels.
     readonly property int sectionPadding: 6
 
@@ -47,20 +48,13 @@ PanelWindow {
 
     // The parts of the window that take the mouse. Clicks anywhere else go
     // through to the windows below. While hidden, only a 2 pixel strip along
-    // the top edge does. While shown, the gap above the bar and the three panels
+    // the top edge does. While shown, the gap above the bar and the two panels
     // do too.
     mask: Region {
         x: 0
         y: 0
         width: root.width
         height: root.revealed ? Theme.barTopGap : 2
-
-        Region {
-            x: trayPanel.x
-            y: Theme.barTopGap
-            width: root.revealed && trayPanel.visible ? trayPanel.width : 0
-            height: Theme.barHeight
-        }
 
         Region {
             x: workspacePanel.x
@@ -77,20 +71,12 @@ PanelWindow {
         }
     }
 
-    // Asks niri to blur what is behind each of the three panels, with their
+    // Asks niri to blur what is behind each of the two panels, with their
     // rounded corners, for a frosted glass look. The gaps between panels stay
     // clear. Theme.panel is see-through, so the blur shows. `slide.y` moves
     // the blur with the panels while they slide in and out. A child Region adds
     // its area to the one above it, and the empty top Region adds nothing.
     BackgroundEffect.blurRegion: Region {
-        Region {
-            x: trayPanel.x
-            y: Theme.barTopGap + slide.y
-            width: trayPanel.visible ? trayPanel.width : 0
-            height: Theme.barHeight
-            radius: Theme.radius
-        }
-
         Region {
             x: workspacePanel.x
             y: Theme.barTopGap + slide.y
@@ -130,8 +116,15 @@ PanelWindow {
         interval: 400
     }
 
-    // The bar is drawn as three separate panels with empty space between them:
-    // the tray on the left, the workspaces in the center, and the gauges and
+    // The drop-down under the tray button.
+    TrayMenu {
+        anchorItem: trayButton
+        visible: root.trayOpen
+        onCloseRequested: root.trayOpen = false
+    }
+
+    // The bar is drawn as two separate panels with empty space between them:
+    // the workspaces in the center, and the visualizer, tray, gauges, and
     // buttons on the right. They share this one window, so menus open in the
     // same place as before.
     Item {
@@ -161,68 +154,6 @@ PanelWindow {
 
         Behavior on opacity {
             NumberAnimation { duration: 180 }
-        }
-
-        // The left panel: one button per tray icon. It hides when no program shows
-        // a tray icon, so no empty panel is left behind.
-        Rectangle {
-            id: trayPanel
-
-            anchors {
-                left: parent.left
-                top: parent.top
-                bottom: parent.bottom
-            }
-            // As wide as the icons, at most a third of the bar. Extra icons are cut
-            // off.
-            width: Math.min(trayRow.implicitWidth, Math.floor(root.width * 0.32)) + root.sectionPadding * 2
-            visible: trayRepeater.count > 0
-            radius: Theme.radius
-            color: Theme.panel
-            border.color: Theme.outline
-            border.width: Theme.outlineWidth
-            clip: true
-
-            Row {
-                id: trayRow
-
-                anchors {
-                    left: parent.left
-                    leftMargin: root.sectionPadding
-                    verticalCenter: parent.verticalCenter
-                }
-                spacing: 2
-
-                Repeater {
-                    id: trayRepeater
-
-                    model: SystemTray.items
-
-                    IconButton {
-                        id: trayButton
-
-                        required property var modelData
-
-                        iconSource: modelData.icon
-                        iconSize: Theme.topBarIconSize
-                        glyphSize: Theme.topBarIconSize
-                        tooltip: modelData.tooltipTitle || modelData.title
-                        acceptedButtons: Qt.LeftButton | Qt.MiddleButton | Qt.RightButton
-
-                        onClicked: mouse => {
-                            const position = root.contentItem.mapFromItem(trayButton, 0, 0);
-                            if (mouse.button === Qt.RightButton && modelData.hasMenu)
-                                modelData.display(root, position.x, root.height);
-                            else if (mouse.button === Qt.MiddleButton)
-                                modelData.secondaryActivate();
-                            else if (modelData.onlyMenu && modelData.hasMenu)
-                                modelData.display(root, position.x, root.height);
-                            else
-                                modelData.activate();
-                        }
-                    }
-                }
-            }
         }
 
         // The center panel: the workspace buttons of this monitor.
@@ -298,8 +229,8 @@ PanelWindow {
             }
         }
 
-        // The right panel: the audio visualizer, the usage gauges, and the
-        // settings and power buttons.
+        // The right panel: the audio visualizer, the tray button, the usage
+        // gauges, and the settings and power buttons.
         Rectangle {
             id: statusPanel
 
@@ -328,6 +259,21 @@ PanelWindow {
                     Layout.alignment: Qt.AlignVCenter
                     player: root.player
                     onClicked: root.mediaRequested()
+                }
+
+                // Opens the drop-down with every tray icon. It shows even when
+                // no program has a tray icon, and the drop-down then says so.
+                IconButton {
+                    id: trayButton
+
+                    Layout.alignment: Qt.AlignVCenter
+                    // A chevron that points up while the drop-down is open.
+                    glyph: root.trayOpen ? "" : ""
+                    glyphFontFamily: Theme.iconFontFamily
+                    glyphSize: Theme.topBarIconSize
+                    highlighted: root.trayOpen
+                    tooltip: "Tray"
+                    onClicked: root.trayOpen = !root.trayOpen
                 }
 
                 UsageGauge {

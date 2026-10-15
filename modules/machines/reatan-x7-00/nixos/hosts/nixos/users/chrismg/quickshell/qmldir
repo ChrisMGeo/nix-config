@@ -11,5 +11,6 @@ PowerMenu 1.0 PowerMenu.qml
 SettingsDrawer 1.0 SettingsDrawer.qml
 SettingsSection 1.0 SettingsSection.qml
 TopBar 1.0 TopBar.qml
+TrayMenu 1.0 TrayMenu.qml
 UiText 1.0 UiText.qml
 UsageGauge 1.0 UsageGauge.qml
