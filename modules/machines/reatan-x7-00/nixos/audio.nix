@@ -24,5 +24,27 @@
 
     # Provides the PulseAudio interface, so apps written for PulseAudio keep working.
     pulse.enable = true;
+
+    # Lets this computer only send sound to Bluetooth devices, not receive it.
+    # By default it can do both. Bose QC headphones offer both directions too,
+    # so BlueZ picked the wrong one and the headphones sent sound to the
+    # computer. They then had a microphone but no speaker output.
+    #
+    # The roles that stay:
+    #   a2dp_source  Sends music-quality sound to headphones and speakers.
+    #   hfp_ag       Acts as the phone in a hands-free call, which gives
+    #                headsets a microphone.
+    #   bap_source, bap_sink  The same for LE Audio devices.
+    # The roles removed, a2dp_sink and hfp_hf, would let a phone play its
+    # sound through this computer.
+    #
+    # `extraConfig` writes a WirePlumber settings file. The name after it,
+    # "51-bluez-roles", is the file name. The number orders the file after the
+    # defaults.
+    wireplumber.extraConfig."51-bluez-roles" = {
+      "monitor.bluez.properties" = {
+        "bluez5.roles" = [ "a2dp_source" "bap_source" "bap_sink" "hfp_ag" ];
+      };
+    };
   };
 }
