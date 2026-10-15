@@ -116,6 +116,14 @@ PanelWindow {
         interval: 400
     }
 
+    // The time for the clock in the right panel. Minutes are enough, so it
+    // updates once a minute.
+    SystemClock {
+        id: clock
+
+        precision: SystemClock.Minutes
+    }
+
     // The drop-down under the tray button.
     TrayMenu {
         anchorItem: trayButton
@@ -124,7 +132,7 @@ PanelWindow {
     }
 
     // The bar is drawn as two separate panels with empty space between them:
-    // the workspaces on the left, and the visualizer, tray, gauges, and
+    // the workspaces on the left, and the visualizer, clock, tray, gauges, and
     // buttons on the right. They share this one window, so menus open in the
     // same place as before.
     Item {
@@ -229,8 +237,8 @@ PanelWindow {
             }
         }
 
-        // The right panel: the audio visualizer, the tray button, the usage
-        // gauges, and the settings and power buttons.
+        // The right panel: the audio visualizer, the clock, the tray button,
+        // the usage gauges, and the settings and power buttons.
         Rectangle {
             id: statusPanel
 
@@ -259,6 +267,16 @@ PanelWindow {
                     Layout.alignment: Qt.AlignVCenter
                     player: root.player
                     onClicked: root.mediaRequested()
+                }
+
+                // The current time, such as 14:05.
+                UiText {
+                    Layout.alignment: Qt.AlignVCenter
+                    Layout.leftMargin: 6
+                    Layout.rightMargin: 6
+                    text: Qt.formatDateTime(clock.date, "HH:mm")
+                    font.pixelSize: Theme.scaled(12)
+                    font.weight: Font.DemiBold
                 }
 
                 // Opens the drop-down with every tray icon. It shows even when
