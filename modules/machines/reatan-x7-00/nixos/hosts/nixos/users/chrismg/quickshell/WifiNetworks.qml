@@ -292,6 +292,8 @@ Column {
                                 y: Theme.scaled(13) - height
                                 width: Theme.scaled(3)
                                 height: Theme.scaled(4 + index * 3)
+                                // A small fixed rounding for the thin bars. It does not follow
+                                // Theme.radius, which is for windows and panels.
                                 radius: 1
                                 color: index < root.bars(networkItem.network)
                                     ? networkItem.network?.connected ? Theme.accent : Theme.text

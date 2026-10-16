@@ -350,7 +350,7 @@ PanelWindow {
                                         )
                                         height: Theme.scaled(32)
                                         y: Math.round((profileRow.height - height) / 2)
-                                        radius: 7
+                                        radius: Theme.radius - 5
                                         color: PowerProfiles.profile === modelData.profile
                                             ? Theme.accent
                                             : Theme.surfaceRaised

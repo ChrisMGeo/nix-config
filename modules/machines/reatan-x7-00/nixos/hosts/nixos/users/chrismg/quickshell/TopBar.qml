@@ -197,7 +197,7 @@ PanelWindow {
 
                         width: Theme.scaled(32)
                         height: Theme.scaled(32)
-                        radius: 7
+                        radius: Theme.radius - 5
                         color: modelData === root.activeWorkspace
                             ? Theme.accent
                             : workspaceMouse.containsMouse ? Theme.surfaceHover : Theme.surface
@@ -221,7 +221,8 @@ PanelWindow {
                             }
                             width: 4
                             height: 4
-                            radius: 2
+                            // Half the width, so the dot is always a circle.
+                            radius: width / 2
                             visible: root.occupiedWorkspaces[String(workspaceButton.modelData)] === true
                             color: workspaceButton.modelData === root.activeWorkspace
                                 ? Theme.accentText

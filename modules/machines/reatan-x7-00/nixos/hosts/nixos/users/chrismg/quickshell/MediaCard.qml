@@ -37,7 +37,7 @@ DraggablePanel {
                 ClippingRectangle {
                     Layout.preferredWidth: 64
                     Layout.preferredHeight: 64
-                    radius: 7
+                    radius: Theme.radius - 5
                     color: Theme.surfaceRaised
 
                     Image {

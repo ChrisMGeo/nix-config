@@ -822,6 +822,8 @@ FloatingWindow {
 
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
+                                // A small fixed rounding for the thin bars. It does not follow
+                                // Theme.radius, which is for windows and panels.
                                 radius: 3
                                 color: Theme.subtleButton
 
