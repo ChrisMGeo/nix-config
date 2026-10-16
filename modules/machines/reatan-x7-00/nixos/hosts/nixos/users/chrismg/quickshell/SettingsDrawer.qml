@@ -257,7 +257,7 @@ PanelWindow {
                                         color: Theme.textMuted
                                     }
 
-                                    Slider {
+                                    ThemedSlider {
                                         Layout.fillWidth: true
                                         from: 0
                                         to: 1

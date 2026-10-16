@@ -213,7 +213,7 @@ PopupWindow {
                                         elide: Text.ElideRight
                                     }
 
-                                    Slider {
+                                    ThemedSlider {
                                         Layout.fillWidth: true
                                         from: 0
                                         to: 1

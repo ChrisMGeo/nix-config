@@ -15,6 +15,7 @@ PowerMenu 1.0 PowerMenu.qml
 SettingsDrawer 1.0 SettingsDrawer.qml
 SettingsSection 1.0 SettingsSection.qml
 TextButton 1.0 TextButton.qml
+ThemedSlider 1.0 ThemedSlider.qml
 TopBar 1.0 TopBar.qml
 TrayMenu 1.0 TrayMenu.qml
 UiText 1.0 UiText.qml
