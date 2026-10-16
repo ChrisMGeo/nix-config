@@ -33,6 +33,14 @@ let
   # look.cornerRadius from look.nix, the same as every window and panel.
   radius = config.look.cornerRadius;
 
+  # The app picture's corners are a little tighter than the card around it.
+  # `lib.max 0` keeps the value from going below zero for a very small radius.
+  imageRadius = lib.max 0 (radius - 2);
+
+  # The progress bar's height in pixels. Its corners are half of it, so its
+  # ends are fully round whatever look.cornerRadius is.
+  barHeight = 4;
+
   # The size of the message text, in points. It is stylix.fonts.sizes.popups
   # from theme.nix, the same as the launcher. The title is one point larger
   # and the time one point smaller.
@@ -149,7 +157,7 @@ in
         }
 
         .notification-row .notification-background .notification .notification-default-action .notification-content .image {
-          border-radius: 10px;
+          border-radius: ${toString imageRadius}px;
           margin: 2px 12px 2px 0;
         }
 
@@ -180,8 +188,8 @@ in
         .notification progressbar trough,
         .notification progressbar progress {
           border: none;
-          border-radius: 3px;
-          min-height: 4px;
+          border-radius: ${toString (barHeight / 2)}px;
+          min-height: ${toString barHeight}px;
         }
 
         .notification progressbar trough {
