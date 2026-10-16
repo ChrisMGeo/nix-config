@@ -44,6 +44,13 @@
       sizes.popups = 13;
     };
 
+    # How opaque popups are, from 0 (invisible) to 1 (solid). Stylix applies
+    # it to the Vicinae launcher. quickshell.nix and ../../../../greeter.nix
+    # read it for the bar, its panels, and the login screen. At 0.8 the
+    # background stays dark enough to read text on, and niri blurs what shows
+    # through.
+    opacity.popups = 0.8;
+
     # The icon theme for GTK and Qt apps and notifications. Without one, apps
     # fall back to `hicolor`, which has almost no icons, so many show a broken
     # image. Papirus is complete and has dark variants. `override` builds the

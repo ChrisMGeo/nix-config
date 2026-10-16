@@ -63,8 +63,10 @@ let
         // center start with it.
         property var sessionCommand: [${builtins.toJSON "${config.programs.niri.package}/bin/niri-session"}]
 
-        // Stylix Base16 colors. Panels are 80% opaque black, like the bar.
-        property real panelOpacity: 0.8
+        // Stylix Base16 colors. Panels are see-through black, as opaque as
+        // the bar. The value is stylix.opacity.popups from the user's
+        // theme.nix.
+        property real panelOpacity: ${toString home.stylix.opacity.popups}
         property color panelSolid: ${color "base00"}
         property color panel: Qt.rgba(panelSolid.r, panelSolid.g, panelSolid.b, panelOpacity)
         property color surfaceHover: ${color "base02"}
