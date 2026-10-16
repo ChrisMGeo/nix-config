@@ -114,10 +114,6 @@ in
           --font-size-body: ${toString fontSize}pt;
         }
 
-        * {
-          font-family: "${config.stylix.fonts.sansSerif.name}";
-        }
-
         /* Space around each popup, 12 pixels from the right screen edge. */
         .floating-notifications .notification-row .notification-background {
           padding: 4px 12px 4px 12px;
