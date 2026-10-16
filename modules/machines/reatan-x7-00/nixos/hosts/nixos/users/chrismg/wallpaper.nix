@@ -24,6 +24,13 @@ let
   # whose name is the value of `name`.
   picture = wallpapers.${name};
 
+  # How dark a gray turns fully black, as a percent of full white. The chosen
+  # picture's background is a dark gray near 6%, with film grain a little
+  # above it. Setting this to 10 makes that background true black and
+  # stretches the brighter tones to fill the range, so the picture has more
+  # contrast. Set it to 0 to keep the picture's own tones.
+  blackPoint = 10;
+
   # The monitor's resolution in pixels, from `niri msg outputs`. Update it if the
   # monitor changes.
   screen = { width = 2560; height = 1440; };
@@ -36,6 +43,8 @@ let
   #   -colorspace RGB, then sRGB  shrinks in linear light, so dark edges do not
   #                               spread into bright areas.
   #   -resize WxH^                shrinks until the picture covers the screen.
+  #   -level B%,100%              turns every gray at or below `blackPoint`
+  #                               into black, for darker blacks.
   #   -unsharp                    sharpens fine detail a little, because the
   #                               picture is slightly soft even at full size.
   #   -gravity center -extent     cuts the overflow evenly from both sides.
@@ -51,6 +60,7 @@ let
     pkgs.runCommand "${name}-${size}.jpg" { } ''
       ${pkgs.imagemagick}/bin/magick ${picture} \
         -colorspace RGB -filter Lanczos -resize ${size}^ -colorspace sRGB \
+        -level ${toString blackPoint}%,100% \
         -unsharp 0x0.8+0.8+0.01 \
         -gravity center -extent ${size} \
         -quality 95 $out
