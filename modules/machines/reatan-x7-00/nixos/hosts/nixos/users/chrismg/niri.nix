@@ -178,6 +178,9 @@ let
       # the overview, when the mouse touches the top edge, and for a moment
       # after a workspace change. See quickshell/shell.qml.
       "Mod+B".spawn = [ quickshell "ipc" "-c" "chrismg" "call" "bar" "toggle" ];
+      # Opens or closes the activity monitor, like the same keys on Windows.
+      # Clicking a usage gauge in the bar opens it too.
+      "Ctrl+Shift+Escape".spawn = [ quickshell "ipc" "-c" "chrismg" "call" "shell" "toggleActivity" ];
 
       # Windows.
       "Mod+Q"."close-window" = { };
