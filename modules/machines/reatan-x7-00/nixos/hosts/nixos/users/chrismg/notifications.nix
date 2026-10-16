@@ -5,8 +5,9 @@
 # panel that keeps past notifications and a do-not-disturb switch. Mod+N opens
 # the panel. See niri.nix.
 #
-# The look is plain and dark: a black panel, a thin gray outline, and
-# rounded corners. The colors come from Stylix. See theme.nix.
+# The look is plain and dark: a see-through black panel, a thin gray outline,
+# and rounded corners. The colors and the opacity come from Stylix. See
+# theme.nix.
 #
 # `{ config, lib, ... }:` makes this file a function. `config` is this user's
 # final Home Manager settings. `lib` is the nixpkgs helper library.
@@ -22,6 +23,14 @@ let
   # Stylix also provides each color as three numbers, such as "base03-rgb-r".
   rgba = slot: alpha:
     "rgba(${colors."${slot}-rgb-r"}, ${colors."${slot}-rgb-g"}, ${colors."${slot}-rgb-b"}, ${toString alpha})";
+
+  # How opaque the popups and the side panel are, from 0 (invisible) to 1
+  # (solid). It is stylix.opacity.popups from theme.nix, the same as the bar
+  # and the launcher.
+  opacity = config.stylix.opacity.popups;
+
+  # The corner radius of the popups and the side panel, in pixels.
+  radius = 12;
 
   # swaync's own stylesheet. Setting `style` below replaces it, so the new style
   # loads it first and changes only what needs to change.
@@ -76,11 +85,11 @@ in
       (lib.mkAfter ''
         /* Values that swaync's own stylesheet reads. */
         :root {
-          --cc-bg: ${hex.base00};
+          --cc-bg: ${rgba "base00" opacity};
           --noti-bg: ${colors."base00-rgb-r"}, ${colors."base00-rgb-g"}, ${colors."base00-rgb-b"};
-          --noti-bg-alpha: 1;
+          --noti-bg-alpha: ${toString opacity};
           --noti-bg-darker: ${hex.base01};
-          --noti-bg-hover: ${hex.base01};
+          --noti-bg-hover: ${rgba "base01" opacity};
           --noti-bg-focus: ${rgba "base02" 0.6};
           --noti-border-color: ${rgba "base03" 0.55};
           --noti-close-bg: ${rgba "base05" 0.08};
@@ -88,7 +97,7 @@ in
           --text-color: ${hex.base05};
           --text-color-disabled: ${hex.base03};
           --bg-selected: ${hex.base02};
-          --border-radius: 12px;
+          --border-radius: ${toString radius}px;
           --notification-icon-size: 40px;
           --notification-shadow: none;
           --font-size-summary: 14px;
@@ -201,12 +210,43 @@ in
         }
 
         .notification-action:hover {
-          background: ${hex.base01};
+          background: var(--noti-bg-hover);
         }
 
-        /* The side panel and its widgets, with the same outline as the popups. */
+        /* The side panel and its widgets, with the same outline as the popups.
+           Stylix paints the panel solid black, which would hide the
+           see-through --cc-bg, so the background is set again here. */
         .control-center {
+          background: var(--cc-bg);
           border: 1px solid var(--noti-border-color);
+        }
+
+        /* Stylix paints a solid black box around each card in the side panel,
+           larger than the card. Remove it, so only the card itself shows. */
+        .control-center .notification-row .notification-background,
+        .control-center .notification-row .notification-background:hover {
+          background: transparent;
+        }
+
+        /* Cards in the side panel have no background of their own, so they
+           show the panel's see-through black and blur. The second selector
+           covers cards in a collapsed group, which swaync and Stylix paint
+           solid. */
+        .control-center .notification-row .notification-background .notification,
+        .control-center .notification-group.collapsed .notification-row .notification {
+          background: transparent;
+        }
+
+        /* A collapsed group draws up to two more cards under the newest one,
+           each a little narrower and 8 pixels lower, so their bottom edges
+           peek out below it. swaync already hides their text. They keep only
+           the bottom outline, so nothing of them shows through the
+           see-through card on top. The second selector keeps it that way
+           while the pointer is over the group, where swaync would paint them. */
+        .control-center .notification-group.collapsed .notification-row:not(:last-child) .notification,
+        .control-center .notification-group.collapsed:hover .notification-row:not(:last-child) .notification {
+          background: transparent;
+          border-color: transparent transparent var(--noti-border-color) transparent;
         }
 
         .widget-title > button,
