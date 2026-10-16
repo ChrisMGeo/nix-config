@@ -373,6 +373,12 @@ let
   '';
 in
 {
+  # Shares the generated Theme.qml with the login screen, so it looks the same
+  # as the bar without a copy of every value. `lib` is a Home Manager setting
+  # where modules can put values for other modules to read. greeter.nix, at the
+  # NixOS level, reads it as `config.home-manager.users.chrismg.lib.quickshell.themeFile`.
+  lib.quickshell.themeFile = generatedTheme;
+
   # Font Awesome supplies the bar's icons. Theme.qml names its "Free Solid" and
   # "Brands" fonts. theme.nix turns on fontconfig, which lets the bar find them.
   home.packages = [ pkgs.font-awesome ];

@@ -46,7 +46,7 @@ The QML files for the Quickshell bar of the user `chrismg`. These files are not 
 - `ActivityMonitor.qml` is a normal window, not a panel, so the blur rule above does not apply to it. A niri window rule in `../niri.nix` matches its title, "Activity monitor", to make it float and blur it. Change both together.
 - A `PopupWindow` must never have a width or height of 0, even for a moment. Wayland treats it as an error and closes the connection, which stops the whole bar. Give it a minimum size, as `VolumeMixer.qml` does.
 - The bar supports niri only. It reads workspaces and windows with `niri msg` and has no code for other compositors.
-- The login screen in `modules/machines/reatan-x7-00/nixos/greeter/` copies the bar's panel colors, sizes, and clock card. When you change a shared size or color in `../quickshell.nix`, change it in `greeter.nix` too.
+- The login screen in `modules/machines/reatan-x7-00/nixos/greeter/` uses the generated `Theme.qml` too. `../quickshell.nix` shares it as `lib.quickshell.themeFile`. If you rename or remove a `Theme` property, check `greeter/shell.qml` as well.
 
 ## Keeping this file current
 

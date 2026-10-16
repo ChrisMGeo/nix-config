@@ -8,9 +8,11 @@
 # niri with its own small settings file, greeter/niri.kdl, and niri starts
 # Quickshell. The QML file is greeter/shell.qml.
 #
-# The colors, font, cursor, and wallpaper come from the Home Manager settings
-# of the user `chrismg`, so the login screen changes with the desktop. See
-# users/chrismg/theme.nix and users/chrismg/wallpaper.nix under hosts/nixos/.
+# The login screen uses the Theme.qml of the user `chrismg`'s Quickshell bar,
+# so its colors, font, and sizes always match the desktop. The cursor and
+# wallpaper also come from that user's Home Manager settings. See
+# users/chrismg/quickshell.nix, users/chrismg/theme.nix, and
+# users/chrismg/wallpaper.nix under hosts/nixos/.
 #
 # `{ config, pkgs, ... }:` makes this file a function. `config` is the whole
 # system's final settings, and `pkgs` is the package set.
@@ -24,12 +26,6 @@ let
   user = "chrismg";
   home = config.home-manager.users.${user};
 
-  # The Stylix colors as "#rrggbb" strings.
-  colors = home.lib.stylix.colors.withHashtag;
-  # Turns a Stylix color slot, such as "base00", into a quoted QML string.
-  # `builtins.toJSON` adds the quotes.
-  color = slot: builtins.toJSON colors.${slot};
-
   # The fonts the login screen draws with. The greeter does not run as
   # `chrismg`, so it cannot use the fonts in that user's profile. They are
   # installed for the whole system below.
@@ -37,23 +33,15 @@ let
 
   niri = "${config.programs.niri.package}/bin/niri";
 
-  # Theme.qml holds every color, size, and path that shell.qml uses. The sizes
-  # and colors match Theme.qml of the desktop bar, in users/chrismg/quickshell.nix.
-  # Keep the two in step. `${...}` inserts a Nix value into the text.
-  generatedTheme = pkgs.writeText "quickshell-greeter-theme.qml" ''
+  # Greeter.qml holds the few values only the login screen needs. Every color
+  # and size comes from the bar's Theme.qml instead. `${...}` inserts a Nix
+  # value into the text.
+  greeterSettings = pkgs.writeText "quickshell-greeter-settings.qml" ''
     pragma Singleton
 
     import QtQuick
 
     QtObject {
-        property string fontFamily: ${builtins.toJSON sansSerif.name}
-        property string iconFontFamily: "Font Awesome 7 Free Solid"
-        property real uiScale: 1.15
-
-        function scaled(value) {
-            return Math.round(value * uiScale);
-        }
-
         // The picture behind the login form, already the size of the screen.
         property url wallpaper: "file://${home.stylix.image}"
         // Filled in as the user name.
@@ -62,47 +50,21 @@ let
         // as a systemd user service, so services such as the notification
         // center start with it.
         property var sessionCommand: [${builtins.toJSON "${config.programs.niri.package}/bin/niri-session"}]
-
-        // Stylix Base16 colors. Panels are see-through black, as opaque as
-        // the bar. The value is stylix.opacity.popups from the user's
-        // theme.nix.
-        property real panelOpacity: ${toString home.stylix.opacity.popups}
-        property color panelSolid: ${color "base00"}
-        property color panel: Qt.rgba(panelSolid.r, panelSolid.g, panelSolid.b, panelOpacity)
-        property color surfaceHover: ${color "base02"}
-        property color outline: ${color "base03"}
-        property color outlineTranslucent: Qt.rgba(outline.r, outline.g, outline.b, 0.55)
-        property color subtleButton: Qt.rgba(text.r, text.g, text.b, 0.06)
-        property color text: ${color "base05"}
-        property color textMuted: ${color "base04"}
-        property color accent: ${color "base0D"}
-        property color accentText: ${color "base00"}
-        property color destructive: ${color "base08"}
-
-        property int outlineWidth: 2
-        property int compactOutlineWidth: 1
-        property int outerMargin: 12
-        property int gap: 8
-        property int radius: 12
-        property int textSize: scaled(13)
-
-        // The clock card's place, as a fraction of the screen, and size. The
-        // same as on the desktop.
-        property real clockLeft: 0.11
-        property real clockTop: 0.20
-        property real clockWidth: scaled(308)
-        property real clockHeight: scaled(180)
     }
   '';
 
-  # One folder with shell.qml, a qmldir file that names Theme as a singleton,
-  # and the generated Theme.qml. `runCommandLocal` runs a small shell script
-  # that builds the folder in `$out`.
+  # One folder with shell.qml, the bar's Theme.qml, Greeter.qml, and a qmldir
+  # file that names Theme and Greeter as singletons, which QML files can use
+  # by name. The bar's Theme.qml also holds paths to the bar's helper
+  # programs, such as cava. The login screen never runs them.
+  # `runCommandLocal` runs a small shell script that builds the folder in
+  # `$out`.
   greeterConfig = pkgs.runCommandLocal "quickshell-greeter-config" { } ''
     mkdir "$out"
     cp ${./greeter/shell.qml} "$out/shell.qml"
-    cp ${generatedTheme} "$out/Theme.qml"
-    echo "singleton Theme 1.0 Theme.qml" > "$out/qmldir"
+    cp ${home.lib.quickshell.themeFile} "$out/Theme.qml"
+    cp ${greeterSettings} "$out/Greeter.qml"
+    printf '%s\n' "singleton Theme 1.0 Theme.qml" "singleton Greeter 1.0 Greeter.qml" > "$out/qmldir"
   '';
 
   # greeter/niri.kdl with the words between @ signs filled in. `replaceVars`
