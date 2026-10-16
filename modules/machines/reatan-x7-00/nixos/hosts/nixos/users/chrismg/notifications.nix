@@ -33,6 +33,11 @@ let
   # look.cornerRadius from look.nix, the same as every window and panel.
   radius = config.look.cornerRadius;
 
+  # The width of the outlines around cards, the side panel, and its buttons,
+  # in pixels. It is look.thinBorderWidth from look.nix, the same as the
+  # launcher and the bar's smaller panels.
+  thin = config.look.thinBorderWidth;
+
   # The app picture's corners are a little tighter than the card around it.
   # `lib.max 0` keeps the value from going below zero for a very small radius.
   imageRadius = lib.max 0 (radius - 2);
@@ -126,7 +131,7 @@ in
         /* One thin gray outline. Stylix draws a second, bright one on the inner
            box, which this removes. */
         .notification-row .notification-background .notification {
-          border: 1px solid var(--noti-border-color);
+          border: ${toString thin}px solid var(--noti-border-color);
           background: rgba(var(--noti-bg), var(--noti-bg-alpha));
         }
 
@@ -216,7 +221,7 @@ in
           background: transparent;
           color: ${hex.base05};
           border: none;
-          border-top: 1px solid ${rgba "base03" 0.3};
+          border-top: ${toString thin}px solid ${rgba "base03" 0.3};
         }
 
         .notification-action:hover {
@@ -228,7 +233,7 @@ in
            see-through --cc-bg, so the background is set again here. */
         .control-center {
           background: var(--cc-bg);
-          border: 1px solid var(--noti-border-color);
+          border: ${toString thin}px solid var(--noti-border-color);
         }
 
         /* Stylix paints a solid black box around each card in the side panel,
@@ -263,7 +268,7 @@ in
         .widget-dnd > switch,
         .widget-mpris .widget-mpris-player,
         .widget-mpris .widget-mpris-player > box > button {
-          border: 1px solid var(--noti-border-color);
+          border: ${toString thin}px solid var(--noti-border-color);
         }
 
         .widget-dnd > switch:checked {

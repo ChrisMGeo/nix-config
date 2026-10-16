@@ -338,8 +338,8 @@ let
         property color magenta: ${color "base0E"}
         property color cyan: ${color "base0C"}
 
-        property int outlineWidth: 2
-        property int compactOutlineWidth: 1
+        property int outlineWidth: ${toString config.look.borderWidth}
+        property int compactOutlineWidth: ${toString config.look.thinBorderWidth}
         property int outerMargin: 12
         property int barTopGap: 8
         property int barBottomGap: 8

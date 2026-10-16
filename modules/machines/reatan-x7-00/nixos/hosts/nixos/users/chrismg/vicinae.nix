@@ -25,8 +25,8 @@
       # Rounded corners, to match the niri windows. look.cornerRadius comes
       # from look.nix.
       rounding = config.look.cornerRadius;
-      # A thin border around the launcher.
-      client_side_decorations.border_width = 1;
+      # A thin border around the launcher, look.thinBorderWidth from look.nix.
+      client_side_decorations.border_width = config.look.thinBorderWidth;
       # Layer shell lets the launcher float above windows like a panel, instead
       # of opening as a normal window that niri would tile.
       layer_shell = {
