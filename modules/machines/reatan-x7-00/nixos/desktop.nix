@@ -29,6 +29,12 @@
   # but the lock screen depends on it, so it is set here on purpose.
   security.pam.services.swaylock = { };
 
+  # Installs gpu-screen-recorder, which records the screen with the graphics
+  # card's video encoder. The Vicinae extension for it is in the user's
+  # vicinae.nix. This option also adds a helper that may read the screen
+  # directly, so recording a monitor does not ask for permission each time.
+  programs.gpu-screen-recorder.enable = true;
+
   # dconf stores settings for GTK programs. Home Manager writes the GTK theme
   # there, so it must exist without GNOME.
   programs.dconf.enable = true;

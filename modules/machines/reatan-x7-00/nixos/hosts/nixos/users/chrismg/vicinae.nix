@@ -53,6 +53,8 @@ in
       extensions.kaomojis
       # Converts numbers between decimal, hexadecimal, binary, and octal.
       extensions.number-converter
+      # Starts and stops gpu-screen-recorder, installed in ../../../../desktop.nix.
+      extensions.gpu-screen-recorder
       # Placeholder text.
       extensions.lorem-ipsum
       # Reminders with dates in plain words, such as "tomorrow at 9".
@@ -90,5 +92,12 @@ in
   systemd.user.services.vicinae.Service.Environment = [
     "VICINAE_REMINDERS_NODE=${lib.getExe pkgs.nodejs}"
     "VICINAE_REMINDERS_NOTIFY_SEND=${lib.getExe' pkgs.libnotify "notify-send"}"
+  ];
+
+  # Programs the extensions run from this user's PATH.
+  home.packages = [
+    # The GPU Screen Recorder extension uses jq to read the focused monitor's
+    # name from `niri msg`.
+    pkgs.jq
   ];
 }
