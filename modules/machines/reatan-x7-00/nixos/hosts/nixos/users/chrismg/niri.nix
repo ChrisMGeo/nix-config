@@ -62,12 +62,26 @@ let
   # The Stylix colors as "#rrggbb" strings, such as colors.base03.
   colors = config.lib.stylix.colors.withHashtag;
 
+  # The outline color of windows that do not have the focus. base02 is almost
+  # black and hides the outline, so this is halfway from base02 to
+  # base03, the focused outline color. It stays visible but reads as dimmer.
+  # Stylix gives each color's red, green, and blue parts as decimal text, such
+  # as `base03-rgb-r` = "118". `lib.toInt` turns the text into a number, the
+  # math is whole numbers only, and `toString` turns the result back.
+  mixChannel = channel:
+    let
+      dark = lib.toInt config.lib.stylix.colors."base02-rgb-${channel}";
+      light = lib.toInt config.lib.stylix.colors."base03-rgb-${channel}";
+    in
+    toString (dark + (light - dark) / 2);
+  unfocusedOutline = "rgb(${mixChannel "r"}, ${mixChannel "g"}, ${mixChannel "b"})";
+
   niriConfig = {
     # Use the same keyboard layout as the rest of the system, set in keyboard.nix.
     input.keyboard.xkb.layout = osConfig.services.xserver.xkb.layout;
 
     # Asks apps not to draw their own window frame: shadows, rounded corners, and
-    # resize borders. niri then draws the focus ring right at the window's edge,
+    # resize borders. niri then draws its border right at the window's edge,
     # and the corner rule below rounds every window the same way. GTK apps keep
     # their header bar, because it holds their buttons. Apps that ignore the
     # request look as before.
@@ -90,9 +104,9 @@ let
         "window-rule" = {
           "geometry-corner-radius" = 12;
           "clip-to-geometry" = true;
-          # niri normally fills the whole area behind a window with the focus
-          # ring color, not only a frame around it. A see-through window, such
-          # as kitty, then looks gray. This keeps the ring a thin frame.
+          # niri normally fills the whole area behind a window with the border
+          # color, not only a frame around it. A see-through window, such
+          # as kitty, then looks gray. This keeps the border a thin frame.
           "draw-border-with-background" = false;
         };
       }
@@ -150,15 +164,19 @@ let
       # The Quickshell bar floats over windows and reserves no space, so the top
       # edge gets the same gap as the others.
       gaps = 16;
-      # A 2 pixel outline around the focused window of each monitor, thick
-      # enough to spot at a glance. The monitor that has the keyboard uses the
-      # active color, a mid gray. The others use the inactive color, a darker
-      # gray, so you can see which monitor typing goes to.
-      "focus-ring" = {
+      # A 2 pixel outline around every window, thick enough to spot at a
+      # glance. The window that has the keyboard uses the active color, a mid
+      # gray. Every other window uses the inactive color, a dimmer gray from
+      # `unfocusedOutline` above. niri's focus ring would outline only the
+      # focused window of each monitor and leave the rest bare, so it is off.
+      # `on` and `off` are KDL flags with no value, which `{ }` writes.
+      border = {
+        on = { };
         width = 2;
         "active-color" = colors.base03;
-        "inactive-color" = colors.base02;
+        "inactive-color" = unfocusedOutline;
       };
+      "focus-ring".off = { };
     };
 
     # niri shows a list of important key bindings when it starts, unless this is
