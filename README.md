@@ -61,8 +61,10 @@ New to Nix? Read the glossary below first. Then read the layout and the loading 
                 ├── audio.nix       PipeWire sound.
                 ├── bluetooth.nix   Bluetooth.
                 ├── browsers.nix    Firefox.
-                ├── desktop.nix     niri and the greetd login screen.
+                ├── desktop.nix     niri, X11 support, and password prompts.
                 ├── form-factor.nix Marks this machine as a desktop.
+                ├── greeter.nix     The greetd login screen, drawn by Quickshell.
+                ├── greeter/        The login screen QML and its niri settings.
                 ├── keyboard.nix    US keyboard layout.
                 ├── power.nix       Power services and no sleep.
                 ├── printing.nix    CUPS printing.

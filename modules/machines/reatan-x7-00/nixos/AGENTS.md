@@ -10,14 +10,16 @@ Settings for every NixOS host on the machine `reatan-x7-00`. Each `.nix` file he
 | `audio.nix` | Turns on PipeWire as the sound server and turns off PulseAudio. Lets Bluetooth audio only go out to headphones and speakers, so headphones that offer both directions get a speaker output. |
 | `bluetooth.nix` | Turns on Bluetooth and runs bt-agent for each user, so pairings started from the Quickshell bar work. |
 | `browsers.nix` | Installs Firefox for every user. |
-| `desktop.nix` | Turns on the niri desktop, the greetd login screen with tuigreet, xwayland-satellite for X11 apps, the Soteria password prompt, and the PAM entry that lets swaylock unlock. |
+| `desktop.nix` | Turns on the niri desktop, xwayland-satellite for X11 apps, the Soteria password prompt, and the PAM entry that lets swaylock unlock. |
 | `form-factor.nix` | Marks this machine as a desktop with `machine.formFactor`. |
+| `greeter.nix` | Turns on greetd with a Quickshell login screen that runs inside niri. Builds its Theme.qml and niri settings from the colors, font, cursor, and wallpaper of the user `chrismg`, and installs that font, Font Awesome, and the cursor for the whole system. |
 | `keyboard.nix` | Sets the US keyboard layout for the console and the desktop. |
 | `power.nix` | Turns on UPower and power-profiles-daemon, and turns off sleep. |
 | `printing.nix` | Turns on CUPS printing. |
 
 ## Subdirectories
 
+- [greeter/](greeter/AGENTS.md): the QML file and niri settings for the login screen.
 - [hosts/](hosts/AGENTS.md): one folder per host.
 
 ## Rules

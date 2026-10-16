@@ -1,0 +1,20 @@
+// The niri settings for the login screen. ../greeter.nix fills in the words
+// between @ signs and passes this file to niri with `-c`.
+//
+// niri here only gives the Quickshell login screen a place to draw. It does not
+// load the user's own niri settings.
+
+// Do not show the list of keyboard shortcuts when niri starts.
+hotkey-overlay {
+    skip-at-startup
+}
+
+// The same mouse pointer as the desktop. See users/chrismg/theme.nix.
+cursor {
+    xcursor-theme "@cursorTheme@"
+    xcursor-size @cursorSize@
+}
+
+// Starts the login screen. When Quickshell exits after a successful login,
+// niri quits too. greetd waits for niri to exit before it starts the desktop.
+spawn-sh-at-startup "@greeter@; @niri@ msg action quit --skip-confirmation"
