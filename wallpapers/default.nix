@@ -27,4 +27,9 @@
   # on the right half of a black background, from wallhaven.cc. This copy was
   # upscaled to 3840x2160 with waifu2x. It matches the black monochrome scheme.
   wallhaven-1q2kd9 = ./wallhaven-1q2kd9.png;
+
+  # A black and white drawing of a dark figure standing in rippling water and
+  # looking up at planets and stars in a black sky, from wallhaven.cc. This copy
+  # was upscaled to 3840x2160 with waifu2x. It matches the black monochrome scheme.
+  wallhaven-3kxgm9 = ./wallhaven-3kxgm9.png;
 }

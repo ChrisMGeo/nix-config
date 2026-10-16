@@ -18,7 +18,7 @@ let
 
   # The name of the chosen wallpaper in wallpapers/default.nix. Change it to
   # switch wallpapers.
-  name = "wallhaven-1q2kd9";
+  name = "wallhaven-3kxgm9";
 
   # The chosen wallpaper, at full size. `wallpapers.${name}` looks up the entry
   # whose name is the value of `name`.
