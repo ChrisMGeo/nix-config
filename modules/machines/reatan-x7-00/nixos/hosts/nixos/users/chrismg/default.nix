@@ -39,6 +39,11 @@ in
     # From the stable nixpkgs set.
     pkgs.fastfetch
 
+    # Vesktop, a Discord client with the Vencord plugins built in. Unlike the
+    # official client, it can share the screen with audio under Wayland.
+    # From the stable nixpkgs set.
+    pkgs.vesktop
+
     # Zed code editor, from nixpkgs-unstable.
     unstable.zed-editor
   ];

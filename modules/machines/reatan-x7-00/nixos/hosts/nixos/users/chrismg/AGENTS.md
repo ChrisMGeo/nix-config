@@ -6,7 +6,7 @@ Home Manager settings for the user `chrismg` on the host `nixos`.
 
 | File | What it does |
 | --- | --- |
-| `default.nix` | Installs packages for this user only: Codex, OpenCode, Claude Code, Brave, fastfetch, and Zed. |
+| `default.nix` | Installs packages for this user only: Codex, OpenCode, Claude Code, Brave, fastfetch, Vesktop, and Zed. |
 | `kitty.nix` | Sets up the kitty terminal with an 80% opaque black background, frees Ctrl+Shift+Left and Right for zsh, and links its custom tab bar from `kitty/tab_bar.py`. |
 | `lock.nix` | Sets up swaylock as the lock screen and swayidle to start it when the session is locked. There are no idle timers. |
 | `niri.nix` | Writes `~/.config/niri/config.kdl`: layout, window corners, the window outline (base03 when focused, a mix of base02 and base03 when not), the blur behind kitty and the Quickshell panels, and every key binding, including Mod+B, which pins the Quickshell bar on screen, and Ctrl+Shift+Escape, which opens the Quickshell activity monitor. Makes the activity monitor float. |
@@ -17,7 +17,7 @@ Home Manager settings for the user `chrismg` on the host `nixos`.
 | `vicinae.nix` | Sets up the Vicinae app launcher and runs its server as a systemd user service. |
 | `wallpaper.nix` | Picks a picture from the root `wallpapers/` folder, at build time shrinks it to the monitor's resolution, darkens its blacks, and sharpens it, sets it as the Stylix wallpaper, and runs wpaperd to draw it behind the windows. swaylock also shows it. |
 
-`default.nix` takes Codex, OpenCode, and Claude Code from the llm-agents flake. It takes Zed from nixpkgs-unstable. It takes Brave and fastfetch from the stable nixpkgs set.
+`default.nix` takes Codex, OpenCode, and Claude Code from the llm-agents flake. It takes Zed from nixpkgs-unstable. It takes Brave, fastfetch, and Vesktop from the stable nixpkgs set.
 
 ## Subdirectories
 
