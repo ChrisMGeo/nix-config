@@ -80,12 +80,13 @@ in
       timeout-low = 4;
       timeout-critical = 0;
 
-      # The side panel. It keeps a 12 pixel margin from the screen edges, the
-      # same as the popups.
+      # The side panel. It keeps look.screenMargin from the right and bottom
+      # screen edges, the same as the popups and the bar. Its top is
+      # look.topMargin from the top edge, level with the top of the bar.
       control-center-width = 400;
-      control-center-margin-top = 8;
-      control-center-margin-right = 12;
-      control-center-margin-bottom = 12;
+      control-center-margin-top = config.look.topMargin;
+      control-center-margin-right = config.look.screenMargin;
+      control-center-margin-bottom = config.look.screenMargin;
       fit-to-screen = true;
 
       # Faster slide-in and slide-out animations, in milliseconds.
@@ -123,9 +124,10 @@ in
           --font-size-body: ${toString fontSize}pt;
         }
 
-        /* Space around each popup, 12 pixels from the right screen edge. */
+        /* Space around each popup, look.screenMargin from the right screen
+           edge. */
         .floating-notifications .notification-row .notification-background {
-          padding: 4px 12px 4px 12px;
+          padding: 4px ${toString config.look.screenMargin}px 4px ${toString config.look.screenMargin}px;
         }
 
         /* One thin gray outline. Stylix draws a second, bright one on the inner

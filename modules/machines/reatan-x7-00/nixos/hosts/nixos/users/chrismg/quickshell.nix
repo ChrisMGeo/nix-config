@@ -340,8 +340,8 @@ let
 
         property int outlineWidth: ${toString config.look.borderWidth}
         property int compactOutlineWidth: ${toString config.look.thinBorderWidth}
-        property int outerMargin: 12
-        property int barTopGap: 8
+        property int outerMargin: ${toString config.look.screenMargin}
+        property int barTopGap: ${toString config.look.topMargin}
         property int barBottomGap: 8
         property int gap: 8
         property int radius: ${toString config.look.cornerRadius}

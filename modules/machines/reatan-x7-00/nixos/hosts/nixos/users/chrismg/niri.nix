@@ -194,9 +194,10 @@ let
 
     layout = {
       # Space between windows, and between windows and the screen edge, in pixels.
-      # The Quickshell bar floats over windows and reserves no space, so the top
-      # edge gets the same gap as the others.
-      gaps = 16;
+      # It is look.windowGap from look.nix. The Quickshell bar floats over
+      # windows and reserves no space, so the top edge gets the same gap as the
+      # others.
+      gaps = config.look.windowGap;
       # An outline around every window, look.borderWidth from look.nix, 2
       # pixels by default, thick enough to spot at a glance. The window that has the keyboard uses the active color, a mid
       # gray. Every other window uses the inactive color, a dimmer gray from
