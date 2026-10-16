@@ -18,17 +18,17 @@ let
 
   # The name of the chosen wallpaper in wallpapers/default.nix. Change it to
   # switch wallpapers.
-  name = "wallhaven-3kxgm9";
+  name = "monochrome-mountain-in-the-void";
 
   # The chosen wallpaper, at full size. `wallpapers.${name}` looks up the entry
   # whose name is the value of `name`.
   picture = wallpapers.${name};
 
   # How dark a gray turns fully black, as a percent of full white. The chosen
-  # picture's background is a dark gray near 6%, with film grain a little
-  # above it. Setting this to 10 makes that background true black and
-  # stretches the brighter tones to fill the range, so the picture has more
-  # contrast. Set it to 0 to keep the picture's own tones.
+  # picture's background is nearly black, near 1%, with film grain up to
+  # about 8%. Setting this to 10 makes that background and its grain true
+  # black and stretches the brighter tones to fill the range, so the picture
+  # has more contrast. Set it to 0 to keep the picture's own tones.
   blackPoint = 10;
 
   # The monitor's resolution in pixels, from `niri msg outputs`. Update it if the
