@@ -24,8 +24,16 @@ PanelWindow {
     // still look like a battery there, so its level stays hidden.
     readonly property bool showBattery: Theme.showBattery && batteryAvailable
     readonly property bool powerProfilesAvailable: Capabilities.powerProfiles
+    // Whether the volume mixer popup is open. It opens from the Sound section
+    // and closes with the drawer.
+    property bool mixerOpen: false
 
     signal closeRequested()
+
+    onVisibleChanged: {
+        if (!visible)
+            mixerOpen = false;
+    }
 
     // Asks niri to blur what is behind the whole window, with the same rounded
     // corners as the panel, for a frosted glass look. Theme.panel is
@@ -273,6 +281,22 @@ PanelWindow {
                                 AudioOutputs {
                                     width: parent.width
                                 }
+
+                                // Opens and closes the volume mixer beside the
+                                // drawer.
+                                Item {
+                                    width: parent.width
+                                    height: mixerButton.height + 12
+
+                                    TextButton {
+                                        id: mixerButton
+
+                                        x: 12
+                                        text: root.mixerOpen ? "Close volume mixer" : "Volume mixer"
+                                        primary: root.mixerOpen
+                                        onClicked: root.mixerOpen = !root.mixerOpen
+                                    }
+                                }
                             }
                         }
                     }
@@ -387,5 +411,11 @@ PanelWindow {
                 }
             }
         }
+    }
+
+    VolumeMixer {
+        parentWindow: root
+        visible: root.visible && root.mixerOpen
+        onCloseRequested: root.mixerOpen = false
     }
 }
