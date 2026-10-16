@@ -2,7 +2,7 @@
 
 This repository describes the operating system and user setup for the computers it manages. Nix builds each system from these files. Given the same pinned versions in `flake.lock`, the same files always produce the same system.
 
-Today the repository manages one computer, `reatan-x7-00`, with one NixOS host named `nixos`. That host runs the niri desktop with a Quickshell bar, the Vicinae launcher, SwayNotificationCenter, and the kitty terminal, themed by Stylix. It also has PipeWire audio, Firefox, Brave, the Zed editor, zsh with starship, and three AI coding agents: Codex, OpenCode, and Claude Code.
+Today the repository manages one computer, `reatan-x7-00`, with one NixOS host named `nixos`. That host runs the niri desktop with a Quickshell bar, the Vicinae launcher with community extensions, SwayNotificationCenter, and the kitty terminal, themed by Stylix. It also has PipeWire audio, Firefox, Brave, the Zed editor, zsh with starship, and three AI coding agents: Codex, OpenCode, and Claude Code.
 
 New to Nix? Read the glossary below first. Then read the layout and the loading order. Coding agents should start at [AGENTS.md](AGENTS.md).
 
@@ -87,7 +87,7 @@ New to Nix? Read the glossary below first. Then read the layout and the loading 
                                 ├── quickshell/     The bar's QML files.
                                 ├── shell.nix       zsh and starship.
                                 ├── theme.nix       Stylix colors and fonts.
-                                ├── vicinae.nix     App launcher.
+                                ├── vicinae.nix     App launcher and its extensions.
                                 └── wallpaper.nix   Picks a wallpaper, drawn by wpaperd.
 ```
 
@@ -214,6 +214,7 @@ Create a folder at `hosts/<host>/users/<login>/` with a `default.nix` file. The 
 - If two hosts share a name in the same class, the first one wins and Nix drops the other one without a warning.
 - `hardware-configuration.nix` is generated, and its header says not to edit it. Regenerate it when the hardware changes.
 - `flake.lock` is generated. Use `nix flake update` instead of editing it by hand.
+- The Vicinae launcher comes from `nixpkgs-unstable`, and its extensions come from the `vicinae-extensions` input. A newer extension can need a newer Vicinae, so update the two together with `nix flake update nixpkgs-unstable vicinae-extensions`.
 - Do not change a `stateVersion` value after the first install. Changing it can change defaults and break existing data.
 - The `wsl` folder is built as NixOS, but no WSL support module is loaded. A WSL host needs its own WSL setup.
 - The `darwin` code path exists, but no macOS machine is defined yet.

@@ -15,7 +15,7 @@ Home Manager settings for the user `chrismg` on the host `nixos`.
 | `quickshell.nix` | Runs the Quickshell bar from nixpkgs-unstable as a systemd user service, installs it from the `quickshell/` folder with the Font Awesome icon font, and generates its `Theme.qml`, which makes the panels see-through black at the Stylix popup opacity from `theme.nix`, is shared with the login screen in `greeter.nix` as `lib.quickshell.themeFile`, and also holds the paths to cava and `quickshell/cava.conf` for the audio visualizer, to nmcli, to a script that joins enterprise Wi-Fi networks, and to a script that reads processes, their GPU use, and sensors for the activity monitor. |
 | `shell.nix` | Turns on zsh with Ctrl and Alt arrow keys for moving by word, Shift keys for selecting text, and the starship prompt. |
 | `theme.nix` | Loads Stylix and sets the black monochrome color scheme, the Iosevka fonts, 80% opacity for popups such as the launcher and the bar, the Papirus-Dark icon theme with grey folders, and the Bibata cursor. |
-| `vicinae.nix` | Sets up the Vicinae app launcher from nixpkgs-unstable and runs its server as a systemd user service. |
+| `vicinae.nix` | Sets up the Vicinae app launcher from nixpkgs-unstable and runs its server as a systemd user service. Installs eight extensions from the `vicinae-extensions` flake input: Niri, Nix, SuperGenPass, OTP, Kaomojis, Number converter, Lorem Ipsum, and Reminders. Gives the Reminders extension the paths to Node.js and notify-send through the service's environment. |
 | `wallpaper.nix` | Picks a picture from the root `wallpapers/` folder, at build time shrinks it to the monitor's resolution, darkens its blacks, and sharpens it, sets it as the Stylix wallpaper, and runs wpaperd to draw it behind the windows. swaylock also shows it. |
 
 `default.nix` takes Codex, OpenCode, and Claude Code from the llm-agents flake. It takes Zed from nixpkgs-unstable. It takes Brave, fastfetch, and Vesktop from the stable nixpkgs set.
@@ -31,6 +31,7 @@ Home Manager settings for the user `chrismg` on the host `nixos`.
 - Run the host's rebuild command to apply these settings. No separate command exists for Home Manager.
 - Find package names at search.nixos.org.
 - `niri.nix` replaces niri's default settings completely. Add every key binding you want to its `binds` set. Check the result with `niri validate`.
+- Add a Vicinae extension to `programs.vicinae.extensions` in `vicinae.nix` as `extensions.<folder>`, where `<folder>` is the extension's folder name in github.com/vicinaehq/extensions. Check its README for programs it runs, and install those too.
 - Take colors from `config.lib.stylix.colors` instead of writing color codes, so every program keeps the same scheme.
 
 ## Keeping this file current

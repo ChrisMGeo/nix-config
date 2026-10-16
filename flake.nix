@@ -47,6 +47,16 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    vicinae-extensions = {
+      # The community extensions for the Vicinae launcher. The repository is a
+      # flake with one package per extension. users/chrismg/vicinae.nix picks
+      # the extensions to install.
+      url = "github:vicinaehq/extensions";
+      # Builds the extensions with nixpkgs-unstable, the same set the Vicinae
+      # launcher itself comes from, instead of a separate copy of nixpkgs.
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+
     # flake-parts splits a flake's outputs into modules. See `imports` below.
     flake-parts.url = "github:hercules-ci/flake-parts";
   };
