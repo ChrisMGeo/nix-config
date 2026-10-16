@@ -5,8 +5,9 @@
 # quickshell/ folder next to this file. This file copies them to
 # ~/.config/quickshell/chrismg and adds a generated Theme.qml with the Stylix
 # colors, the paths to cava, the audio visualizer, and its settings file,
-# quickshell/cava.conf, and the paths to nmcli and a script that joins
-# enterprise Wi-Fi networks. The bar runs as a systemd user service from login.
+# quickshell/cava.conf, the paths to nmcli and a script that joins enterprise
+# Wi-Fi networks, and the path to a script that reads processes and sensors
+# for the activity monitor. The bar runs as a systemd user service from login.
 #
 # The bar works on any computer. It shows the battery level only when
 # `machine.formFactor` is "laptop". See modules/features/nixos/form-factor.nix.
@@ -80,6 +81,158 @@ let
       "$gpu" "$gpu_available" "$vram_used" "$vram_total"
   '';
 
+  # Prints the details for the activity monitor window, one item per line. The
+  # window runs it every 2 seconds while it is open, and computes percentages
+  # from the change between two readings. Each line starts with a word that
+  # says what it holds:
+  #
+  #   core cpu3 <total time> <idle time>   one line per CPU core, plus "cpu" for all of them
+  #   uptime <seconds>
+  #   load <1 minute> <5 minutes> <15 minutes>
+  #   memory <cached bytes> <swap used bytes> <swap total bytes>
+  #   cpumodel <name>
+  #   cpufreq <average kHz>
+  #   cputemp <millidegrees>               only when a CPU sensor exists
+  #   gputemp <millidegrees>, gpupower <microwatts>, gpuclock <Hz>
+  #   clock <seconds since 1970>
+  #   proc <pid> <CPU time> <memory bytes> <GPU time> <video memory bytes> <name>
+  #
+  # CPU times are in clock ticks, the unit of /proc/stat. GPU time is in
+  # nanoseconds. Kernel threads use no memory of their own, so they are left
+  # out of the process list.
+  # `''${...}` keeps Nix from reading a shell `${...}` as its own.
+  activityReader = pkgs.writeShellScript "quickshell-activity" ''
+    while read -r name user nice system idle iowait irq softirq steal _; do
+      case "$name" in
+        cpu*) printf 'core %s %s %s\n' "$name" \
+          "$((user + nice + system + idle + iowait + irq + softirq + steal))" \
+          "$((idle + iowait))" ;;
+        *) break ;;
+      esac
+    done < /proc/stat
+
+    read -r up _ < /proc/uptime
+    printf 'uptime %s\n' "''${up%.*}"
+    read -r load1 load5 load15 _ < /proc/loadavg
+    printf 'load %s %s %s\n' "$load1" "$load5" "$load15"
+
+    cached=0
+    swap_total=0
+    swap_free=0
+    while read -r key value _; do
+      case "$key" in
+        Cached:|Buffers:) cached=$((cached + value)) ;;
+        SwapTotal:) swap_total=$value ;;
+        SwapFree:) swap_free=$value ;;
+      esac
+    done < /proc/meminfo
+    printf 'memory %s %s %s\n' "$((cached * 1024))" \
+      "$(((swap_total - swap_free) * 1024))" "$((swap_total * 1024))"
+
+    while IFS=: read -r key value; do
+      case "$key" in
+        "model name"*) printf 'cpumodel%s\n' "$value"; break ;;
+      esac
+    done < /proc/cpuinfo
+
+    freq_sum=0
+    freq_count=0
+    for file in /sys/devices/system/cpu/cpu[0-9]*/cpufreq/scaling_cur_freq; do
+      read -r freq 2>/dev/null < "$file" || continue
+      freq_sum=$((freq_sum + freq))
+      freq_count=$((freq_count + 1))
+    done
+    [ "$freq_count" -gt 0 ] && printf 'cpufreq %s\n' "$((freq_sum / freq_count))"
+
+    # Temperature sensors. k10temp is AMD's CPU sensor, coretemp Intel's.
+    for sensor in /sys/class/hwmon/hwmon*; do
+      read -r sensor_name 2>/dev/null < "$sensor/name" || continue
+      case "$sensor_name" in
+        k10temp|coretemp|zenpower)
+          read -r value 2>/dev/null < "$sensor/temp1_input" && printf 'cputemp %s\n' "$value" ;;
+        amdgpu)
+          read -r value 2>/dev/null < "$sensor/temp1_input" && printf 'gputemp %s\n' "$value"
+          { read -r value 2>/dev/null < "$sensor/power1_average" \
+            || read -r value 2>/dev/null < "$sensor/power1_input"; } \
+            && printf 'gpupower %s\n' "$value"
+          read -r value 2>/dev/null < "$sensor/freq1_input" && printf 'gpuclock %s\n' "$value" ;;
+      esac
+    done
+
+    # The time of this reading in seconds, with microseconds, so the window
+    # can turn GPU time into a percentage. `EPOCHREALTIME` is built into bash.
+    printf 'clock %s\n' "$EPOCHREALTIME"
+
+    # GPU clients already counted. A program can hold one GPU connection in
+    # several file descriptors, or pass it to a child process, so each
+    # connection's ID is counted once. `declare -A` makes a lookup table.
+    declare -A gpu_clients
+
+    # One line per process.
+    for stat in /proc/[0-9]*/stat; do
+      # The process can exit between the glob and the read.
+      read -r line 2>/dev/null < "$stat" || continue
+      dir=''${stat%/stat}
+      pid=''${dir#/proc/}
+
+      # The second field is the short name in parentheses, which can hold
+      # spaces. `read -ra` splits what follows it into the list `fields`,
+      # which starts with the third field and counts from 0. utime and stime,
+      # fields 14 and 15, are fields[11] and fields[12].
+      comm=''${line#*(}
+      comm=''${comm%)*}
+      read -ra fields <<< "''${line##*) }"
+      time=$((fields[11] + fields[12]))
+
+      # Memory is the resident pages minus the shared ones, in 4 KiB pages,
+      # as GNOME System Monitor shows it. Counting shared pages would count a
+      # library or a browser's shared memory once for every process that maps
+      # it, and the rows would add up to more than the RAM in use.
+      resident=0
+      shared=0
+      read -r _ resident shared _ 2>/dev/null < "$dir/statm"
+      [ "$resident" -gt 0 ] || continue
+
+      # GPU use. Each open GPU device is a character device among the
+      # process's file descriptors, and its fdinfo file holds the GPU time in
+      # nanoseconds, split by engine, and the video memory in KiB. `-c` skips
+      # files and sockets cheaply. Other users' processes cannot be read, so
+      # they count as no GPU use.
+      gpu_time=0
+      vram=0
+      for fd in "$dir"/fd/*; do
+        [ -c "$fd" ] || continue
+        client=""
+        engines=0
+        memory=0
+        while read -r key value _; do
+          case "$key" in
+            drm-client-id:) client=$value ;;
+            drm-engine-*) engines=$((engines + value)) ;;
+            drm-resident-vram:) memory=$value ;;
+          esac
+        done 2>/dev/null < "$dir/fdinfo/''${fd##*/}"
+        [ -n "$client" ] && [ -z "''${gpu_clients[$client]}" ] || continue
+        gpu_clients[$client]=1
+        gpu_time=$((gpu_time + engines))
+        vram=$((vram + memory * 1024))
+      done
+
+      # The short name is cut to 15 characters, so prefer the program's file
+      # name from the first word of its command line. Nix wrappers start the
+      # real program with the wrapper's name as that word. Some programs, such
+      # as Brave, rewrite their command line as one string with spaces, so cut
+      # at the first space before taking the part after the last slash.
+      arg0=""
+      read -r -d "" arg0 2>/dev/null < "$dir/cmdline"
+      name=''${arg0%% *}
+      name=''${name%%:*}
+      name=''${name##*/}
+      printf 'proc %s %s %s %s %s %s\n' "$pid" "$time" \
+        "$(((resident - shared) * 4096))" "$gpu_time" "$vram" "''${name:-$comm}"
+    done
+  '';
+
   # Exits with 0 when power-profiles-daemon is running. The bar uses it to decide
   # whether to show the profile buttons.
   powerProfilesProbe = pkgs.writeShellScript "quickshell-power-profiles-available" ''
@@ -143,6 +296,7 @@ let
         property string iconFontFamily: "Font Awesome 7 Free Solid"
         property string brandIconFontFamily: "Font Awesome 7 Brands"
         property string systemUsageCommand: "${systemUsageReader}"
+        property string activityCommand: "${activityReader}"
         property string powerProfilesCommand: "${powerProfilesProbe}"
         property string nmcliCommand: "${nmcli}"
         property string wifiEnterpriseCommand: "${wifiEnterpriseJoin}"

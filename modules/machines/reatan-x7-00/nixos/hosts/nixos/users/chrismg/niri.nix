@@ -106,6 +106,22 @@ let
           "background-effect".blur = true;
         };
       }
+      # The Quickshell activity monitor, opened from the bar's usage gauges, is
+      # a normal window. It floats instead of taking a column, and its
+      # see-through background is blurred like kitty's. Quickshell gives all its
+      # windows the app ID "org.quickshell", so the title picks this one. `[.]`
+      # matches a literal dot, which needs no backslash escape in KDL. See
+      # quickshell/ActivityMonitor.qml.
+      {
+        "window-rule" = {
+          match._props = {
+            "app-id" = "^org[.]quickshell$";
+            title = "^Activity monitor$";
+          };
+          "open-floating" = true;
+          "background-effect".blur = true;
+        };
+      }
       # The Quickshell bar and its panels ask for blur themselves, only behind
       # their see-through black backgrounds. See quickshell/TopBar.qml. niri
       # normally blurs only the wallpaper there, even when a window is in

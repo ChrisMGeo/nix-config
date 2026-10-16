@@ -10,6 +10,9 @@ Item {
     property string label: ""
     property string valueText: `${Math.round(value)}%`
 
+    // Clicking the gauge opens the activity monitor. See TopBar.qml.
+    signal clicked()
+
     implicitWidth: Theme.scaled(28)
     implicitHeight: Theme.scaled(28)
 
@@ -103,6 +106,8 @@ Item {
         id: gaugeMouse
 
         anchors.fill: parent
+        cursorShape: Qt.PointingHandCursor
+        onClicked: root.clicked()
         hoverEnabled: true
     }
 

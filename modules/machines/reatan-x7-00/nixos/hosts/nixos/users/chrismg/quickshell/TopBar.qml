@@ -27,6 +27,8 @@ PanelWindow {
     signal settingsRequested()
     signal powerRequested()
     signal mediaRequested()
+    // A usage gauge was clicked. `metric` is "cpu", "memory", "gpu", or "vram".
+    signal activityRequested(string metric)
 
     // The bar floats over windows instead of pushing them down. Ignore reserves
     // no space and lets the window reach the very top edge of the screen, where
@@ -294,11 +296,14 @@ PanelWindow {
                     onClicked: root.trayOpen = !root.trayOpen
                 }
 
+                // The usage gauges. Clicking one opens the activity monitor
+                // with that measure chosen.
                 UsageGauge {
                     Layout.alignment: Qt.AlignVCenter
                     iconGlyph: "\uf2db"
                     label: "CPU"
                     value: SystemUsage.cpu
+                    onClicked: root.activityRequested("cpu")
                 }
 
                 UsageGauge {
@@ -306,6 +311,7 @@ PanelWindow {
                     iconGlyph: "\uf538"
                     label: "RAM"
                     value: SystemUsage.memory
+                    onClicked: root.activityRequested("memory")
                     valueText: SystemUsage.memoryText(SystemUsage.memoryUsed, SystemUsage.memoryTotal)
                 }
 
@@ -315,6 +321,7 @@ PanelWindow {
                     iconGlyph: "\ue163"
                     label: "GPU"
                     value: SystemUsage.gpu
+                    onClicked: root.activityRequested("gpu")
                 }
 
                 UsageGauge {
@@ -323,6 +330,7 @@ PanelWindow {
                     iconGlyph: "\uf538"
                     label: "VRAM"
                     value: SystemUsage.vram
+                    onClicked: root.activityRequested("vram")
                     valueText: SystemUsage.memoryText(SystemUsage.vramUsed, SystemUsage.vramTotal)
                 }
 

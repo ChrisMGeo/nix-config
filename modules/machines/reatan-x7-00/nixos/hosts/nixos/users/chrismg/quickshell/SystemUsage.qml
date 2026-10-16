@@ -20,6 +20,24 @@ Scope {
     property real previousTotal: 0
     property real previousIdle: 0
 
+    // The last two minutes of readings, oldest first, for the charts in the
+    // activity monitor. They are kept even while it is closed, so its charts
+    // are full as soon as it opens. 80 readings, one every sampleInterval
+    // milliseconds.
+    readonly property int sampleInterval: 1500
+    readonly property int historyLength: 80
+    property var cpuHistory: []
+    property var memoryHistory: []
+    property var gpuHistory: []
+    property var vramHistory: []
+
+    // Returns `list` with `value` added at the end, dropping the oldest value
+    // once the list is full.
+    function appended(list, value) {
+        const next = list.concat([value]);
+        return next.length > historyLength ? next.slice(next.length - historyLength) : next;
+    }
+
     function percentage(used, total) {
         return total > 0 ? Math.max(0, Math.min(100, 100 * used / total)) : 0;
     }
@@ -47,7 +65,10 @@ Scope {
                 const totalDelta = total - root.previousTotal;
                 const idleDelta = idle - root.previousIdle;
 
-                if (root.previousTotal > 0 && totalDelta > 0)
+                // The first reading has nothing to compare with, so CPU use
+                // and the history start with the second one.
+                const compared = root.previousTotal > 0 && totalDelta > 0;
+                if (compared)
                     root.cpu = Math.max(0, Math.min(100, 100 * (totalDelta - idleDelta) / totalDelta));
 
                 root.previousTotal = total;
@@ -58,12 +79,19 @@ Scope {
                 root.gpuAvailable = fields[5] === 1;
                 root.vramUsed = fields[6];
                 root.vramTotal = fields[7];
+
+                if (compared) {
+                    root.cpuHistory = root.appended(root.cpuHistory, root.cpu);
+                    root.memoryHistory = root.appended(root.memoryHistory, root.memory);
+                    root.gpuHistory = root.appended(root.gpuHistory, root.gpu);
+                    root.vramHistory = root.appended(root.vramHistory, root.vram);
+                }
             }
         }
     }
 
     Timer {
-        interval: 1500
+        interval: root.sampleInterval
         repeat: true
         running: true
         onTriggered: {

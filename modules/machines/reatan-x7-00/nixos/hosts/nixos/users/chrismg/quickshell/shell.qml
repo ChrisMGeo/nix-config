@@ -11,6 +11,10 @@ ShellRoot {
     property bool settingsVisible: false
     property bool mediaVisible: false
     property bool powerMenuVisible: false
+    // Whether the activity monitor window is open, and the measure it shows:
+    // "cpu", "memory", "gpu", or "vram".
+    property bool activityVisible: false
+    property string activityMetric: "cpu"
     // The bar floats over windows and hides until something shows it. See
     // barShownOn() below. Hovering the top edge of a screen also shows it, which
     // TopBar.qml handles by itself.
@@ -130,6 +134,21 @@ ShellRoot {
         mediaVisible = !mediaVisible;
     }
 
+    // Clicking a gauge opens the activity monitor on that measure. Clicking
+    // another gauge while it is open switches the measure, and clicking the
+    // gauge of the measure it already shows closes it. An empty `metric`, from
+    // the keyboard shortcut, opens or closes it as it was.
+    function toggleActivity(metric) {
+        if (activityVisible && (metric === "" || metric === activityMetric)) {
+            activityVisible = false;
+            return;
+        }
+
+        if (metric !== "")
+            activityMetric = metric;
+        activityVisible = true;
+    }
+
     function activateWorkspace(outputName, number) {
         // focus-workspace acts on the focused monitor, so focus the bar's monitor
         // first. The names are passed as arguments, not pasted into the shell text.
@@ -243,6 +262,25 @@ ShellRoot {
         function togglePowerMenu(): void {
             root.togglePowerMenu(root.targetScreen);
         }
+
+        // niri.nix binds this to Ctrl+Shift+Escape.
+        function toggleActivity(): void {
+            root.toggleActivity("");
+        }
+    }
+
+    // The activity monitor. LazyLoader creates the window when `active` turns
+    // true and destroys it when it turns false, so it reads processes only
+    // while open. It is one window, not one per monitor. niri opens it on the
+    // focused monitor.
+    LazyLoader {
+        active: root.activityVisible
+
+        ActivityMonitor {
+            metric: root.activityMetric
+            onMetricSelected: metric => root.activityMetric = metric
+            onCloseRequested: root.activityVisible = false
+        }
     }
 
     Variants {
@@ -265,6 +303,7 @@ ShellRoot {
                 onSettingsRequested: root.toggleSettings(screenShell.modelData)
                 onPowerRequested: root.togglePowerMenu(screenShell.modelData)
                 onMediaRequested: root.toggleMedia(screenShell.modelData)
+                onActivityRequested: metric => root.toggleActivity(metric)
             }
 
             ClockCard {
