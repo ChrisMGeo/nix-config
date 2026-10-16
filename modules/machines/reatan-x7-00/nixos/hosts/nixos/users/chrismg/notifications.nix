@@ -29,8 +29,9 @@ let
   # and the launcher.
   opacity = config.stylix.opacity.popups;
 
-  # The corner radius of the popups and the side panel, in pixels.
-  radius = 12;
+  # The corner radius of the popups and the side panel, in pixels. It is
+  # look.cornerRadius from look.nix, the same as every window and panel.
+  radius = config.look.cornerRadius;
 
   # The size of the message text, in points. It is stylix.fonts.sizes.popups
   # from theme.nix, the same as the launcher. The title is one point larger
@@ -42,11 +43,6 @@ let
   defaultStyle = "${config.services.swaync.package}/etc/xdg/swaync/style.css";
 in
 {
-  # Shares the corner radius with niri.nix, which rounds the blur behind the
-  # side panel to match. `lib` is a Home Manager setting where modules can put
-  # values for other modules to read, as `config.lib.swaync.radius`.
-  lib.swaync.radius = radius;
-
   services.swaync = {
     # Runs swaync as a systemd user service. It starts with the niri session,
     # because niri-session starts the graphical session target that the service

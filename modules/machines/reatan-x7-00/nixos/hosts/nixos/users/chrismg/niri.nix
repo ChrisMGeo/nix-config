@@ -99,10 +99,11 @@ let
     # `_children` list as its own node.
     _children = [
       # Rounds the corners of every window, and cuts the window's content to
-      # match.
+      # match. The radius is look.cornerRadius from look.nix, shared with the
+      # bar, the launcher, and the notifications.
       {
         "window-rule" = {
-          "geometry-corner-radius" = 12;
+          "geometry-corner-radius" = config.look.cornerRadius;
           "clip-to-geometry" = true;
           # niri normally fills the whole area behind a window with the border
           # color, not only a frame around it. A see-through window, such
@@ -151,12 +152,12 @@ let
       # The Vicinae launcher is see-through at stylix.opacity.popups, set in
       # theme.nix. This blurs what shows through it, like the bar. Unlike
       # Quickshell, Vicinae does not ask for blur itself, so the rule turns it
-      # on. The corner radius is read from the launcher's `rounding` in
-      # vicinae.nix, so the blur stays inside its rounded corners.
+      # on. The launcher's corners use look.cornerRadius too, so the blur stays
+      # inside them.
       {
         "layer-rule" = {
           match._props.namespace = "^vicinae$";
-          "geometry-corner-radius" = config.programs.vicinae.settings.launcher_window.rounding;
+          "geometry-corner-radius" = config.look.cornerRadius;
           "background-effect" = {
             blur = true;
             xray = false;
@@ -165,14 +166,15 @@ let
       }
       # The swaync side panel, opened with Mod+N, is see-through too. See
       # notifications.nix. Its window is exactly the panel, so the blur fits
-      # once it gets the panel's corner radius. The popups are not blurred.
+      # once it gets the panel's corner radius, look.cornerRadius. The popups
+      # are not blurred.
       # One window holds all of them plus the space between them, and swaync
       # cannot tell niri to blur only behind the cards, so niri would blur a
       # square block around them.
       {
         "layer-rule" = {
           match._props.namespace = "^swaync-control-center$";
-          "geometry-corner-radius" = config.lib.swaync.radius;
+          "geometry-corner-radius" = config.look.cornerRadius;
           "background-effect" = {
             blur = true;
             xray = false;

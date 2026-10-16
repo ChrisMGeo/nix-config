@@ -344,7 +344,7 @@ let
         property int barTopGap: 8
         property int barBottomGap: 8
         property int gap: 8
-        property int radius: 12
+        property int radius: ${toString config.look.cornerRadius}
         property int barHeight: scaled(46)
         property int drawerWidth: scaled(352)
         property int textSize: scaled(13)

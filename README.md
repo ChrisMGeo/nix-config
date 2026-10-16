@@ -80,6 +80,7 @@ New to Nix? Read the glossary below first. Then read the layout and the loading 
                                 ├── kitty.nix       Terminal.
                                 ├── kitty/          The kitty tab bar.
                                 ├── lock.nix        Lock screen.
+                                ├── look.nix        Shared corner radius.
                                 ├── niri.nix        niri settings and key bindings.
                                 ├── notifications.nix  SwayNotificationCenter.
                                 ├── quickshell.nix  The bar.
