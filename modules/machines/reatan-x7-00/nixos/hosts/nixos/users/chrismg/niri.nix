@@ -148,6 +148,21 @@ let
           "background-effect".xray = false;
         };
       }
+      # The Vicinae launcher is see-through at stylix.opacity.popups, set in
+      # theme.nix. This blurs what shows through it, like the bar. Unlike
+      # Quickshell, Vicinae does not ask for blur itself, so the rule turns it
+      # on. The corner radius is read from the launcher's `rounding` in
+      # vicinae.nix, so the blur stays inside its rounded corners.
+      {
+        "layer-rule" = {
+          match._props.namespace = "^vicinae$";
+          "geometry-corner-radius" = config.programs.vicinae.settings.launcher_window.rounding;
+          "background-effect" = {
+            blur = true;
+            xray = false;
+          };
+        };
+      }
     ];
 
     # How niri blurs, for every window that a rule above blurs. More passes and
