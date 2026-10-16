@@ -37,6 +37,11 @@ let
   defaultStyle = "${config.services.swaync.package}/etc/xdg/swaync/style.css";
 in
 {
+  # Shares the corner radius with niri.nix, which rounds the blur behind the
+  # side panel to match. `lib` is a Home Manager setting where modules can put
+  # values for other modules to read, as `config.lib.swaync.radius`.
+  lib.swaync.radius = radius;
+
   services.swaync = {
     # Runs swaync as a systemd user service. It starts with the niri session,
     # because niri-session starts the graphical session target that the service

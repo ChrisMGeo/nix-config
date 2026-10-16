@@ -163,6 +163,22 @@ let
           };
         };
       }
+      # The swaync side panel, opened with Mod+N, is see-through too. See
+      # notifications.nix. Its window is exactly the panel, so the blur fits
+      # once it gets the panel's corner radius. The popups are not blurred.
+      # One window holds all of them plus the space between them, and swaync
+      # cannot tell niri to blur only behind the cards, so niri would blur a
+      # square block around them.
+      {
+        "layer-rule" = {
+          match._props.namespace = "^swaync-control-center$";
+          "geometry-corner-radius" = config.lib.swaync.radius;
+          "background-effect" = {
+            blur = true;
+            xray = false;
+          };
+        };
+      }
     ];
 
     # How niri blurs, for every window that a rule above blurs. More passes and
