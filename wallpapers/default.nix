@@ -32,4 +32,10 @@
   # looking up at planets and stars in a black sky, from wallhaven.cc. This copy
   # was upscaled to 3840x2160 with waifu2x. It matches the black monochrome scheme.
   wallhaven-3kxgm9 = ./wallhaven-3kxgm9.png;
+
+  # A black and white drawing of a jagged, snowy mountain peak with clouds at its
+  # foot, in the lower right of a black background. It has no wallhaven ID, so it
+  # is named after its title, "Monochrome Mountain in the Void". This copy was
+  # upscaled to 3344x1882 with waifu2x. It matches the black monochrome scheme.
+  monochrome-mountain-in-the-void = ./monochrome-mountain-in-the-void.png;
 }

@@ -42,6 +42,7 @@ New to Nix? Read the glossary below first. Then read the layout and the loading 
 │   └── black-monochrome.nix        Black and white, with gray accents.
 ├── wallpapers/                     Wallpaper pictures any user can pick. Not loaded as modules.
 │   ├── default.nix                 Maps each wallpaper's name to its picture.
+│   ├── monochrome-mountain-in-the-void.png  A snowy mountain peak on black.
 │   ├── wallhaven-1q2kd9.png        A black and white portrait on black.
 │   ├── wallhaven-3kxgm9.png        A figure in water looking up at planets.
 │   ├── wallhaven-5yzd29.png        White cherry blossoms on black.
