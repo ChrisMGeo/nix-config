@@ -32,6 +32,11 @@ let
   # The corner radius of the popups and the side panel, in pixels.
   radius = 12;
 
+  # The size of the message text, in points. It is stylix.fonts.sizes.popups
+  # from theme.nix, the same as the launcher. The title is one point larger
+  # and the time one point smaller.
+  fontSize = config.stylix.fonts.sizes.popups;
+
   # swaync's own stylesheet. Setting `style` below replaces it, so the new style
   # loads it first and changes only what needs to change.
   defaultStyle = "${config.services.swaync.package}/etc/xdg/swaync/style.css";
@@ -105,8 +110,8 @@ in
           --border-radius: ${toString radius}px;
           --notification-icon-size: 40px;
           --notification-shadow: none;
-          --font-size-summary: 14px;
-          --font-size-body: 13px;
+          --font-size-summary: ${toString (fontSize + 1)}pt;
+          --font-size-body: ${toString fontSize}pt;
         }
 
         * {
@@ -165,7 +170,7 @@ in
         /* The time: small and dim, so it does not compete with the title. */
         .notification-row .notification-background .notification .notification-default-action .notification-content .text-box .time {
           color: ${hex.base03};
-          font-size: 12px;
+          font-size: ${toString (fontSize - 1)}pt;
           font-weight: normal;
         }
 
