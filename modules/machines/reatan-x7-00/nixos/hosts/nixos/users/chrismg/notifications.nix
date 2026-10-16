@@ -46,6 +46,13 @@ let
   # ends are fully round whatever look.cornerRadius is.
   barHeight = 4;
 
+  # The size of the picture or app icon in a notification, in pixels. swaync
+  # draws the small app badge on a picture at a third of this. The stylesheet
+  # below sets it as --notification-icon-size. swaync's older
+  # `notification-icon-size` setting does the same, but swaync marks it as
+  # deprecated in favor of the stylesheet, so it is not used.
+  iconSize = 40;
+
   # The size of the message text, in points. It is stylix.fonts.sizes.popups
   # from theme.nix, the same as the launcher. The title is one point larger
   # and the time one point smaller.
@@ -71,8 +78,6 @@ in
 
       # Narrower than the default 500 pixels, so popups do not cover much text.
       notification-window-width = 400;
-      # App icons in pixels. The default shows them at full size.
-      notification-icon-size = 40;
 
       # Seconds before a popup hides by itself. Low priority popups go sooner.
       # Critical ones stay until you close them.
@@ -118,7 +123,7 @@ in
           --text-color-disabled: ${hex.base03};
           --bg-selected: ${hex.base02};
           --border-radius: ${toString radius}px;
-          --notification-icon-size: 40px;
+          --notification-icon-size: ${toString iconSize}px;
           --notification-shadow: none;
           --font-size-summary: ${toString (fontSize + 1)}pt;
           --font-size-body: ${toString fontSize}pt;
