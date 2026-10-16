@@ -32,6 +32,7 @@ The QML files for the Quickshell bar of the user `chrismg`. These files are not 
 | `IconButton.qml` | A round button with one icon. |
 | `TextButton.qml` | A small rounded button with a word on it, such as "Join". |
 | `ThemedSlider.qml` | A slider in the theme colors. Use it instead of the plain `Slider`, whose default style is blue. |
+| `ThemedSwitch.qml` | An on and off switch in the theme colors, used for Wi-Fi and Bluetooth. Use it instead of the plain `Switch`, whose default style is blue. |
 | `UiText.qml` | Text in the theme font and color. |
 
 ## Rules

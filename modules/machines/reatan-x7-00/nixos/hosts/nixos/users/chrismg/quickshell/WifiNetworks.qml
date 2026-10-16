@@ -205,7 +205,7 @@ Column {
             onClicked: rescan.running = true
         }
 
-        Switch {
+        ThemedSwitch {
             Layout.rightMargin: 8
             checked: Networking.wifiEnabled
             onToggled: Networking.wifiEnabled = checked

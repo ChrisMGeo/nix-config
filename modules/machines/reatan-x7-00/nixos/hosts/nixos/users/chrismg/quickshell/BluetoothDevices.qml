@@ -89,7 +89,7 @@ Column {
             onClicked: root.adapter.discovering = !root.adapter.discovering
         }
 
-        Switch {
+        ThemedSwitch {
             Layout.rightMargin: 8
             enabled: root.adapter !== null
             checked: root.powered
