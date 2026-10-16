@@ -2,13 +2,28 @@
 # machines.nix as a Home Manager module. The Vicinae server runs as a systemd user
 # service from login, and niri.nix opens the launcher with Mod+D.
 #
-# `{ config, ... }:` makes this file a function. `config` is this user's final
-# Home Manager settings.
-{ config, ... }:
+# `{ config, inputs, pkgs, ... }:` makes this file a function. `config` is this
+# user's final Home Manager settings. `inputs` is the flake's inputs, which
+# machines.nix passes to Home Manager. `pkgs` is the package set.
+{ config, inputs, pkgs, ... }:
+
+# `let ... in` defines local names. The names exist only between `let` and `in`.
+let
+  # The platform of this machine, such as "x86_64-linux". Used to pick the
+  # matching package set below.
+  system = pkgs.stdenv.hostPlatform.system;
+
+  # The nixpkgs-unstable package set. `.${system}` picks the set for `system`.
+  unstable = inputs.nixpkgs-unstable.legacyPackages.${system};
+in
 
 {
   programs.vicinae = {
     enable = true;
+
+    # Vicinae from nixpkgs-unstable. The stable set has 0.23, which is too old
+    # for some of the community extensions.
+    package = unstable.vicinae;
 
     # Runs `vicinae server` as a systemd user service that starts with the niri
     # session. systemd restarts it if it crashes, and restarts it when its

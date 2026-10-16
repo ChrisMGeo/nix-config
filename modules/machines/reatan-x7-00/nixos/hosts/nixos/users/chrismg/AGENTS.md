@@ -15,7 +15,7 @@ Home Manager settings for the user `chrismg` on the host `nixos`.
 | `quickshell.nix` | Runs the Quickshell bar from nixpkgs-unstable as a systemd user service, installs it from the `quickshell/` folder with the Font Awesome icon font, and generates its `Theme.qml`, which makes the panels see-through black at the Stylix popup opacity from `theme.nix`, is shared with the login screen in `greeter.nix` as `lib.quickshell.themeFile`, and also holds the paths to cava and `quickshell/cava.conf` for the audio visualizer, to nmcli, to a script that joins enterprise Wi-Fi networks, and to a script that reads processes, their GPU use, and sensors for the activity monitor. |
 | `shell.nix` | Turns on zsh with Ctrl and Alt arrow keys for moving by word, Shift keys for selecting text, and the starship prompt. |
 | `theme.nix` | Loads Stylix and sets the black monochrome color scheme, the Iosevka fonts, 80% opacity for popups such as the launcher and the bar, the Papirus-Dark icon theme with grey folders, and the Bibata cursor. |
-| `vicinae.nix` | Sets up the Vicinae app launcher and runs its server as a systemd user service. |
+| `vicinae.nix` | Sets up the Vicinae app launcher from nixpkgs-unstable and runs its server as a systemd user service. |
 | `wallpaper.nix` | Picks a picture from the root `wallpapers/` folder, at build time shrinks it to the monitor's resolution, darkens its blacks, and sharpens it, sets it as the Stylix wallpaper, and runs wpaperd to draw it behind the windows. swaylock also shows it. |
 
 `default.nix` takes Codex, OpenCode, and Claude Code from the llm-agents flake. It takes Zed from nixpkgs-unstable. It takes Brave, fastfetch, and Vesktop from the stable nixpkgs set.
