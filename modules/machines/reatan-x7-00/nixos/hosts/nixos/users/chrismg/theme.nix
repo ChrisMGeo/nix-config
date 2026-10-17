@@ -9,6 +9,41 @@
 # inputs, and `pkgs` is the package set.
 { inputs, pkgs, ... }:
 
+# `let ... in` defines local names. The names exist only between `let` and `in`.
+let
+  # Libron, a serif font made for reading long text on screens. It is a
+  # reworked version of Newsreader. nixpkgs does not have it, so this builds a
+  # package from the release on GitHub: github.com/nicoverbruggen/libron.
+  # `stdenvNoCC.mkDerivation` makes a package without a C compiler, which is
+  # enough for copying files. `rec` lets the settings refer to each other, so
+  # the download address can use `version`.
+  libron = pkgs.stdenvNoCC.mkDerivation rec {
+    pname = "libron";
+    # The release to download. To update, change this and set `hash` to
+    # `pkgs.lib.fakeHash`. The build then fails and prints the correct hash.
+    version = "0.31";
+
+    # `Libron.zip` holds the desktop TrueType files. The release also has
+    # versions for e-readers and the web, which this system does not need.
+    # `${version}` puts the value of `version` into the text.
+    # `stripRoot = false` is needed because the files sit at the top of the
+    # zip, not inside a folder.
+    src = pkgs.fetchzip {
+      url = "https://github.com/nicoverbruggen/libron/releases/download/v${version}/Libron.zip";
+      stripRoot = false;
+      hash = "sha256-UD+8cjdiomyEtGlLtkmcNd8Y8wNU8RIEwyPdq55nm4o=";
+    };
+
+    # Copies the fonts to the folder where fontconfig looks for them.
+    installPhase = ''
+      runHook preInstall
+      install -Dm644 -t $out/share/fonts/truetype *.ttf
+      runHook postInstall
+    '';
+
+    meta.license = pkgs.lib.licenses.ofl;
+  };
+in
 {
   # `imports` loads other modules. This one adds the `stylix.*` settings to
   # Home Manager.
@@ -33,12 +68,23 @@
     # wallpaper.
     base16Scheme = import "${inputs.self}/themes/black-monochrome.nix";
 
-    # Iosevka for every kind of text. `package` is what gets installed. `name` is
-    # the font family name that programs ask for.
+    # Three fonts. `package` is what gets installed. `name` is the font family
+    # name that programs ask for.
+    # - Iosevka for monospace text, such as the terminal.
+    # - Iosevka Aile for sans-serif text, which covers the bar, the launcher,
+    #   notifications, and most app interfaces. It is Iosevka with normal
+    #   letter widths instead of fixed ones, so it matches the terminal font.
+    #   `iosevka-bin` is the prebuilt release, so nothing has to be compiled.
+    #   `override { variant = "Aile"; }` picks the Aile variant of it.
+    # - Libron, defined above, for serif text, such as web pages that ask for
+    #   a serif font.
     fonts = {
       monospace = { package = pkgs.iosevka; name = "Iosevka"; };
-      sansSerif = { package = pkgs.iosevka; name = "Iosevka"; };
-      serif = { package = pkgs.iosevka; name = "Iosevka"; };
+      sansSerif = {
+        package = pkgs.iosevka-bin.override { variant = "Aile"; };
+        name = "Iosevka Aile";
+      };
+      serif = { package = libron; name = "Libron"; };
       # Sizes in points.
       sizes.terminal = 13;
       sizes.popups = 13;
