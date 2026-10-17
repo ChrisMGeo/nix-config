@@ -42,8 +42,7 @@ New to Nix? Read the glossary below first. Then read the layout and the loading 
 │   └── black-monochrome.nix        Black and white, with gray accents.
 ├── wallpapers/                     Wallpaper pictures any user can pick. Not loaded as modules.
 │   ├── default.nix                 Maps each wallpaper's name to its picture.
-│   ├── monochrome-mountain-in-the-void.png  A snowy mountain peak on black.
-│   └── wallhaven-oglrv9.jpg        A snowy mountain peak under a dark sky.
+│   └── monochrome-mountain-in-the-void.png  A snowy mountain peak on black.
 └── modules/
     ├── machines.nix                Finds machines, hosts, and users from folder names.
     ├── features/                   Settings for every host.

@@ -8,7 +8,6 @@ Wallpaper pictures that any host or user can use. This folder sits outside `modu
 | --- | --- |
 | `default.nix` | Maps each wallpaper's name to its picture. A module loads it with `import "${inputs.self}/wallpapers"`. |
 | `monochrome-mountain-in-the-void.png` | A black and white drawing of a jagged, snowy mountain peak in the lower right of a black background, generated with GPT and upscaled to 3344x1882 with waifu2x. It has no wallhaven ID, so it is named after its title. Used by `chrismg` on the host `nixos`. |
-| `wallhaven-oglrv9.jpg` | A photo of a snow-covered mountain peak in sunlight under a dark gray sky. Not used by anyone now. |
 
 ## Rules
 
