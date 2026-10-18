@@ -421,6 +421,16 @@ in
   # Vicinae and swaync services already have this.
   systemd.user.services.quickshell.Unit.PartOf = [ config.programs.quickshell.systemd.target ];
 
+  # Starts the bar with niri, not only with graphical-session.target. The session
+  # target stays active between logins, so a new login does not start the bar
+  # again. niri starts after the session sets WAYLAND_DISPLAY, so the bar starts
+  # with a screen to draw on. `After` puts the bar's start after niri's, and
+  # `WantedBy` makes niri start the bar. The default WantedBy stays in place.
+  systemd.user.services.quickshell = {
+    Unit.After = [ "niri.service" ];
+    Install.WantedBy = [ "niri.service" ];
+  };
+
   # Puts the bar's files in ~/.config/quickshell/chrismg. This is done here
   # instead of with `programs.quickshell.configs`, which would link the whole
   # folder at once. `recursive` links each file on its own, which keeps the
