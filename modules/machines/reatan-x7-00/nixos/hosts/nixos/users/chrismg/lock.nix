@@ -10,16 +10,14 @@
 # is a small helper that turns such events into commands. Here it has no idle
 # timers.
 #
-# `{ config, osConfig, ... }:` makes this file a function. `config` is this
-# user's final Home Manager settings. `osConfig` is the whole system's final
-# settings.
-{ config, osConfig, ... }:
+# `{ config, ... }:` makes this file a function. `config` is this user's final
+# Home Manager settings. The `...` ignores the other arguments.
+{ config, ... }:
 
 # `let ... in` defines local names. The names exist only between `let` and `in`.
 let
   # Full paths to the programs below. `${...}` inserts a package's store path.
   swaylock = "${config.programs.swaylock.package}/bin/swaylock";
-  loginctl = "${osConfig.systemd.package}/bin/loginctl";
 in
 {
   # The lock screen. Stylix sets its colors and its background picture. See
@@ -48,8 +46,12 @@ in
       # swaylock fork once the screen is locked, so swayidle does not wait on it.
       lock = "${swaylock} -f";
       # Lock before the computer sleeps. Sleep is off on this desktop, but this
-      # keeps a laptop safe.
-      before-sleep = "${loginctl} lock-session";
+      # keeps a laptop safe. This runs swaylock itself, not `loginctl
+      # lock-session`. That command only sends a signal and returns at once, so
+      # the computer could sleep before swaylock covers the screen. swayidle
+      # waits for swaylock to finish first, because `-f` makes it fork only
+      # after the screen is locked.
+      before-sleep = "${swaylock} -f";
     };
   };
 }
