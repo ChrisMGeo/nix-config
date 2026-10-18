@@ -84,4 +84,12 @@ in
   # wpaperd draws the wallpaper. It runs as a systemd user service that starts
   # with the niri session. Stylix writes its settings from `stylix.image`.
   services.wpaperd.enable = true;
+
+  # Starts wpaperd with niri, the same way the Quickshell bar does in
+  # quickshell.nix. Otherwise a second login can skip it, because the session
+  # target is still active from the first.
+  systemd.user.services.wpaperd = {
+    Unit.After = [ "niri.service" ];
+    Install.WantedBy = [ "niri.service" ];
+  };
 }
