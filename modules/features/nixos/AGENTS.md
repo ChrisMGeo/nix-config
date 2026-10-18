@@ -6,7 +6,7 @@ Settings for NixOS hosts. These files load on top of the shared `features/*.nix`
 
 | File | What it does |
 | --- | --- |
-| `base.nix` | Turns on NetworkManager and sets the US English locale. |
+| `base.nix` | Turns on NetworkManager, sets the US English locale, deletes generations older than 30 days and unused store paths every week, and hard-links identical files in the store. |
 | `form-factor.nix` | Declares `machine.formFactor`, "desktop" or "laptop". On laptops it switches to the performance profile on the charger and to power-saver on battery. |
 
 ## Rules

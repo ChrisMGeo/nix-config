@@ -13,6 +13,11 @@
   # this to add the NixOS entry.
   boot.loader.efi.canTouchEfiVariables = true;
 
+  # Keeps only the 20 newest generations in the boot menu and on the small EFI
+  # partition. Each one has its own kernel and initrd there. Older generations
+  # are still in the store until nix.gc removes them.
+  boot.loader.systemd-boot.configurationLimit = 20;
+
   # Uses the newest Linux kernel that nixpkgs provides. It can be newer than the
   # kernel that comes with the default NixOS release.
   boot.kernelPackages = pkgs.linuxPackages_latest;
