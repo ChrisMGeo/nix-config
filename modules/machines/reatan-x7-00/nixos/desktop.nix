@@ -38,4 +38,13 @@
   # dconf stores settings for GTK programs. Home Manager writes the GTK theme
   # there, so it must exist without GNOME.
   programs.dconf.enable = true;
+
+  # gvfs is the virtual file system behind the file manager. Nautilus needs it
+  # for the Trash and for network locations. GNOME used to turn it on, and niri
+  # does not, so Nautilus failed with "trash locations are not supported".
+  services.gvfs.enable = true;
+
+  # udisks2 mounts removable drives such as USB sticks for the file manager.
+  # Without it, plugging in a drive does nothing.
+  services.udisks2.enable = true;
 }
