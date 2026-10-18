@@ -248,9 +248,15 @@ let
   # with a username and a password. Quickshell can only join networks that use
   # one password, so the settings drawer runs this for the others.
   #
-  # Arguments: the network name, the Wi-Fi card name, and the username. The
-  # password comes as one line on stdin, so it never shows in the process list.
-  # It uses PEAP with MSCHAPv2, which most of these networks use.
+  # Arguments: the network name, the Wi-Fi card name, the username, and the
+  # server's domain. The password comes as one line on stdin, so it never shows
+  # in the process list. It uses PEAP with MSCHAPv2, which most of these
+  # networks use.
+  # The domain is required. NetworkManager checks the server's certificate
+  # against the system's certificate authorities (`system-ca-certs`) and only
+  # accepts a certificate whose name ends in that domain (`domain-suffix-match`).
+  # Without this check, a fake access point with the same name could collect
+  # the password.
   # `password-flags 0` lets NetworkManager save the password, so the next
   # connection does not ask again. The password reaches NetworkManager through
   # `passwd-file`, which nmcli reads from stdin here. If a saved connection with
@@ -261,13 +267,21 @@ let
     ssid=$1
     interface=$2
     identity=$3
+    domain=$4
     IFS= read -r password
+
+    if [ -z "$domain" ]; then
+      echo "Enter the server domain, such as radius.example.edu." >&2
+      exit 1
+    fi
 
     settings=(
       wifi-sec.key-mgmt wpa-eap
       802-1x.eap peap
       802-1x.phase2-auth mschapv2
       802-1x.identity "$identity"
+      802-1x.system-ca-certs yes
+      802-1x.domain-suffix-match "$domain"
       802-1x.password-flags 0
     )
 

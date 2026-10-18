@@ -121,14 +121,15 @@ Column {
         }
     }
 
-    function join(network, username, password) {
+    function join(network, username, domain, password) {
         clearError();
         if (isEnterprise(network)) {
             // The password goes to the script on stdin, so it never shows up
-            // in the process list. See onStarted below.
+            // in the process list. See onStarted below. The domain lets the
+            // script check the server's certificate.
             enterpriseJoin.network = network;
             enterpriseJoin.password = password;
-            enterpriseJoin.command = [Theme.wifiEnterpriseCommand, network.name, device.name, username];
+            enterpriseJoin.command = [Theme.wifiEnterpriseCommand, network.name, device.name, username, domain];
             enterpriseJoin.running = true;
         } else {
             formNetwork = null;
@@ -389,12 +390,14 @@ Column {
                     spacing: 6
 
                     readonly property bool busy: enterpriseJoin.running && enterpriseJoin.network === networkItem.network
+                    // An enterprise network needs the username and the server domain.
+                    // Without the domain, the certificate cannot be checked.
                     readonly property bool ready: passwordField.text.length > 0
-                        && (!networkItem.enterprise || usernameField.text.length > 0)
+                        && (!networkItem.enterprise || (usernameField.text.length > 0 && domainField.text.length > 0))
 
                     function submit() {
                         if (ready && !busy)
-                            root.join(networkItem.network, usernameField.text, passwordField.text);
+                            root.join(networkItem.network, usernameField.text, domainField.text, passwordField.text);
                     }
 
                     // Puts the cursor in the first box, so typing can start at once.
@@ -406,6 +409,17 @@ Column {
                         visible: networkItem.enterprise
                         width: parent.width - 28
                         placeholderText: "Username"
+                        onAccepted: domainField.forceActiveFocus()
+                    }
+
+                    // The server's name, such as radius.example.edu. The certificate
+                    // must match it, so a fake network with the same name is refused.
+                    LoginField {
+                        id: domainField
+
+                        visible: networkItem.enterprise
+                        width: parent.width - 28
+                        placeholderText: "Server domain, such as radius.example.edu"
                         onAccepted: passwordField.forceActiveFocus()
                     }
 
