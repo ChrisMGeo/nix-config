@@ -314,6 +314,9 @@ let
         property string powerProfilesCommand: "${powerProfilesProbe}"
         property string nmcliCommand: "${nmcli}"
         property string wifiEnterpriseCommand: "${wifiEnterpriseJoin}"
+        // Starts and stops the Bluetooth pairing agent in bluetooth.nix. It is
+        // the systemctl that matches the system's systemd.
+        property string systemctlCommand: "${osConfig.systemd.package}/bin/systemctl"
         // Exact store paths, so the visualizer does not depend on any profile.
         property string cavaCommand: "${pkgs.cava}/bin/cava"
         property string cavaConfig: "${cavaConfig}"

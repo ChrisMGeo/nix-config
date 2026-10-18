@@ -5,6 +5,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Bluetooth
+import Quickshell.Io
 
 // The open Bluetooth section of the settings drawer: the on/off switch, the
 // paired devices with Connect and Disconnect buttons, and a Scan button that
@@ -31,6 +32,33 @@ Column {
 
     bottomPadding: 8
 
+    // True from the moment Pair is pressed until that pairing ends. Only a
+    // pairing started here keeps the pairing agent running.
+    property bool pairingFromBar: false
+
+    // The pairing agent in bluetooth.nix answers pairing requests from any
+    // device, so it runs only while a scan or a pairing from this bar is going.
+    // systemctl starts and stops it. The Process objects run one command each.
+    Process {
+        id: agentStart
+
+        command: [Theme.systemctlCommand, "--user", "start", "bluetooth-agent"]
+    }
+
+    Process {
+        id: agentStop
+
+        command: [Theme.systemctlCommand, "--user", "stop", "bluetooth-agent"]
+    }
+
+    // Starts the agent if a scan or a pairing needs it, and stops it otherwise.
+    function syncAgent() {
+        if (adapter && (adapter.discovering || pairingFromBar))
+            agentStart.running = true;
+        else
+            agentStop.running = true;
+    }
+
     // Scanning uses power and slows down other Bluetooth traffic, so it stops
     // when the drawer closes, when this section closes, and after one minute.
     function stopScan() {
@@ -38,9 +66,25 @@ Column {
             adapter.discovering = false;
     }
 
+    // Runs after every change to scanning, whoever changed it, so the agent
+    // stops once the scan ends and no pairing is waiting.
+    Connections {
+        target: root.adapter
+
+        function onDiscoveringChanged() {
+            root.syncAgent();
+        }
+    }
+
+    // A Pair that fails at once never changes the device's pairing state, so
+    // the flag would stay set. Closing the drawer clears it unless a pairing
+    // is still running.
     onActiveChanged: {
-        if (!active)
+        if (!active) {
             stopScan();
+            pairingFromBar = allDevices.some(device => device.pairing);
+            syncAgent();
+        }
     }
     Component.onDestruction: stopScan()
 
@@ -160,7 +204,11 @@ Column {
             target: row.device
 
             function onPairingChanged() {
-                if (row.device?.pairing || !row.connectAfterPair)
+                if (row.device?.pairing)
+                    return;
+                root.pairingFromBar = false;
+                root.syncAgent();
+                if (!row.connectAfterPair)
                     return;
                 row.connectAfterPair = false;
                 if (row.device?.paired) {
@@ -238,6 +286,9 @@ Column {
                     } else {
                         row.pairFailed = false;
                         row.connectAfterPair = true;
+                        // The agent has to be running before BlueZ asks it a question.
+                        root.pairingFromBar = true;
+                        root.syncAgent();
                         row.device?.pair();
                     }
                 }

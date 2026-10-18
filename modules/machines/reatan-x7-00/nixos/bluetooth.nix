@@ -18,15 +18,16 @@
   # no screen and no keyboard (NoInputNoOutput). Headphones, speakers, mice,
   # and game controllers then pair without a question. Devices that need a
   # typed PIN, such as some keyboards, are refused. Pair those with
-  # bluetoothctl. The adapter is not discoverable, so strangers cannot start a
-  # pairing.
+  # bluetoothctl.
+  #
+  # The agent accepts pairing requests from any device, so it does not run all
+  # the time. It is not started at login. The Quickshell bar starts it while a
+  # scan runs or a pairing from the bar is in progress, and stops it afterward.
   #
   # `systemd.user.services` defines a service that runs once per logged-in
   # user, not once for the whole system.
   systemd.user.services.bluetooth-agent = {
-    description = "Bluetooth pairing agent for pairings started on this computer";
-    # Starts at login.
-    wantedBy = [ "default.target" ];
+    description = "Bluetooth pairing agent, run by the Quickshell bar while it scans or pairs";
     serviceConfig = {
       # `--daemon` stops bt-agent from asking questions in a terminal it does
       # not have. It also makes bt-agent move itself to the background, which

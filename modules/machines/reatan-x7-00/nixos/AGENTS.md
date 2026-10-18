@@ -8,7 +8,7 @@ Settings for every NixOS host on the machine `reatan-x7-00`. Each `.nix` file he
 | --- | --- |
 | `admin.nix` | Adds details to the login account `chrismg`, puts it in the `networkmanager` and `wheel` groups, and makes zsh its login shell. |
 | `audio.nix` | Turns on PipeWire as the sound server and turns off PulseAudio. Lets Bluetooth audio only go out to headphones and speakers, so headphones that offer both directions get a speaker output. |
-| `bluetooth.nix` | Turns on Bluetooth and runs bt-agent for each user, so pairings started from the Quickshell bar work. |
+| `bluetooth.nix` | Turns on Bluetooth and defines a per-user bt-agent service, so pairings started from the Quickshell bar work. The service does not start at login. The bar starts it while a scan or a pairing from the bar runs, and stops it afterward. |
 | `browsers.nix` | Installs Firefox for every user. |
 | `desktop.nix` | Turns on the niri desktop, xwayland-satellite for X11 apps, the Soteria password prompt, the PAM entry that lets swaylock unlock, and gpu-screen-recorder, which the user's Vicinae extension starts and stops. |
 | `form-factor.nix` | Marks this machine as a desktop with `machine.formFactor`. |
