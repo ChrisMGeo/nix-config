@@ -45,6 +45,7 @@ New to Nix? Read the glossary below first. Then read the layout and the loading 
 │   └── monochrome-mountain-in-the-void.png  A snowy mountain peak on black.
 └── modules/
     ├── machines.nix                Finds machines, hosts, and users from folder names.
+    ├── checks.nix                  Checks for `nix flake check`: niri configs and Quickshell QML.
     ├── features/                   Settings for every host.
     │   ├── base.nix                Packages, flakes, binary caches, and time zone for all platforms.
     │   └── nixos/                  Settings for NixOS hosts only.
@@ -132,6 +133,14 @@ nix eval .#nixosConfigurations.nixos.config.system.build.toplevel.drvPath
 ```
 
 Nix evaluates the settings and prints the path of the build plan. It does not build anything, so it is much faster than a full rebuild. The first run downloads the inputs, so it can take a while.
+
+### Run the checks
+
+```sh
+nix flake check
+```
+
+This runs the checks in `modules/checks.nix`. They validate the niri settings for the desktop and the login screen with `niri validate`, and they run `qmllint` on the Quickshell files. A failed check stops the command with an error. Run it after changing a niri or Quickshell file, before a rebuild.
 
 ### Update the pinned versions
 

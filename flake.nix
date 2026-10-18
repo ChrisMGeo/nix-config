@@ -6,8 +6,8 @@
 #            Their exact versions are recorded in flake.lock.
 #   outputs  What this flake produces, such as the system configurations.
 #
-# This file only declares the inputs and hands the outputs to modules/machines.nix,
-# which does the real work.
+# This file only declares the inputs and hands the outputs to modules/machines.nix
+# and modules/checks.nix, which do the real work.
 {
   # A one-line description, shown by `nix flake metadata`.
   description = "Chris' NixOS configuration";
@@ -77,8 +77,9 @@
       # their own platform, so nothing in this repository uses this list yet.
       systems = [ "x86_64-linux" "aarch64-darwin" ];
 
-      # Modules to load. This one finds every machine from the folder layout and
-      # sets the nixosConfigurations and darwinConfigurations outputs.
-      imports = [ ./modules/machines.nix ];
+      # Modules to load. machines.nix finds every machine from the folder layout
+      # and sets the nixosConfigurations and darwinConfigurations outputs.
+      # checks.nix sets the checks that `nix flake check` runs.
+      imports = [ ./modules/machines.nix ./modules/checks.nix ];
     };
 }
