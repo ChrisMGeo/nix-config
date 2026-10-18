@@ -108,4 +108,12 @@ in
 
   # The mouse pointer theme, so niri can find it for the login screen.
   environment.systemPackages = [ home.stylix.cursor.package ];
+
+  # The two files the login screen runs from. `system.build` holds build
+  # outputs that other files can use by name. modules/checks.nix checks both
+  # before a rebuild, so a broken file cannot leave the login screen unable to
+  # start.
+  system.build.greeterNiriConfig = niriConfig;
+  system.build.greeterQuickshell = greeterConfig;
+  system.build.greeterQuickshellPackage = pkgs.quickshell;
 }
