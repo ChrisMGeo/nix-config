@@ -8,10 +8,10 @@
 # niri with its own small settings file, greeter/niri.kdl, and niri starts
 # Quickshell. The QML file is greeter/shell.qml.
 #
-# The login screen uses the Theme.qml of the user `chrismg`'s Quickshell bar,
-# so its colors, font, and sizes always match the desktop. The cursor and
-# wallpaper also come from that user's Home Manager settings. See
-# users/chrismg/quickshell.nix, users/chrismg/theme.nix, and
+# The login screen uses the Theme.qml of the Quickshell bar of the first user
+# folder (the user `chrismg` today), so its colors, font, and sizes always match
+# the desktop. The cursor and wallpaper also come from that user's Home Manager
+# settings. See users/chrismg/quickshell.nix, users/chrismg/theme.nix, and
 # users/chrismg/wallpaper.nix under hosts/nixos/.
 #
 # `{ config, pkgs, ... }:` makes this file a function. `config` is the whole
@@ -20,10 +20,22 @@
 
 # `let ... in` defines local names. The names exist only between `let` and `in`.
 let
+  # The user folders on this machine, such as `chrismg`. `attrNames` returns their
+  # names in alphabetical order.
+  userNames = builtins.attrNames config.home-manager.users;
+
   # The user whose look the login screen copies, and who is filled in as the
-  # user name. `config.home-manager.users.${user}` is that user's final Home
-  # Manager settings. `${user}` looks up the entry named by `user`.
-  user = "chrismg";
+  # user name. The first user folder is used, so the login screen still works
+  # after another user folder is added. `if ... then ... else` picks one of two
+  # values, and `throw` stops evaluation with a message.
+  user =
+    if userNames == [ ] then
+      throw "greeter.nix needs at least one user folder under hosts/nixos/users/."
+    else
+      builtins.head userNames;
+
+  # `config.home-manager.users.${user}` is that user's final Home Manager
+  # settings. `${user}` looks up the entry named by `user`.
   home = config.home-manager.users.${user};
 
   # The fonts the login screen draws with. The greeter does not run as
