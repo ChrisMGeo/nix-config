@@ -28,7 +28,10 @@ def draw_tab(
     screen.cursor.fg = tab_fg
     screen.draw(" ")
 
-    title_width = max(0, max_tab_length - 4)
+    # Keep at least one cell. kitty reads a width of 0 as "no limit", so the
+    # overflow code below would move the cursor back over the padding before the
+    # title. With one cell, a long title shows only the ellipsis.
+    title_width = max(1, max_tab_length - 4)
     title_start = screen.cursor.x
     draw_title(draw_data, screen, tab, index, title_width)
     overflow = screen.cursor.x - title_start - title_width
