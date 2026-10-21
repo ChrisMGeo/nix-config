@@ -24,24 +24,42 @@ ShellRoot {
     // The last error to show under the password box, or "" for none.
     property string message: ""
 
+    // The user to log in as once the old session has closed. "" when none is waiting.
+    property string queuedUser: ""
+
     // Starts a login for `user` with `password`. greetd answers through the
     // signals in the Connections below.
     function login(user, password) {
         if (busy || user.length === 0)
             return;
 
-        // A rejected login can leave the old session open. Start fresh.
-        if (Greetd.state !== GreetdState.Inactive)
-            Greetd.cancelSession();
-
         pendingPassword = password;
         message = "";
         busy = true;
-        Greetd.createSession(user);
+
+        // A rejected login can leave the old session open. Start fresh. The new
+        // session can only start once greetd reports that the old one closed,
+        // so the user waits in queuedUser until then. Starting at once can
+        // make greetd reject the new login.
+        if (Greetd.state !== GreetdState.Inactive) {
+            queuedUser = user;
+            Greetd.cancelSession();
+        } else {
+            Greetd.createSession(user);
+        }
     }
 
     Connections {
         target: Greetd
+
+        // Once the old session has closed, start the queued login.
+        function onStateChanged() {
+            if (root.queuedUser.length > 0 && Greetd.state === GreetdState.Inactive) {
+                const user = root.queuedUser;
+                root.queuedUser = "";
+                Greetd.createSession(user);
+            }
+        }
 
         // PAM asks a question, usually for the password. Send the typed
         // password once. A second question, such as a fingerprint prompt,
