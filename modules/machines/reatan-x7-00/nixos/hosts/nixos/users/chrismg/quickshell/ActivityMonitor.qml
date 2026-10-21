@@ -566,19 +566,23 @@ FloatingWindow {
                 spacing: 8
 
                 Repeater {
-                    model: root.availableMetrics
+                    model: root.metrics
 
                     Rectangle {
                         id: tile
 
                         required property var modelData
                         readonly property bool selected: root.shownMetric === modelData.id
+                        readonly property bool readable: root.available(modelData.id)
                         readonly property color tint: root.colorOf(modelData.id)
 
-                        // Equal preferred widths split the row evenly.
+                        // Equal preferred widths split the row evenly. A tile
+                        // this computer cannot read stays in the row, dimmed,
+                        // with a note, so its absence is explained.
                         Layout.fillWidth: true
                         Layout.preferredWidth: 1
                         Layout.preferredHeight: Theme.scaled(108)
+                        opacity: readable ? 1 : 0.45
                         radius: Theme.radius - 3
                         color: selected
                             ? Qt.rgba(tint.r, tint.g, tint.b, 0.1)
@@ -618,14 +622,14 @@ FloatingWindow {
                             }
 
                             UiText {
-                                text: `${Math.round(root.valueOf(tile.modelData.id))}%`
+                                text: tile.readable ? `${Math.round(root.valueOf(tile.modelData.id))}%` : "n/a"
                                 font.pixelSize: Theme.scaled(22)
                                 font.weight: Font.DemiBold
                             }
 
                             UiText {
                                 Layout.fillWidth: true
-                                text: root.captionOf(tile.modelData.id)
+                                text: tile.readable ? root.captionOf(tile.modelData.id) : "Needs an AMD card"
                                 color: Theme.textMuted
                                 font.pixelSize: Theme.scaled(10)
                                 elide: Text.ElideRight
@@ -634,7 +638,7 @@ FloatingWindow {
                             UsageChart {
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
-                                values: root.historyOf(tile.modelData.id)
+                                values: tile.readable ? root.historyOf(tile.modelData.id) : []
                                 lineColor: tile.tint
                                 lineWidth: 1.5
                             }
@@ -645,7 +649,8 @@ FloatingWindow {
 
                             anchors.fill: parent
                             hoverEnabled: true
-                            cursorShape: Qt.PointingHandCursor
+                            enabled: tile.readable
+                            cursorShape: tile.readable ? Qt.PointingHandCursor : Qt.ArrowCursor
                             onClicked: root.metricSelected(tile.modelData.id)
                         }
                     }
