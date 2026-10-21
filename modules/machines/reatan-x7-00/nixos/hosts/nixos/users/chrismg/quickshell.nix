@@ -208,6 +208,10 @@ let
         while read -r key value _; do
           case "$key" in
             drm-client-id:) client=$value ;;
+            # Intel also lists drm-engine-capacity-* lines. They count engine
+            # copies, not time, so they are skipped. The pattern below would
+            # otherwise match them.
+            drm-engine-capacity-*) ;;
             drm-engine-*) engines=$((engines + value)) ;;
             drm-resident-vram:) memory=$value ;;
           esac
