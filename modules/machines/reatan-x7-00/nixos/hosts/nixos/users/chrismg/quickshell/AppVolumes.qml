@@ -185,7 +185,14 @@ Singleton {
         printErrors: false
         onLoaded: {
             try {
-                root.saved = JSON.parse(text());
+                // Valid JSON is not always an object. A file that holds `null`
+                // or a list would break Object.keys later, so only a plain
+                // object is accepted. Anything else keeps the empty default.
+                const data = JSON.parse(text());
+                if (data !== null && typeof data === "object" && !Array.isArray(data))
+                    root.saved = data;
+                else
+                    console.warn("app-volumes.json does not hold an object, ignoring it");
             } catch (error) {
                 console.warn("Could not read app-volumes.json:", error);
             }
