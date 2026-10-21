@@ -122,6 +122,11 @@ Column {
     }
 
     function join(network, username, domain, password) {
+        // The enterprise join script can run for one network at a time. Starting
+        // another would change the running process's settings, so wait for the
+        // current join to finish.
+        if (enterpriseJoin.running)
+            return;
         clearError();
         if (isEnterprise(network)) {
             // The password goes to the script on stdin, so it never shows up
@@ -396,7 +401,7 @@ Column {
                         && (!networkItem.enterprise || (usernameField.text.length > 0 && domainField.text.length > 0))
 
                     function submit() {
-                        if (ready && !busy)
+                        if (ready && !enterpriseJoin.running)
                             root.join(networkItem.network, usernameField.text, domainField.text, passwordField.text);
                     }
 
@@ -454,7 +459,7 @@ Column {
 
                         TextButton {
                             primary: true
-                            enabled: form.ready && !form.busy
+                            enabled: form.ready && !enterpriseJoin.running
                             text: form.busy ? "Joining…" : "Join"
                             onClicked: form.submit()
                         }
