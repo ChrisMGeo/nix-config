@@ -22,7 +22,17 @@ Column {
 
     // The name to show for a node. `description` is the readable one, such as
     // "Bose QC Headphones". The others are fallbacks.
+    //
+    // A monitor's speakers are the exception. Their description names the
+    // graphics card, such as "Radeon High Definition Audio Controller Digital
+    // Stereo (HDMI 2)", so the monitor is hard to spot. Their nickname is the
+    // monitor's own name, such as "AG276QZD2", so that is shown with the port
+    // after it. HDMI and DisplayPort outputs both have "hdmi" in their name.
     function label(node) {
+        if (/\.hdmi-/.test(node?.name ?? "") && node?.nickname) {
+            const port = (node.description ?? "").match(/\(([^)]+)\)$/);
+            return port ? node.nickname + " (" + port[1] + ")" : node.nickname;
+        }
         return node?.description || node?.nickname || node?.name || "";
     }
 
