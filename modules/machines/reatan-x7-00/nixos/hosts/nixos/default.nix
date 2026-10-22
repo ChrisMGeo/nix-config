@@ -21,4 +21,11 @@
   # Uses the newest Linux kernel that nixpkgs provides. It can be newer than the
   # kernel that comes with the default NixOS release.
   boot.kernelPackages = pkgs.linuxPackages_latest;
+
+  # Loads amdgpu, the driver for the built-in AMD graphics, in the initrd, before
+  # the rest of the system starts. Without this, the driver loads later, in no
+  # fixed order with greetd. On one boot a faulty USB hub held up driver loading
+  # for 35 seconds, so niri started the login screen on the plain firmware screen.
+  # amdgpu then took over the screen and niri was left with a black one.
+  hardware.amdgpu.initrd.enable = true;
 }
