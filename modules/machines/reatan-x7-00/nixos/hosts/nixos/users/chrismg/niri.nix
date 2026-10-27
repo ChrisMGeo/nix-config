@@ -115,16 +115,26 @@ let
       # glass look. kitty.nix makes the background see-through. `match` picks
       # windows by app ID, a regular expression. `_props` becomes a KDL
       # property: `app-id="^kitty$"`.
+      # Blur turns on niri's xray mode by default, which shows the blurred
+      # wallpaper and skips any window or desktop widget in between. `xray
+      # false` blurs what is really behind kitty instead, like the bar, the
+      # launcher, and the notification panel below, so every see-through
+      # surface looks the same. niri drops this kind of blur while a window
+      # opens, closes, or is dragged, so kitty is briefly unblurred then.
       {
         "window-rule" = {
           match._props."app-id" = "^kitty$";
-          "background-effect".blur = true;
+          "background-effect" = {
+            blur = true;
+            xray = false;
+          };
         };
       }
       # The Quickshell activity monitor, opened from the bar's usage gauges, is
       # a normal window. It floats instead of taking a column, and its
-      # see-through background is blurred like kitty's. Quickshell gives all its
-      # windows the app ID "org.quickshell", so the title picks this one. `[.]`
+      # see-through background is blurred like kitty's, without xray, so it
+      # shows the windows it floats over. Quickshell gives all its windows the
+      # app ID "org.quickshell", so the title picks this one. `[.]`
       # matches a literal dot, which needs no backslash escape in KDL. See
       # quickshell/ActivityMonitor.qml.
       {
@@ -134,7 +144,10 @@ let
             title = "^Activity monitor$";
           };
           "open-floating" = true;
-          "background-effect".blur = true;
+          "background-effect" = {
+            blur = true;
+            xray = false;
+          };
         };
       }
       # The Quickshell bar and its panels ask for blur themselves, only behind
