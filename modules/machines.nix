@@ -162,9 +162,10 @@ let
             # Settings shared by every host. Written as a function so it can use
             # `pkgs`, the host's package set, which NixOS passes to every module.
             ({ pkgs, ... }: {
-              # The CPU and operating system the host runs on.
-              nixpkgs.hostPlatform = nixlib.mkDefault
-                (if class == "darwin" then "aarch64-darwin" else "x86_64-linux");
+              # The CPU and operating system, `nixpkgs.hostPlatform`, is not set
+              # here. Each host sets its own, such as "x86_64-linux" or
+              # "aarch64-darwin", so any architecture works on any platform. A
+              # NixOS host gets it from hardware-configuration.nix.
 
               # The machine's network name, taken from the host folder name.
               networking.hostName = nixlib.mkDefault hostName;

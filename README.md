@@ -182,6 +182,8 @@ Create a `.nix` file in `modules/features/`. For a setting that only NixOS suppo
    nixos-generate-config --show-hardware-config > hardware-configuration.nix
    ```
 
+   The loader does not pick a CPU for you. Every host sets `nixpkgs.hostPlatform`, such as "x86_64-linux", "aarch64-linux", "x86_64-darwin", or "aarch64-darwin". The generated `hardware-configuration.nix` already sets it on NixOS. A darwin host has no generated file, so set it in its `default.nix`. Nixpkgs 26.05 is the last release that supports Intel Macs ("x86_64-darwin").
+
 4. Add a `users/<login>/default.nix` file for each user who needs Home Manager settings.
 5. Run `git add` on the new files. Nix ignores files that git does not track. See the list below.
 6. Build the host. The first build needs the command in [First build on a new computer](#first-build-on-a-new-computer), with `.#<name>` in place of `.#nixos`.

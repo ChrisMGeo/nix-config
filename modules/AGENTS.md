@@ -19,6 +19,7 @@ Everything the flake builds. `machines.nix` reads the folder layout and builds e
 - The loader depends on folder names. `machines`, `features`, `hosts`, `users`, and the platform names `nixos`, `darwin`, and `wsl` are fixed. If you rename one, update `machines.nix`, the README, and every `AGENTS.md` that names it.
 - `machines.nix` accepts only the platform folder names `nixos`, `darwin`, and `wsl`. Any other name stops evaluation with an error.
 - Keep machine-specific values out of `machines.nix`. Put them in a machine or host folder.
+- `machines.nix` does not set `nixpkgs.hostPlatform`. Every host sets its own CPU and operating system, on any platform. NixOS hosts get it from `hardware-configuration.nix`. Darwin hosts set it in their `default.nix`.
 
 ## Keeping this file current
 

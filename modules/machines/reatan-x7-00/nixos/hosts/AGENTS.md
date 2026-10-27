@@ -9,6 +9,7 @@ One folder per host. The folder name becomes the host name, the network name, an
 ## Rules
 
 - Each host folder holds the files for its own hardware and boot. For new hardware, generate `hardware-configuration.nix` on that computer with `nixos-generate-config --show-hardware-config`.
+- The loader does not set `nixpkgs.hostPlatform`, the host's CPU and operating system. The generated `hardware-configuration.nix` sets it, so keep that file in every host folder.
 - A host folder with no `users/` folder has no Home Manager users.
 
 ## Keeping this file current
