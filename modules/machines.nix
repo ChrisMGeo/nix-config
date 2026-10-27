@@ -117,8 +117,9 @@ let
         else inputs.home-manager.nixosModules.home-manager;
     in
     {
-      # Shorthand for `hostName = hostName; class = class;`.
-      inherit hostName class;
+      # Shorthand for `hostName = hostName; class = class; hostDir = hostDir;`.
+      # The folder is kept so the duplicate-name error can point to it.
+      inherit hostName class hostDir;
 
       # The built system. Its list of modules is assembled in this order:
       #   1. Shared features, for every platform and for this class.
@@ -227,12 +228,26 @@ let
 
   # Keeps the hosts for one class and returns them as a set keyed by host name,
   # such as { nixos = <system>; }.
-  # If two hosts in the same class share a name, the first one wins and the
-  # second is dropped without a warning.
+  # Each host name becomes one flake output, so two hosts in the same class
+  # cannot share a name, even on different machines. A shared name stops
+  # evaluation with an error that lists the folders, instead of one host
+  # silently replacing the other.
   systemsOf = class:
-    builtins.listToAttrs
-      (map (s: nixlib.nameValuePair s.hostName s.system)
-        (nixlib.filter (s: s.class == class) systems));
+    let
+      hosts = nixlib.filter (s: s.class == class) systems;
+      # The folders of every host with this name, written from modules/,
+      # such as "machines/reatan-x7-00/nixos/hosts/nixos".
+      dirsNamed = name:
+        map (s: nixlib.removePrefix (toString ./. + "/") (toString s.hostDir))
+          (nixlib.filter (s: s.hostName == name) hosts);
+      # `unique` drops repeats from a list, so each name is checked once.
+      duplicates = nixlib.filter (name: nixlib.length (dirsNamed name) > 1)
+        (nixlib.unique (map (s: s.hostName) hosts));
+    in
+    if duplicates != [ ]
+    then throw "two ${class} hosts are named '${nixlib.head duplicates}': ${nixlib.concatStringsSep ", " (dirsNamed (nixlib.head duplicates))}. Rename one host folder, because each host name is one flake output."
+    else builtins.listToAttrs
+      (map (s: nixlib.nameValuePair s.hostName s.system) hosts);
 in
 {
   # This module sets flake outputs. `nixos-rebuild --flake .#<name>` reads

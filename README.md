@@ -216,7 +216,7 @@ Create a folder at `hosts/<host>/users/<login>/` with a `default.nix` file. The 
 - Nix ignores files that git does not track. Run `git add` on any new file before you build. Staging the file is enough.
 - The host folder name sets the host name, the network name, and the flake output name. The three always match.
 - An unknown folder name under a machine stops evaluation with an error. Only `nixos`, `darwin`, and `wsl` are allowed.
-- If two hosts share a name in the same class, the first one wins and Nix drops the other one without a warning.
+- Two hosts in the same class cannot share a name, even on different machines. Evaluation stops with an error that lists both folders.
 - `hardware-configuration.nix` is generated, and its header says not to edit it. Regenerate it when the hardware changes.
 - `flake.lock` is generated. Use `nix flake update` instead of editing it by hand.
 - The Vicinae launcher comes from `nixpkgs-unstable`, and its extensions come from the `vicinae-extensions` input. A newer extension can need a newer Vicinae, so update the two together with `nix flake update nixpkgs-unstable vicinae-extensions`.

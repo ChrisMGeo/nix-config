@@ -24,7 +24,7 @@ machines/
 
 - Platform folders must be named `nixos`, `darwin`, or `wsl`. `wsl` builds as NixOS, but no WSL support module loads for it.
 - A `.nix` file directly in a machine folder loads for every platform on that machine. None exist today.
-- Within one class, host names must be unique. If two hosts share a name, the first one wins and the second is dropped without a warning.
+- Within one class, host names must be unique, even across machines. If two hosts share a name, evaluation stops with an error that lists both folders.
 
 ## Keeping this file current
 
