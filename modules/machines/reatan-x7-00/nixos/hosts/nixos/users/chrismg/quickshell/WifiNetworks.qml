@@ -485,7 +485,7 @@ Column {
             radius: Theme.radius - 5
             color: Theme.subtleButton
             border.color: parent.activeFocus ? Theme.accent : Theme.outlineTranslucent
-            border.width: Theme.compactOutlineWidth
+            border.width: Theme.outlineWidth
         }
     }
 }

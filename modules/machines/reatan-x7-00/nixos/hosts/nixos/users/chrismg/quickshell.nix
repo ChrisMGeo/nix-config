@@ -360,7 +360,6 @@ let
         property color cyan: ${color "base0C"}
 
         property int outlineWidth: ${toString config.look.borderWidth}
-        property int compactOutlineWidth: ${toString config.look.thinBorderWidth}
         property int outerMargin: ${toString config.look.screenMargin}
         property int barTopGap: ${toString config.look.topMargin}
         property int barBottomGap: 8

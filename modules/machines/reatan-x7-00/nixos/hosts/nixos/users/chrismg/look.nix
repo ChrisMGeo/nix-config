@@ -2,7 +2,7 @@
 # `nixos`. Loaded by machines.nix as a Home Manager module.
 #
 # Stylix sets colors, fonts, and opacity, but it has no setting for shapes
-# and spacing, such as rounded corners, outline widths, and margins. This
+# and spacing, such as rounded corners, outline width, and margins. This
 # file adds them, so niri, the notifications, the launcher, and the
 # Quickshell bar all read the same values instead of each typing its own.
 #
@@ -12,7 +12,7 @@
 
 {
   # `options` declares new settings that other modules can read. Here it adds
-  # `look.cornerRadius`, the outline widths, and the margins, read as
+  # `look.cornerRadius`, the outline width, and the margins, read as
   # `config.look.cornerRadius` and so on.
   options.look = {
     # `mkOption` declares one setting. `type` makes Nix reject a value that
@@ -24,19 +24,14 @@
       description = "How round the corners of windows and panels are, in pixels.";
     };
 
-    # The outline around windows, the bar, and its cards.
+    # The one outline width for everything: windows, the bar, its cards,
+    # drawers, menus, sliders, and switches, the notification cards, the
+    # launcher, and the login screen. One value keeps every outline the same
+    # thickness. 1 pixel keeps them thin.
     borderWidth = lib.mkOption {
       type = lib.types.ints.unsigned;
-      default = 2;
-      description = "How thick the outline around windows and the bar's panels is, in pixels.";
-    };
-
-    # The thinner outline around smaller things: the bar's drawers, menus,
-    # sliders, and switches, the notification cards, and the launcher.
-    thinBorderWidth = lib.mkOption {
-      type = lib.types.ints.unsigned;
       default = 1;
-      description = "How thick the outline around smaller panels and controls is, in pixels.";
+      description = "How thick every outline is, in pixels.";
     };
 
     # The space niri leaves between windows, and between windows and the

@@ -24,7 +24,7 @@ Item {
 
         onPaint: {
             const context = getContext("2d");
-            const lineWidth = Theme.compactOutlineWidth + 2;
+            const lineWidth = Theme.outlineWidth + 2;
             const center = width / 2;
             const radius = Math.min(width, height) / 2 - lineWidth;
             const start = -Math.PI / 2;
@@ -78,7 +78,7 @@ Item {
             radius: Theme.radius - 4
             color: Theme.panel
             border.color: Theme.outline
-            border.width: Theme.compactOutlineWidth
+            border.width: Theme.outlineWidth
 
             Column {
                 id: popupText

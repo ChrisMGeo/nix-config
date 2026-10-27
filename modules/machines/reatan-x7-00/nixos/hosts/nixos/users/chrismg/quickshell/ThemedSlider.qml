@@ -40,7 +40,7 @@ Slider {
         height: size
         radius: size / 2
         color: Theme.accent
-        border.width: Theme.compactOutlineWidth
+        border.width: Theme.outlineWidth
         border.color: Theme.panelSolid
 
         Behavior on width {

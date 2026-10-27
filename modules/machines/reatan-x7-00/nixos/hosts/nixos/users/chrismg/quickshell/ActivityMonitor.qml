@@ -588,7 +588,7 @@ FloatingWindow {
                             ? Qt.rgba(tint.r, tint.g, tint.b, 0.1)
                             : tileMouse.containsMouse ? Theme.subtleButton : "transparent"
                         border.color: selected ? tint : Theme.outlineFaint
-                        border.width: Theme.compactOutlineWidth
+                        border.width: Theme.outlineWidth
 
                         Behavior on color {
                             ColorAnimation { duration: 140 }
@@ -665,7 +665,7 @@ FloatingWindow {
                 radius: Theme.radius - 3
                 color: "transparent"
                 border.color: Theme.outlineFaint
-                border.width: Theme.compactOutlineWidth
+                border.width: Theme.outlineWidth
 
                 ColumnLayout {
                     id: detailColumn
@@ -895,7 +895,7 @@ FloatingWindow {
                 radius: Theme.radius - 3
                 color: "transparent"
                 border.color: Theme.outlineFaint
-                border.width: Theme.compactOutlineWidth
+                border.width: Theme.outlineWidth
 
                 ColumnLayout {
                     anchors {

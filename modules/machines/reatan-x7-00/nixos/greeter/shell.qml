@@ -312,7 +312,7 @@ ShellRoot {
                     }
                     width: powerRow.implicitWidth + 16
                     height: powerRow.implicitHeight + 16
-                    border: Theme.compactOutlineWidth
+                    border: Theme.outlineWidth
                     blurSource: blurredWallpaper
 
                     Timer {
@@ -439,7 +439,7 @@ ShellRoot {
             radius: Theme.radius - 5
             color: Theme.subtleButton
             border.color: parent.activeFocus ? Theme.accent : Theme.outlineTranslucent
-            border.width: Theme.compactOutlineWidth
+            border.width: Theme.outlineWidth
         }
     }
 

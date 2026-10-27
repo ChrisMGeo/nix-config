@@ -198,8 +198,9 @@ let
       # windows and reserves no space, so the top edge gets the same gap as the
       # others.
       gaps = config.look.windowGap;
-      # An outline around every window, look.borderWidth from look.nix, 2
-      # pixels by default, thick enough to spot at a glance. The window that has the keyboard uses the active color, a mid
+      # An outline around every window, look.borderWidth from look.nix, 1
+      # pixel, the same as every other outline on the desktop. The window that
+      # has the keyboard uses the active color, a mid
       # gray. Every other window uses the inactive color, a dimmer gray from
       # `unfocusedOutline` above. niri's focus ring would outline only the
       # focused window of each monitor and leave the rest bare, so it is off.

@@ -19,7 +19,7 @@ Rectangle {
     // still gets the accent outline below.
     color: "transparent"
     border.color: expanded ? Theme.accent : "transparent"
-    border.width: Theme.compactOutlineWidth
+    border.width: Theme.outlineWidth
 
     Behavior on implicitHeight {
         NumberAnimation { duration: 140; easing.type: Easing.OutCubic }

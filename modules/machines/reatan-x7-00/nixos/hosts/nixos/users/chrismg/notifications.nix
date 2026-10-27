@@ -34,9 +34,9 @@ let
   radius = config.look.cornerRadius;
 
   # The width of the outlines around cards, the side panel, and its buttons,
-  # in pixels. It is look.thinBorderWidth from look.nix, the same as the
-  # launcher and the bar's smaller panels.
-  thin = config.look.thinBorderWidth;
+  # in pixels. It is look.borderWidth from look.nix, the same as every other
+  # outline on the desktop.
+  thin = config.look.borderWidth;
 
   # The app picture's corners are a little tighter than the card around it.
   # `lib.max 0` keeps the value from going below zero for a very small radius.

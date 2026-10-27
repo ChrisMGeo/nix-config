@@ -29,7 +29,7 @@ Switch {
         implicitHeight: Theme.scaled(18)
         radius: height / 2
         color: root.checked ? Theme.accent : Theme.surfaceRaised
-        border.width: Theme.compactOutlineWidth
+        border.width: Theme.outlineWidth
         border.color: root.checked ? Theme.accent : Theme.outline
 
         Behavior on color {
