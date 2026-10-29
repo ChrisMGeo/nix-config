@@ -2,7 +2,7 @@
 
 This repository describes the operating system and user setup for the computers it manages. Nix builds each system from these files. Given the same pinned versions in `flake.lock`, the same files always produce the same system.
 
-Today the repository manages one computer, `reatan-x7-00`, with one NixOS host named `nixos`. That host runs the niri desktop with a Quickshell bar, the Vicinae launcher with community extensions, SwayNotificationCenter, and the kitty terminal, themed by Stylix. It also has PipeWire audio, Firefox, Brave, the Zed editor, zsh with starship, and three AI coding agents: Codex, OpenCode, and Claude Code.
+Today the repository manages one computer, `reatan-x7-00`, with one NixOS host named `nixos`. That host runs the niri desktop with a Quickshell bar, the Vicinae launcher with community extensions, SwayNotificationCenter, and the kitty terminal, themed by Stylix. It also has PipeWire audio, Firefox, Brave, the Zed editor, zsh with starship, and three AI coding agents, Codex, OpenCode, and Claude Code, with the T3 Code desktop app for running them.
 
 New to Nix? Read the glossary below first. Then read the layout and the loading order. Coding agents should start at [AGENTS.md](AGENTS.md).
 

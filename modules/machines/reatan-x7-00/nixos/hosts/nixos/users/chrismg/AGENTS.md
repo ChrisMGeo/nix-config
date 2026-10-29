@@ -6,7 +6,7 @@ Home Manager settings for the user `chrismg` on the host `nixos`.
 
 | File | What it does |
 | --- | --- |
-| `default.nix` | Installs packages for this user only: Codex, OpenCode, Claude Code, Brave, fastfetch, Vesktop, and Zed. |
+| `default.nix` | Installs packages for this user only: Codex, OpenCode, Claude Code, T3 Code, Brave, fastfetch, Vesktop, and Zed. |
 | `kitty.nix` | Sets up the kitty terminal with an 80% opaque black background, frees Ctrl+Shift+Left and Right for zsh, and links its custom tab bar from `kitty/tab_bar.py`. |
 | `lock.nix` | Sets up swaylock as the lock screen and swayidle to start it when the session is locked. There are no idle timers. |
 | `look.nix` | Declares the shapes and spacing Stylix has no setting for, shared by niri windows, the notifications, the Vicinae launcher, and the Quickshell bar and login screen: `look.cornerRadius` (12), `look.borderWidth` (1) for every outline, `look.windowGap` (16) between niri windows, `look.screenMargin` (12) between the screen edges and the bar, its drawers, and the notifications, and `look.topMargin` (8) above the bar and the notification side panel. Change a `default` to change it everywhere. |
@@ -18,7 +18,7 @@ Home Manager settings for the user `chrismg` on the host `nixos`.
 | `vicinae.nix` | Sets up the Vicinae app launcher from nixpkgs-unstable and runs its server as a systemd user service. Installs nine extensions from the `vicinae-extensions` flake input: Niri, Nix, SuperGenPass, OTP, Kaomojis, Number converter, GPU Screen Recorder, Lorem Ipsum, and Reminders. Gives the Reminders extension the paths to Node.js and notify-send through the service's environment, and installs jq for the GPU Screen Recorder extension. |
 | `wallpaper.nix` | Picks a picture from the root `wallpapers/` folder, at build time shrinks it to the monitor's resolution, darkens its blacks, and sharpens it, sets it as the Stylix wallpaper, and runs wpaperd to draw it behind the windows. swaylock also shows it. |
 
-`default.nix` takes Codex, OpenCode, and Claude Code from the llm-agents flake. It takes Zed from nixpkgs-unstable. It takes Brave, fastfetch, and Vesktop from the stable nixpkgs set.
+`default.nix` takes Codex, OpenCode, Claude Code, and T3 Code from the llm-agents flake. It takes Zed from nixpkgs-unstable. It takes Brave, fastfetch, and Vesktop from the stable nixpkgs set.
 
 ## Subdirectories
 

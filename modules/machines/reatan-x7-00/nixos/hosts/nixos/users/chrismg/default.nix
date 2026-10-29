@@ -32,6 +32,13 @@ in
     agents.opencode
     agents.claude-code
 
+    # T3 Code, a desktop app for running and watching the coding agents above.
+    # This is the Electron build, which opens in its own window and shows up in
+    # the app launcher. The plain `t3code` package is a server that opens in a
+    # web browser instead. Also from the llm-agents flake, which has a newer
+    # version than nixpkgs.
+    agents.t3code-desktop
+
     # Web browser, from the stable nixpkgs set (`pkgs`).
     pkgs.brave
 
