@@ -6,6 +6,7 @@ Home Manager settings for the user `chrismg` on the host `nixos`.
 
 | File | What it does |
 | --- | --- |
+| `browser.nix` | Makes Brave the default browser for web pages and links through `~/.config/mimeapps.list`, and sets `BROWSER` to `brave` for terminal programs. Also lists the link handlers for Claude Code, Vesktop, and T3 Code, because Home Manager now owns that file and replaces the hand-written one. |
 | `default.nix` | Installs packages for this user only: Codex, OpenCode, Claude Code, T3 Code, Brave, fastfetch, Vesktop, and Zed. |
 | `kitty.nix` | Sets up the kitty terminal with an 80% opaque black background, frees Ctrl+Shift+Left and Right for zsh, and links its custom tab bar from `kitty/tab_bar.py`. |
 | `lock.nix` | Sets up swaylock as the lock screen and swayidle to start it when the session is locked. There are no idle timers. |
