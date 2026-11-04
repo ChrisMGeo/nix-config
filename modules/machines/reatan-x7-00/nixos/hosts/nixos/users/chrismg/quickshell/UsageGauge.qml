@@ -70,12 +70,10 @@ Item {
         BackgroundEffect.blurRegion: Region {
             width: tooltip.width
             height: tooltip.height
-            radius: Theme.radius - 4
         }
 
         Rectangle {
             anchors.fill: parent
-            radius: Theme.radius - 4
             color: Theme.panel
 
             Column {

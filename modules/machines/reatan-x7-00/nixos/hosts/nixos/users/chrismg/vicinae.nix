@@ -68,9 +68,9 @@ in
     };
 
     settings.launcher_window = {
-      # Rounded corners, to match the niri windows. look.cornerRadius comes
-      # from look.nix.
-      rounding = config.look.cornerRadius;
+      # Square corners, to match the niri windows. Vicinae rounds them by
+      # default.
+      rounding = 0;
       # No outline around the launcher, to match the windows and the bar.
       client_side_decorations.border_width = 0;
       # Layer shell lets the launcher float above windows like a panel, instead

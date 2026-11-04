@@ -73,18 +73,17 @@ PanelWindow {
         }
     }
 
-    // Asks niri to blur what is behind each of the two panels, with their
-    // rounded corners, for a frosted glass look. The gaps between panels stay
-    // clear. Theme.panel is see-through, so the blur shows. `slide.y` moves
-    // the blur with the panels while they slide in and out. A child Region adds
-    // its area to the one above it, and the empty top Region adds nothing.
+    // Asks niri to blur what is behind each of the two panels, for a frosted
+    // glass look. The gaps between panels stay clear. Theme.panel is
+    // see-through, so the blur shows. `slide.y` moves the blur with the panels
+    // while they slide in and out. A child Region adds its area to the one
+    // above it, and the empty top Region adds nothing.
     BackgroundEffect.blurRegion: Region {
         Region {
             x: workspacePanel.x
             y: Theme.barTopGap + slide.y
             width: workspacePanel.width
             height: Theme.barHeight
-            radius: Theme.radius
         }
 
         Region {
@@ -92,7 +91,6 @@ PanelWindow {
             y: Theme.barTopGap + slide.y
             width: statusPanel.width
             height: Theme.barHeight
-            radius: Theme.radius
         }
     }
 
@@ -176,7 +174,6 @@ PanelWindow {
                 bottom: parent.bottom
             }
             width: workspaceRow.implicitWidth + root.sectionPadding * 2
-            radius: Theme.radius
             color: Theme.panel
 
             Row {
@@ -249,7 +246,6 @@ PanelWindow {
                 bottom: parent.bottom
             }
             width: statusRow.implicitWidth + root.sectionPadding * 2
-            radius: Theme.radius
             color: Theme.panel
 
             RowLayout {

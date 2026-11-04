@@ -39,12 +39,10 @@ PopupWindow {
     BackgroundEffect.blurRegion: Region {
         width: root.width
         height: root.height
-        radius: Theme.radius
     }
 
     Rectangle {
         anchors.fill: parent
-        radius: Theme.radius
         color: Theme.panel
 
         ColumnLayout {

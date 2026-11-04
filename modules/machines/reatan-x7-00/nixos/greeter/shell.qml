@@ -356,7 +356,7 @@ ShellRoot {
         }
     }
 
-    // A rounded, see-through black panel with no outline, over the blurred
+    // A square, see-through black panel with no outline, over the blurred
     // wallpaper. It must sit directly in `scene`, so that its x and y match
     // the place to copy from `blurSource`. Children go inside it.
     component GlassPanel: Item {
@@ -366,38 +366,16 @@ ShellRoot {
         // The blurred wallpaper to copy from.
         property Item blurSource
 
-        // The part of the blurred wallpaper under this panel.
+        // The part of the blurred wallpaper under this panel, drawn as a
+        // plain square copy.
         ShaderEffectSource {
-            id: behind
-
             anchors.fill: parent
             sourceItem: glass.blurSource
             sourceRect: Qt.rect(glass.x, glass.y, glass.width, glass.height)
-            visible: false
-        }
-
-        // Cuts the copy to the panel's rounded corners.
-        Rectangle {
-            id: mask
-
-            anchors.fill: parent
-            radius: Theme.radius
-            visible: false
-            layer.enabled: true
-        }
-
-        MultiEffect {
-            anchors.fill: parent
-            source: behind
-            maskEnabled: true
-            maskSource: mask
-            maskThresholdMin: 0.5
-            maskSpreadAtMin: 1.0
         }
 
         Rectangle {
             anchors.fill: parent
-            radius: Theme.radius
             color: Theme.panel
         }
 

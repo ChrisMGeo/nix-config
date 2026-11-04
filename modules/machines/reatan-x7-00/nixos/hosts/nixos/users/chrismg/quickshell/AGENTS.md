@@ -42,7 +42,7 @@ The QML files for the Quickshell bar of the user `chrismg`. These files are not 
 - Quickshell comes from nixpkgs-unstable, because 0.3.0 crashes when a Wi-Fi access point disappears. See `programs.quickshell.package` in `../quickshell.nix`.
 - `Theme.showBattery` is true only when `machine.formFactor` is "laptop". Hide any laptop-only control behind it.
 - When you add a QML file, list it in `qmldir` too.
-- `Theme.panel` is see-through. A new window that draws it needs a `BackgroundEffect.blurRegion` that covers the panel with the same corner radius, or it looks dim instead of frosted. The blur shows only where that region is.
+- `Theme.panel` is see-through. A new window that draws it needs a `BackgroundEffect.blurRegion` that covers the panel, or it looks dim instead of frosted. The blur shows only where that region is.
 - `ActivityMonitor.qml` is a normal window, not a panel, so the blur rule above does not apply to it. A niri window rule in `../niri.nix` matches its title, "Activity monitor", to make it float and blur it. Change both together.
 - A `PopupWindow` must never have a width or height of 0, even for a moment. Wayland treats it as an error and closes the connection, which stops the whole bar. Give it a minimum size, as `VolumeMixer.qml` does.
 - The bar supports niri only. It reads workspaces and windows with `niri msg` and has no code for other compositors.

@@ -500,9 +500,7 @@ FloatingWindow {
 
     Rectangle {
         anchors.fill: parent
-        // niri rounds the window's corners to 12 pixels, the same as
-        // Theme.radius. See niri.nix. Like every window, it has no outline.
-        radius: Theme.radius
+        // Like every window, it has square corners and no outline.
         color: Theme.panel
 
         // Escape closes the window, and 1 to 4 choose a measure.

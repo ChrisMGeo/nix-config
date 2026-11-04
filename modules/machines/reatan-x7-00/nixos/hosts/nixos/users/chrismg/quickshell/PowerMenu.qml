@@ -80,13 +80,12 @@ PanelWindow {
         right: Theme.outerMargin
     }
 
-    // Asks niri to blur what is behind the whole window, with the same rounded
-    // corners as the panel, for a frosted glass look. Theme.panel is
-    // see-through, so the blur shows. Only this region is blurred.
+    // Asks niri to blur what is behind the whole window, for a frosted
+    // glass look. Theme.panel is see-through, so the blur shows. Only this
+    // region is blurred.
     BackgroundEffect.blurRegion: Region {
         width: root.width
         height: root.height
-        radius: Theme.radius
     }
 
     Timer {
@@ -98,7 +97,6 @@ PanelWindow {
 
     Rectangle {
         anchors.fill: parent
-        radius: Theme.radius
         color: Theme.panel
 
         ColumnLayout {

@@ -18,10 +18,14 @@
     # `mkOption` declares one setting. `type` makes Nix reject a value that
     # is not a whole number. `default` is the value used when no module sets
     # it, so changing this default changes the corners everywhere.
+    # Windows, panels, popups, and cards have square corners. This radius is
+    # for the smaller things inside them, such as buttons, list rows, the
+    # workspace buttons, and the notification pictures, which use it or a few
+    # pixels less.
     cornerRadius = lib.mkOption {
       type = lib.types.ints.unsigned;
       default = 12;
-      description = "How round the corners of windows and panels are, in pixels.";
+      description = "How round the corners of buttons, rows, and other parts inside windows and panels are, in pixels. Windows and panels themselves are square.";
     };
 
     # The outline around small controls in the bar: switches, slider knobs,

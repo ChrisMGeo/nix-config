@@ -5,7 +5,7 @@
 # panel that keeps past notifications and a do-not-disturb switch. Mod+N opens
 # the panel. See niri.nix.
 #
-# The look is plain and dark: a see-through black panel with rounded corners
+# The look is plain and dark: a see-through black panel with square corners
 # and no outline. The colors and the opacity come from Stylix. See
 # theme.nix.
 #
@@ -29,8 +29,9 @@ let
   # and the launcher.
   opacity = config.stylix.opacity.popups;
 
-  # The corner radius of the popups and the side panel, in pixels. It is
-  # look.cornerRadius from look.nix, the same as every window and panel.
+  # The corner radius of the buttons and the switch, in pixels. It is
+  # look.cornerRadius from look.nix. The popups and the side panel themselves
+  # are square, like every window and panel. See the end of the stylesheet.
   radius = config.look.cornerRadius;
 
   # The app picture's corners are a little tighter than the card around it.
@@ -264,6 +265,18 @@ in
 
         .widget-dnd > switch:checked {
           background: ${hex.base04};
+        }
+
+        /* Square corners on the popups, the cards, and the side panel, like
+           every window and panel. swaync rounds them, and the parts inside a
+           card, with --border-radius, so these rules repeat its selectors to
+           take their place. The buttons and the switch stay rounded. */
+        .notification-row .notification-background .notification,
+        .notification-row .notification-background .notification .notification-default-action,
+        .notification-row .notification-background .notification .notification-default-action .notification-content,
+        .notification-row .notification-background .notification .notification-alt-actions,
+        .control-center {
+          border-radius: 0;
         }
       '')
     ];

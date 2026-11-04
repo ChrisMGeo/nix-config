@@ -20,7 +20,6 @@ DraggablePanel {
 
     Rectangle {
         anchors.fill: parent
-        radius: Theme.radius
         color: Theme.panel
 
         ColumnLayout {
