@@ -501,8 +501,7 @@ FloatingWindow {
     Rectangle {
         anchors.fill: parent
         // niri rounds the window's corners to 12 pixels, the same as
-        // Theme.radius. See niri.nix. There is no border here, because niri
-        // draws the same outline around this window as around every other.
+        // Theme.radius. See niri.nix. Like every window, it has no outline.
         radius: Theme.radius
         color: Theme.panel
 
@@ -584,11 +583,12 @@ FloatingWindow {
                         Layout.preferredHeight: Theme.scaled(108)
                         opacity: readable ? 1 : 0.45
                         radius: Theme.radius - 3
+                        // The chosen tile is tinted in its measure's color.
+                        // The others have no fill until the pointer is over
+                        // them, and no tile has an outline.
                         color: selected
                             ? Qt.rgba(tint.r, tint.g, tint.b, 0.1)
                             : tileMouse.containsMouse ? Theme.subtleButton : "transparent"
-                        border.color: selected ? tint : Theme.outlineFaint
-                        border.width: Theme.outlineWidth
 
                         Behavior on color {
                             ColorAnimation { duration: 140 }
@@ -664,8 +664,6 @@ FloatingWindow {
                 Layout.preferredHeight: detailColumn.implicitHeight + 24
                 radius: Theme.radius - 3
                 color: "transparent"
-                border.color: Theme.outlineFaint
-                border.width: Theme.outlineWidth
 
                 ColumnLayout {
                     id: detailColumn
@@ -894,8 +892,6 @@ FloatingWindow {
                 Layout.fillHeight: true
                 radius: Theme.radius - 3
                 color: "transparent"
-                border.color: Theme.outlineFaint
-                border.width: Theme.outlineWidth
 
                 ColumnLayout {
                     anchors {

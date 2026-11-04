@@ -20,7 +20,7 @@ PanelWindow {
     // Whether the bar is on screen. Hovering the top edge, or the bar itself,
     // also keeps it there, and so does an open tray drop-down.
     readonly property bool revealed: shown || trayOpen || hover.hovered || hideDelay.running
-    // Space between a panel's outline and its contents, in pixels.
+    // Space between a panel's edge and its contents, in pixels.
     readonly property int sectionPadding: 6
 
     signal workspaceRequested(int number)
@@ -178,8 +178,6 @@ PanelWindow {
             width: workspaceRow.implicitWidth + root.sectionPadding * 2
             radius: Theme.radius
             color: Theme.panel
-            border.color: Theme.outline
-            border.width: Theme.outlineWidth
 
             Row {
                 id: workspaceRow
@@ -253,8 +251,6 @@ PanelWindow {
             width: statusRow.implicitWidth + root.sectionPadding * 2
             radius: Theme.radius
             color: Theme.panel
-            border.color: Theme.outline
-            border.width: Theme.outlineWidth
 
             RowLayout {
                 id: statusRow

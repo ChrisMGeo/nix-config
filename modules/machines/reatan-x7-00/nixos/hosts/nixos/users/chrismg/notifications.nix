@@ -5,8 +5,8 @@
 # panel that keeps past notifications and a do-not-disturb switch. Mod+N opens
 # the panel. See niri.nix.
 #
-# The look is plain and dark: a see-through black panel, a thin gray outline,
-# and rounded corners. The colors and the opacity come from Stylix. See
+# The look is plain and dark: a see-through black panel with rounded corners
+# and no outline. The colors and the opacity come from Stylix. See
 # theme.nix.
 #
 # `{ config, lib, ... }:` makes this file a function. `config` is this user's
@@ -32,11 +32,6 @@ let
   # The corner radius of the popups and the side panel, in pixels. It is
   # look.cornerRadius from look.nix, the same as every window and panel.
   radius = config.look.cornerRadius;
-
-  # The width of the outlines around cards, the side panel, and its buttons,
-  # in pixels. It is look.borderWidth from look.nix, the same as every other
-  # outline on the desktop.
-  thin = config.look.borderWidth;
 
   # The app picture's corners are a little tighter than the card around it.
   # `lib.max 0` keeps the value from going below zero for a very small radius.
@@ -116,7 +111,6 @@ in
           --noti-bg-darker: ${hex.base01};
           --noti-bg-hover: ${rgba "base01" opacity};
           --noti-bg-focus: ${rgba "base02" 0.6};
-          --noti-border-color: ${rgba "base03" 0.55};
           --noti-close-bg: ${rgba "base05" 0.08};
           --noti-close-bg-hover: ${rgba "base05" 0.16};
           --text-color: ${hex.base05};
@@ -135,10 +129,10 @@ in
           padding: 4px ${toString config.look.screenMargin}px 4px ${toString config.look.screenMargin}px;
         }
 
-        /* One thin gray outline. Stylix draws a second, bright one on the inner
-           box, which this removes. */
+        /* No outline. Stylix draws a bright one on the inner box, which the
+           next rule removes. */
         .notification-row .notification-background .notification {
-          border: ${toString thin}px solid var(--noti-border-color);
+          border: none;
           background: rgba(var(--noti-bg), var(--noti-bg-alpha));
         }
 
@@ -149,23 +143,13 @@ in
         }
 
         /* swaync paints a square box behind the focused group or row in the side
-           panel. Remove it and show focus on the card's rounded outline instead. */
+           panel. Remove it, so focused cards look like every other card. */
         .notification-group,
         .notification-group:focus,
         .notification-row:focus {
           background: transparent;
           outline: none;
           box-shadow: none;
-        }
-
-        .notification-group:focus .notification-row .notification,
-        .notification-row:focus .notification {
-          border-color: ${rgba "base05" 0.6};
-        }
-
-        /* Critical popups get a brighter outline instead of a color. */
-        .notification-row .notification-background .notification.critical {
-          border-color: ${rgba "base05" 0.75};
         }
 
         .notification-row .notification-background .notification .notification-default-action .notification-content .image {
@@ -228,19 +212,18 @@ in
           background: transparent;
           color: ${hex.base05};
           border: none;
-          border-top: ${toString thin}px solid ${rgba "base03" 0.3};
         }
 
         .notification-action:hover {
           background: var(--noti-bg-hover);
         }
 
-        /* The side panel and its widgets, with the same outline as the popups.
-           Stylix paints the panel solid black, which would hide the
-           see-through --cc-bg, so the background is set again here. */
+        /* The side panel, with no outline, like the popups. Stylix paints the
+           panel solid black, which would hide the see-through --cc-bg, so the
+           background is set again here. */
         .control-center {
           background: var(--cc-bg);
-          border: ${toString thin}px solid var(--noti-border-color);
+          border: none;
         }
 
         /* Stylix paints a solid black box around each card in the side panel,
@@ -261,21 +244,22 @@ in
 
         /* A collapsed group draws up to two more cards under the newest one,
            each a little narrower and 8 pixels lower, so their bottom edges
-           peek out below it. swaync already hides their text. They keep only
-           the bottom outline, so nothing of them shows through the
-           see-through card on top. The second selector keeps it that way
-           while the pointer is over the group, where swaync would paint them. */
+           peek out below it. swaync already hides their text. They are see-through
+           with no outline, so nothing of them shows through the see-through
+           card on top. The second selector keeps it that way while the pointer
+           is over the group, where swaync would paint them. */
         .control-center .notification-group.collapsed .notification-row:not(:last-child) .notification,
         .control-center .notification-group.collapsed:hover .notification-row:not(:last-child) .notification {
           background: transparent;
-          border-color: transparent transparent var(--noti-border-color) transparent;
         }
 
+        /* Stylix outlines the panel's buttons, the switch, and the media
+           player. Remove those outlines too. */
         .widget-title > button,
         .widget-dnd > switch,
         .widget-mpris .widget-mpris-player,
         .widget-mpris .widget-mpris-player > box > button {
-          border: ${toString thin}px solid var(--noti-border-color);
+          border: none;
         }
 
         .widget-dnd > switch:checked {

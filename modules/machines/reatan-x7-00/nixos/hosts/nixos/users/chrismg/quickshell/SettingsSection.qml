@@ -15,11 +15,9 @@ Rectangle {
 
     implicitHeight: contents.implicitHeight
     radius: Theme.radius - 3
-    // No fill, so the drawer's frosted glass shows through. An open section
-    // still gets the accent outline below.
+    // No fill and no outline, so the drawer's frosted glass shows through,
+    // even when the section is open.
     color: "transparent"
-    border.color: expanded ? Theme.accent : "transparent"
-    border.width: Theme.outlineWidth
 
     Behavior on implicitHeight {
         NumberAnimation { duration: 140; easing.type: Easing.OutCubic }

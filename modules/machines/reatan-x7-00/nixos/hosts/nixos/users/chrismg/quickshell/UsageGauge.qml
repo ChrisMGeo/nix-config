@@ -77,8 +77,6 @@ Item {
             anchors.fill: parent
             radius: Theme.radius - 4
             color: Theme.panel
-            border.color: Theme.outline
-            border.width: Theme.outlineWidth
 
             Column {
                 id: popupText

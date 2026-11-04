@@ -40,8 +40,6 @@ Item {
         transformOrigin: Item.Right
         radius: Theme.radius - 5
         color: Theme.panelOverlay
-        border.color: Theme.outlineTranslucent
-        border.width: Theme.outlineWidth
 
         IconButton {
             id: playbackButton
@@ -68,11 +66,8 @@ Item {
                 left: playbackButton.right
                 leftMargin: 4
                 right: parent.right
-                rightMargin: Theme.outlineWidth
                 top: parent.top
-                topMargin: Theme.outlineWidth
                 bottom: parent.bottom
-                bottomMargin: Theme.outlineWidth
             }
             clip: true
 

@@ -56,8 +56,6 @@ PopupWindow {
         height: parent.height
         radius: Theme.radius
         color: Theme.panel
-        border.color: Theme.outline
-        border.width: Theme.outlineWidth
 
         ColumnLayout {
             id: column

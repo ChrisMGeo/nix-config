@@ -59,32 +59,14 @@ let
     "XF86MonBrightnessDown" = whenLocked [ brightnessctl "set" "5%-" ];
   };
 
-  # The Stylix colors as "#rrggbb" strings, such as colors.base03.
-  colors = config.lib.stylix.colors.withHashtag;
-
-  # The outline color of windows that do not have the focus. base02 is almost
-  # black and hides the outline, so this is halfway from base02 to
-  # base03, the focused outline color. It stays visible but reads as dimmer.
-  # Stylix gives each color's red, green, and blue parts as decimal text, such
-  # as `base03-rgb-r` = "118". `lib.toInt` turns the text into a number, the
-  # math is whole numbers only, and `toString` turns the result back.
-  mixChannel = channel:
-    let
-      dark = lib.toInt config.lib.stylix.colors."base02-rgb-${channel}";
-      light = lib.toInt config.lib.stylix.colors."base03-rgb-${channel}";
-    in
-    toString (dark + (light - dark) / 2);
-  unfocusedOutline = "rgb(${mixChannel "r"}, ${mixChannel "g"}, ${mixChannel "b"})";
-
   niriConfig = {
     # Use the same keyboard layout as the rest of the system, set in keyboard.nix.
     input.keyboard.xkb.layout = osConfig.services.xserver.xkb.layout;
 
     # Asks apps not to draw their own window frame: shadows, rounded corners, and
-    # resize borders. niri then draws its border right at the window's edge,
-    # and the corner rule below rounds every window the same way. GTK apps keep
-    # their header bar, because it holds their buttons. Apps that ignore the
-    # request look as before.
+    # resize borders. The corner rule below then rounds every window the same
+    # way. GTK apps keep their header bar, because it holds their buttons. Apps
+    # that ignore the request look as before.
     "prefer-no-csd" = { };
 
     # The mouse pointer niri draws, the same one Stylix sets for apps. See
@@ -105,10 +87,6 @@ let
         "window-rule" = {
           "geometry-corner-radius" = config.look.cornerRadius;
           "clip-to-geometry" = true;
-          # niri normally fills the whole area behind a window with the border
-          # color, not only a frame around it. A see-through window, such
-          # as kitty, then looks gray. This keeps the border a thin frame.
-          "draw-border-with-background" = false;
         };
       }
       # Blurs what shows through kitty's see-through background, for a frosted
@@ -211,19 +189,10 @@ let
       # windows and reserves no space, so the top edge gets the same gap as the
       # others.
       gaps = config.look.windowGap;
-      # An outline around every window, look.borderWidth from look.nix, 1
-      # pixel, the same as every other outline on the desktop. The window that
-      # has the keyboard uses the active color, a mid
-      # gray. Every other window uses the inactive color, a dimmer gray from
-      # `unfocusedOutline` above. niri's focus ring would outline only the
-      # focused window of each monitor and leave the rest bare, so it is off.
-      # `on` and `off` are KDL flags with no value, which `{ }` writes.
-      border = {
-        on = { };
-        width = config.look.borderWidth;
-        "active-color" = colors.base03;
-        "inactive-color" = unfocusedOutline;
-      };
+      # No outline around windows. niri has two kinds, the border around
+      # every window and the focus ring around the focused one, and both are
+      # off. `off` is a KDL flag with no value, which `{ }` writes.
+      border.off = { };
       "focus-ring".off = { };
     };
 

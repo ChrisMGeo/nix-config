@@ -24,14 +24,12 @@
       description = "How round the corners of windows and panels are, in pixels.";
     };
 
-    # The one outline width for everything: windows, the bar, its cards,
-    # drawers, menus, sliders, and switches, the notification cards, the
-    # launcher, and the login screen. One value keeps every outline the same
-    # thickness. 1 pixel keeps them thin.
+    # The outline around small controls in the bar: switches, slider knobs,
+    # and text boxes. Windows, panels, and cards have no outline.
     borderWidth = lib.mkOption {
       type = lib.types.ints.unsigned;
       default = 1;
-      description = "How thick every outline is, in pixels.";
+      description = "How thick the outline around small controls in the bar is, in pixels.";
     };
 
     # The space niri leaves between windows, and between windows and the
