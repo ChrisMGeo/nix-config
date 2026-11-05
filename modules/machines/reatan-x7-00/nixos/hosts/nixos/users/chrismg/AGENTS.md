@@ -17,7 +17,7 @@ Home Manager settings for the user `chrismg` on the host `nixos`.
 | `shell.nix` | Turns on zsh with Ctrl and Alt arrow keys for moving by word, Shift keys for selecting text, and the starship prompt. |
 | `theme.nix` | Loads Stylix and sets the black monochrome color scheme, Iosevka for monospace text, Iosevka Aile for sans-serif text, Libron for serif text (packaged in the file from its GitHub release), 80% opacity for popups such as the launcher and the bar, the Papirus-Dark icon theme with grey folders, and the Bibata cursor. |
 | `vicinae.nix` | Sets up the Vicinae app launcher from nixpkgs-unstable and runs its server as a systemd user service. Installs nine extensions from the `vicinae-extensions` flake input: Niri, Nix, SuperGenPass, OTP, Kaomojis, Number converter, GPU Screen Recorder, Lorem Ipsum, and Reminders. Gives the Reminders extension the paths to Node.js and notify-send through the service's environment, and installs jq for the GPU Screen Recorder extension. |
-| `wallpaper.nix` | Picks a picture from the root `wallpapers/` folder, at build time shrinks it to the monitor's resolution, darkens its blacks, and sharpens it, sets it as the Stylix wallpaper, and runs wpaperd to draw it behind the windows. swaylock also shows it. |
+| `wallpaper.nix` | Picks a picture from the root `wallpapers/` folder and uses it at full size, so it works on any monitor without a list of resolutions. Sets it as the Stylix wallpaper, and runs wpaperd to draw it behind the windows. swaylock also shows it. |
 
 `default.nix` takes Codex, OpenCode, Claude Code, and T3 Code from the llm-agents flake. It takes Zed from nixpkgs-unstable. It takes Brave, fastfetch, and Vesktop from the stable nixpkgs set.
 
