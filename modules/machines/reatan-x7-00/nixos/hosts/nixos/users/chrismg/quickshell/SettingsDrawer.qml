@@ -15,6 +15,9 @@ PanelWindow {
 
     readonly property var wiredDevice: Networking.devices.values.find(device => device.type === DeviceType.Wired) ?? null
     readonly property var wifiDevice: Networking.devices.values.find(device => device.type === DeviceType.Wifi) ?? null
+    // The Wi-Fi network the computer is on. The device's own name is the
+    // interface, such as wlp2s0, so the subtitle shows this one instead.
+    readonly property var wifiNetwork: wifiDevice?.networks.values.find(network => network.connected) ?? null
     readonly property var bluetoothAdapter: Bluetooth.defaultAdapter
     readonly property var audioSink: Pipewire.defaultAudioSink
     readonly property bool batteryAvailable: UPower.displayDevice !== null
@@ -182,9 +185,14 @@ PanelWindow {
                                 bottomPadding: 12
                                 spacing: 5
 
+                                // The link speed. The device's address is its
+                                // hardware (MAC) address, not an IP address, so
+                                // it is not shown here.
                                 UiText {
                                     text: root.wiredDevice && root.wiredDevice.connected
-                                        ? root.wiredDevice.address || "Connected"
+                                        ? root.wiredDevice.linkSpeed > 0
+                                            ? `Connected at ${root.wiredDevice.linkSpeed} Mb/s`
+                                            : "Connected"
                                         : "No active wired connection"
                                     color: Theme.textMuted
                                     font.pixelSize: Theme.scaled(11)
@@ -198,7 +206,7 @@ PanelWindow {
                         visible: root.wifiDevice !== null
                         title: "Wi-Fi"
                         subtitle: Networking.wifiEnabled
-                            ? root.wifiDevice && root.wifiDevice.connected ? root.wifiDevice.name : "Enabled"
+                            ? root.wifiDevice && root.wifiDevice.connected ? root.wifiNetwork?.name ?? "Connected" : "Enabled"
                             : "Disabled"
                         iconGlyph: "\uf1eb"
 
