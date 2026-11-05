@@ -182,6 +182,24 @@ let
       # off. `off` is a KDL flag with no value, which `{ }` writes.
       border.off = { };
       "focus-ring".off = { };
+      # A soft light glow around the focused window, so it stands out without
+      # an outline. A dark shadow would not show on the black wallpaper and
+      # windows. The glow is the Stylix base07 color, the brightest text
+      # color, with "40" added as its alpha, so it is about a quarter opaque.
+      # Other windows get a fully clear shadow, so they have none. niri draws
+      # the shadow only outside the window, so it does not show through a
+      # see-through window such as kitty.
+      shadow = {
+        on = { };
+        # How far the glow fades out, in pixels.
+        softness = 16;
+        # The glow starts fading right at the window's edge, so it stays thin.
+        spread = 0;
+        # Centered on the window, instead of niri's default drop downward.
+        offset._props = { x = 0; y = 0; };
+        color = "#${config.lib.stylix.colors.base07}40";
+        "inactive-color" = "#00000000";
+      };
     };
 
     # niri shows a list of important key bindings when it starts, unless this is
