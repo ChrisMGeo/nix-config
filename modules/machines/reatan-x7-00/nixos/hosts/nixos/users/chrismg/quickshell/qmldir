@@ -8,7 +8,6 @@ AudioOutputs 1.0 AudioOutputs.qml
 AudioVisualizer 1.0 AudioVisualizer.qml
 BluetoothDevices 1.0 BluetoothDevices.qml
 ClockCard 1.0 ClockCard.qml
-DraggablePanel 1.0 DraggablePanel.qml
 IconButton 1.0 IconButton.qml
 MediaCard 1.0 MediaCard.qml
 PowerMenu 1.0 PowerMenu.qml

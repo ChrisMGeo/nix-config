@@ -6,7 +6,7 @@ The QML files for the Quickshell bar of the user `chrismg`. These files are not 
 
 | File | What it does |
 | --- | --- |
-| `shell.qml` | The entry point. Follows niri workspaces and windows through `niri msg -j event-stream`, and tracks the media player and widget positions. Places every panel, with one bar per monitor that shows only that monitor's workspaces. Opens and closes the activity monitor, from the gauges or from Ctrl+Shift+Escape through the `shell` IPC target. Decides when each bar shows: while pinned with Mod+B through the `bar` IPC target, while the niri overview is open, for 1.5 seconds after a workspace change on that monitor, and while the settings drawer or power menu is open. |
+| `shell.qml` | The entry point. Follows niri workspaces and windows through `niri msg -j event-stream`, and tracks the media player. Places every panel, with one bar per monitor that shows only that monitor's workspaces. Opens and closes the activity monitor, from the gauges or from Ctrl+Shift+Escape through the `shell` IPC target, the clock window, with Mod+T through the same target, and the now-playing window. Decides when each bar shows: while pinned with Mod+B through the `bar` IPC target, while the niri overview is open, for 1.5 seconds after a workspace change on that monitor, and while the settings drawer or power menu is open. |
 | `qmldir` | Lists the components in this folder and marks the singletons. |
 | `TopBar.qml` | The bar at the top of the screen, drawn as two separate panels: the workspaces on the left, and on the right the audio visualizer, the time, the tray button, the system usage gauges, and the settings and power buttons. The tray button shows even when no program has a tray icon. It floats over windows without taking space, and stays hidden until shown. Touching the top edge of the screen with the mouse shows it. |
 | `TrayMenu.qml` | The drop-down under the bar's tray button, with one row per tray icon, or "No tray icons" when there are none. Left click activates a program, middle click runs its second action, and right click opens its own menu. |
@@ -26,9 +26,8 @@ The QML files for the Quickshell bar of the user `chrismg`. These files are not 
 | `AudioSpectrum.qml` | Singleton. Runs cava and reads the bar heights. |
 | `cava.conf` | Settings for cava: PipeWire input and raw output for `AudioSpectrum.qml` to read. `@bars@` is filled in by `../quickshell.nix`. |
 | `AudioVisualizer.qml` | Draws the audio bars. |
-| `ClockCard.qml` | The clock widget on the desktop. |
-| `MediaCard.qml` | The now-playing widget, shown while media plays. |
-| `DraggablePanel.qml` | A desktop widget that you can drag. Saves its position. |
+| `ClockCard.qml` | The clock window, with the time and the date. Opens when the bar starts. Mod+T opens and closes it. |
+| `MediaCard.qml` | The now-playing window, opened from the media button in the bar while media plays. Closes when the music stops. |
 | `IconButton.qml` | A round button with one icon. |
 | `TextButton.qml` | A small rounded button with a word on it, such as "Join". |
 | `ThemedSlider.qml` | A slider in the theme colors. Use it instead of the plain `Slider`, whose default style is blue. |
@@ -43,7 +42,7 @@ The QML files for the Quickshell bar of the user `chrismg`. These files are not 
 - `Theme.showBattery` is true only when `machine.formFactor` is "laptop". Hide any laptop-only control behind it.
 - When you add a QML file, list it in `qmldir` too.
 - `Theme.panel` is see-through. A new window that draws it needs a `BackgroundEffect.blurRegion` that covers the panel, or it looks dim instead of frosted. The blur shows only where that region is.
-- `ActivityMonitor.qml` is a normal window, not a panel, so the blur rule above does not apply to it. A niri window rule in `../niri.nix` matches its title, "Activity monitor", to make it float and blur it. Change both together.
+- `ActivityMonitor.qml`, `ClockCard.qml`, and `MediaCard.qml` are normal windows, not panels, so the blur rule above does not apply to them. niri places, moves, and sizes them, so they do not save a position. A niri window rule in `../niri.nix` matches their titles, "Activity monitor", "Clock", and "Now playing", to make them float and blur them. Change both together.
 - A `PopupWindow` must never have a width or height of 0, even for a moment. Wayland treats it as an error and closes the connection, which stops the whole bar. Give it a minimum size, as `VolumeMixer.qml` does.
 - The bar supports niri only. It reads workspaces and windows with `niri msg` and has no code for other compositors.
 - The login screen in `modules/machines/reatan-x7-00/nixos/greeter/` uses the generated `Theme.qml` too. `../quickshell.nix` shares it as `lib.quickshell.themeFile`. If you rename or remove a `Theme` property, check `greeter/shell.qml` as well.

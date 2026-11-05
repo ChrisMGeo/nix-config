@@ -372,13 +372,14 @@ let
         property int spectrumBars: ${toString spectrumBars}
         property int mediaSpectrumBars: 8
 
-        // Clock placement as a fraction of the screen's usable width and height.
+        // Where the login screen places its clock card, as a fraction of the
+        // screen's width and height. See greeter/shell.qml. The sizes are the
+        // login screen card's and the starting sizes of the clock and
+        // now-playing windows on the desktop.
         property real clockLeft: 0.11
         property real clockTop: 0.20
         property real clockWidth: scaled(308)
         property real clockHeight: scaled(180)
-        property real mediaLeft: 0.58
-        property real mediaTop: 0.66
         property real mediaWidth: scaled(420)
         property real mediaHeight: scaled(292)
     }

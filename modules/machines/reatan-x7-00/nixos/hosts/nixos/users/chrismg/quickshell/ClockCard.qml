@@ -1,15 +1,31 @@
 import QtQuick
 import Quickshell
-import Quickshell.Wayland
 
-DraggablePanel {
+// The clock: a small window with the time and the date. shell.qml opens it
+// when the bar starts.
+//
+// It is a normal window, not a panel, like the activity monitor. niri places
+// it, focuses it, moves it with Mod and a drag, and closes it with Mod+Q.
+// niri.nix makes it float and blurs what is behind it.
+FloatingWindow {
     id: root
 
-    minimumPanelWidth: Theme.scaled(240)
-    minimumPanelHeight: Theme.scaled(132)
+    signal closeRequested()
+
+    // niri.nix matches this title to make the window float.
+    title: "Clock"
+    implicitWidth: Theme.clockWidth
+    implicitHeight: Theme.clockHeight
+    minimumSize: Qt.size(Theme.scaled(240), Theme.scaled(132))
+    // The Rectangle below draws the see-through background.
     color: "transparent"
-    exclusionMode: ExclusionMode.Ignore
-    WlrLayershell.layer: WlrLayer.Bottom
+
+    // Closing the window from niri, such as with Mod+Q, hides it. Tell
+    // shell.qml, so Mod+T opens it again.
+    onVisibleChanged: {
+        if (!visible)
+            closeRequested();
+    }
 
     SystemClock {
         id: clock

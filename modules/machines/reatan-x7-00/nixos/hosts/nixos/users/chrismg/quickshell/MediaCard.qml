@@ -5,18 +5,35 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Widgets
 
-DraggablePanel {
+// The now-playing window: the cover, title, and artist of the playing track,
+// playback buttons, and moving bars from the audio. The media button in the
+// bar opens it while something plays. shell.qml creates it while it is open
+// and destroys it when it closes or the music stops.
+//
+// It is a normal window, not a panel, like the activity monitor. niri places
+// it, focuses it, moves it with Mod and a drag, and closes it with Mod+Q.
+// niri.nix makes it float and blurs what is behind it.
+FloatingWindow {
     id: root
 
     property var player: null
-    property bool settingsOpen: false
 
     signal closeRequested()
 
-    minimumPanelWidth: Theme.scaled(340)
-    minimumPanelHeight: Theme.scaled(240)
+    // niri.nix matches this title to make the window float.
+    title: "Now playing"
+    implicitWidth: Theme.mediaWidth
+    implicitHeight: Theme.mediaHeight
+    minimumSize: Qt.size(Theme.scaled(340), Theme.scaled(240))
+    // The Rectangle below draws the see-through background.
     color: "transparent"
-    exclusionMode: ExclusionMode.Ignore
+
+    // Closing the window from niri, such as with Mod+Q, hides it. Tell
+    // shell.qml, so the media button opens it again.
+    onVisibleChanged: {
+        if (!visible)
+            closeRequested();
+    }
 
     Rectangle {
         anchors.fill: parent

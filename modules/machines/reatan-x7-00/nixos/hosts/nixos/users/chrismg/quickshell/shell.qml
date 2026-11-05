@@ -15,6 +15,9 @@ ShellRoot {
     // "cpu", "memory", "gpu", or "vram".
     property bool activityVisible: false
     property string activityMetric: "cpu"
+    // Whether the clock window is open. It opens when the bar starts. Mod+T in
+    // niri.nix opens and closes it.
+    property bool clockVisible: true
     // The bar floats over windows and hides until something shows it. See
     // barShownOn() below. Hovering the top edge of a screen also shows it, which
     // TopBar.qml handles by itself.
@@ -27,14 +30,6 @@ ShellRoot {
     property var targetScreen: Quickshell.screens.length > 0 ? Quickshell.screens[0] : null
     property var workspaceRecords: []
     property var windowRecords: []
-    property real clockLeft: widgetPositions.clockLeft
-    property real clockTop: widgetPositions.clockTop
-    property real clockWidth: widgetPositions.clockWidth
-    property real clockHeight: widgetPositions.clockHeight
-    property real mediaLeft: widgetPositions.mediaLeft
-    property real mediaTop: widgetPositions.mediaTop
-    property real mediaWidth: widgetPositions.mediaWidth
-    property real mediaHeight: widgetPositions.mediaHeight
     readonly property var activePlayer: Mpris.players.values.find(player => player.isPlaying)
         ?? Mpris.players.values[0]
         ?? null
@@ -45,24 +40,6 @@ ShellRoot {
             mediaVisible = false;
     }
 
-    FileView {
-        path: Quickshell.statePath("widget-positions.json")
-        printErrors: false
-        onAdapterUpdated: writeAdapter()
-
-        JsonAdapter {
-            id: widgetPositions
-
-            property real clockLeft: Theme.clockLeft
-            property real clockTop: Theme.clockTop
-            property real clockWidth: Theme.clockWidth
-            property real clockHeight: Theme.clockHeight
-            property real mediaLeft: Theme.mediaLeft
-            property real mediaTop: Theme.mediaTop
-            property real mediaWidth: Theme.mediaWidth
-            property real mediaHeight: Theme.mediaHeight
-        }
-    }
 
     // niri numbers workspaces separately on each monitor, starting at 1, and
     // reports the monitor's connector name, such as "DP-1", as `output`. Each bar
@@ -267,6 +244,32 @@ ShellRoot {
         function toggleActivity(): void {
             root.toggleActivity("");
         }
+
+        // niri.nix binds this to Mod+T.
+        function toggleClock(): void {
+            root.clockVisible = !root.clockVisible;
+        }
+    }
+
+    // The clock and the now-playing windows. Like the activity monitor, each
+    // is one normal window, not one per monitor, and niri opens it on the
+    // focused monitor. The now-playing window exists only while it is open
+    // and something plays.
+    LazyLoader {
+        active: root.clockVisible
+
+        ClockCard {
+            onCloseRequested: root.clockVisible = false
+        }
+    }
+
+    LazyLoader {
+        active: root.mediaVisible && root.mediaPlaying
+
+        MediaCard {
+            player: root.activePlayer
+            onCloseRequested: root.mediaVisible = false
+        }
     }
 
     // The activity monitor. LazyLoader creates the window when `active` turns
@@ -304,44 +307,6 @@ ShellRoot {
                 onPowerRequested: root.togglePowerMenu(screenShell.modelData)
                 onMediaRequested: root.toggleMedia(screenShell.modelData)
                 onActivityRequested: metric => root.toggleActivity(metric)
-            }
-
-            ClockCard {
-                screen: screenShell.modelData
-                positionLeft: root.clockLeft
-                positionTop: root.clockTop
-                panelWidth: root.clockWidth
-                panelHeight: root.clockHeight
-                onPositionRequested: (left, top) => {
-                    widgetPositions.clockLeft = left;
-                    widgetPositions.clockTop = top;
-                }
-                onSizeRequested: (width, height) => {
-                    widgetPositions.clockWidth = width;
-                    widgetPositions.clockHeight = height;
-                }
-            }
-
-            MediaCard {
-                screen: screenShell.modelData
-                visible: root.mediaVisible
-                    && root.mediaPlaying
-                    && root.targetScreen === screenShell.modelData
-                player: root.activePlayer
-                settingsOpen: root.settingsVisible
-                positionLeft: root.mediaLeft
-                positionTop: root.mediaTop
-                panelWidth: root.mediaWidth
-                panelHeight: root.mediaHeight
-                onPositionRequested: (left, top) => {
-                    widgetPositions.mediaLeft = left;
-                    widgetPositions.mediaTop = top;
-                }
-                onSizeRequested: (width, height) => {
-                    widgetPositions.mediaWidth = width;
-                    widgetPositions.mediaHeight = height;
-                }
-                onCloseRequested: root.mediaVisible = false
             }
 
             SettingsDrawer {

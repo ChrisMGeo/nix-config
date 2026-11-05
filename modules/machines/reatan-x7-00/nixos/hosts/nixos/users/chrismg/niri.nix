@@ -99,18 +99,19 @@ let
           };
         };
       }
-      # The Quickshell activity monitor, opened from the bar's usage gauges, is
-      # a normal window. It floats instead of taking a column, and its
-      # see-through background is blurred like kitty's, without xray, so it
-      # shows the windows it floats over. Quickshell gives all its windows the
-      # app ID "org.quickshell", so the title picks this one. `[.]`
-      # matches a literal dot, which needs no backslash escape in KDL. See
-      # quickshell/ActivityMonitor.qml.
+      # The Quickshell activity monitor, clock, and now-playing windows are
+      # normal windows. They float instead of taking a column, and their
+      # see-through backgrounds are blurred like kitty's, without xray, so they
+      # show the windows they float over. Quickshell gives all its windows the
+      # app ID "org.quickshell", so the title picks these three. `[.]` matches a
+      # literal dot, which needs no backslash escape in KDL. `|` in the
+      # parentheses matches any one of the titles. See
+      # quickshell/ActivityMonitor.qml, ClockCard.qml, and MediaCard.qml.
       {
         "window-rule" = {
           match._props = {
             "app-id" = "^org[.]quickshell$";
-            title = "^Activity monitor$";
+            title = "^(Activity monitor|Clock|Now playing)$";
           };
           "open-floating" = true;
           "background-effect" = {
@@ -203,6 +204,9 @@ let
       # Opens or closes the activity monitor, like the same keys on Windows.
       # Clicking a usage gauge in the bar opens it too.
       "Ctrl+Shift+Escape".spawn = [ quickshell "ipc" "-c" "chrismg" "call" "shell" "toggleActivity" ];
+      # Opens or closes the Quickshell clock window. It opens by itself when
+      # the bar starts. T stands for time.
+      "Mod+T".spawn = [ quickshell "ipc" "-c" "chrismg" "call" "shell" "toggleClock" ];
 
       # Windows.
       "Mod+Q"."close-window" = { };

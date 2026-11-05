@@ -148,7 +148,7 @@ ShellRoot {
                     asynchronous: false
                 }
 
-                // The clock card, at the same place and size as on the desktop.
+                // The clock card, at the place and size set in Theme.qml.
                 GlassPanel {
                     id: clockCard
 
