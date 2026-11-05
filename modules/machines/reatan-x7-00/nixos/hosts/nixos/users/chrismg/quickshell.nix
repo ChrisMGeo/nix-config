@@ -163,10 +163,51 @@ let
     # can turn GPU time into a percentage. `EPOCHREALTIME` is built into bash.
     printf 'clock %s\n' "$EPOCHREALTIME"
 
-    # GPU clients already counted. A program can hold one GPU connection in
-    # several file descriptors, or pass it to a child process, so each
-    # connection's ID is counted once. `declare -A` makes a lookup table.
-    declare -A gpu_clients
+    # GPU use per process, read before the process list. Each open GPU device
+    # is a file descriptor that links to /dev/dri, and its fdinfo file holds
+    # the GPU time in nanoseconds, split by engine, and the video memory in
+    # KiB. find lists only those file descriptors, and one grep reads all their
+    # fdinfo files, which is much faster than checking every file descriptor
+    # in bash. Other users' processes cannot be read, so they count as no GPU
+    # use. grep prints each line as `<file>:<key>:<value>`.
+    #
+    # A program can hold one GPU connection in several file descriptors, or
+    # pass it to a child process, so each connection's ID is counted once. The
+    # ID is the first of these lines in each file. `declare -A` makes a lookup
+    # table: `gpu_clients` holds the IDs already counted, and the other two
+    # hold each process's totals.
+    declare -A gpu_clients gpu_time_of vram_of
+    file_seen=""
+    skip=1
+    while IFS=: read -r file key value; do
+      pid=''${file#/proc/}
+      pid=''${pid%%/*}
+      # Keeps only the digits, which drops the tab and the unit.
+      value=''${value//[!0-9]/}
+      # A file without an ID is skipped, as is one whose ID was counted.
+      if [ "$file" != "$file_seen" ]; then
+        file_seen=$file
+        skip=1
+      fi
+      case "$key" in
+        drm-client-id)
+          if [ -z "''${gpu_clients[$value]}" ]; then
+            gpu_clients[$value]=1
+            skip=0
+          fi ;;
+        # Intel also lists drm-engine-capacity-* lines. They count engine
+        # copies, not time, so they are skipped. The pattern below would
+        # otherwise match them.
+        drm-engine-capacity-*) ;;
+        drm-engine-*)
+          [ "$skip" = 0 ] && gpu_time_of[$pid]=$((''${gpu_time_of[$pid]:-0} + value)) ;;
+        drm-resident-vram)
+          [ "$skip" = 0 ] && vram_of[$pid]=$((''${vram_of[$pid]:-0} + value * 1024)) ;;
+      esac
+    done < <(${pkgs.findutils}/bin/find /proc/[0-9]*/fd -lname '/dev/dri/*' \
+        -printf '%h/../fdinfo/%f\0' 2>/dev/null \
+      | ${pkgs.findutils}/bin/xargs -0 -r ${pkgs.gnugrep}/bin/grep -H -E \
+        '^drm-(client-id:|engine-|resident-vram:)' 2>/dev/null)
 
     # One line per process.
     for stat in /proc/[0-9]*/stat; do
@@ -176,12 +217,14 @@ let
       pid=''${dir#/proc/}
 
       # The second field is the short name in parentheses, which can hold
-      # spaces. `read -ra` splits what follows it into the list `fields`,
-      # which starts with the third field and counts from 0. utime and stime,
-      # fields 14 and 15, are fields[11] and fields[12].
+      # spaces. `fields=(...)` splits what follows it at spaces into the list
+      # `fields`, which starts with the third field and counts from 0. utime
+      # and stime, fields 14 and 15, are fields[11] and fields[12]. It is
+      # faster than `read -ra` with `<<<`, which writes a temporary file for
+      # every process.
       comm=''${line#*(}
       comm=''${comm%)*}
-      read -ra fields <<< "''${line##*) }"
+      fields=(''${line##*) })
       time=$((fields[11] + fields[12]))
 
       # Memory is the resident pages minus the shared ones, in 4 KiB pages,
@@ -193,34 +236,9 @@ let
       read -r _ resident shared _ 2>/dev/null < "$dir/statm"
       [ "$resident" -gt 0 ] || continue
 
-      # GPU use. Each open GPU device is a character device among the
-      # process's file descriptors, and its fdinfo file holds the GPU time in
-      # nanoseconds, split by engine, and the video memory in KiB. `-c` skips
-      # files and sockets cheaply. Other users' processes cannot be read, so
-      # they count as no GPU use.
-      gpu_time=0
-      vram=0
-      for fd in "$dir"/fd/*; do
-        [ -c "$fd" ] || continue
-        client=""
-        engines=0
-        memory=0
-        while read -r key value _; do
-          case "$key" in
-            drm-client-id:) client=$value ;;
-            # Intel also lists drm-engine-capacity-* lines. They count engine
-            # copies, not time, so they are skipped. The pattern below would
-            # otherwise match them.
-            drm-engine-capacity-*) ;;
-            drm-engine-*) engines=$((engines + value)) ;;
-            drm-resident-vram:) memory=$value ;;
-          esac
-        done 2>/dev/null < "$dir/fdinfo/''${fd##*/}"
-        [ -n "$client" ] && [ -z "''${gpu_clients[$client]}" ] || continue
-        gpu_clients[$client]=1
-        gpu_time=$((gpu_time + engines))
-        vram=$((vram + memory * 1024))
-      done
+      # GPU use, from the tables filled in above.
+      gpu_time=''${gpu_time_of[$pid]:-0}
+      vram=''${vram_of[$pid]:-0}
 
       # The short name is cut to 15 characters, so prefer the program's file
       # name from the first word of its command line. Nix wrappers start the
