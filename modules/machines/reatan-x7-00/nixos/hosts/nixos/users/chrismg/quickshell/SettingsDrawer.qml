@@ -34,7 +34,9 @@ PanelWindow {
     signal closeRequested()
 
     onVisibleChanged: {
-        if (!visible)
+        if (visible)
+            Capabilities.refresh();
+        else
             mixerOpen = false;
     }
 

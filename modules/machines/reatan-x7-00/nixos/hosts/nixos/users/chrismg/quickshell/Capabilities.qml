@@ -9,6 +9,14 @@ Scope {
 
     property bool powerProfiles: false
 
+    // Checks again whether power-profiles-daemon is running. Only the settings
+    // drawer shows the result, so it calls this each time it opens, instead of
+    // a timer checking all session long.
+    function refresh() {
+        if (!powerProfilesProbe.running)
+            powerProfilesProbe.running = true;
+    }
+
     Process {
         id: powerProfilesProbe
 
@@ -16,16 +24,6 @@ Scope {
         running: true
         onExited: (exitCode, exitStatus) => {
             root.powerProfiles = exitCode === 0;
-        }
-    }
-
-    Timer {
-        interval: 10000
-        repeat: true
-        running: true
-        onTriggered: {
-            if (!powerProfilesProbe.running)
-                powerProfilesProbe.running = true;
         }
     }
 }

@@ -11,9 +11,14 @@ Scope {
     readonly property bool active: Mpris.players.values.some(player => player.isPlaying)
     property var values: Array(Theme.spectrumBars).fill(0)
     property var mediaValues: Array(Theme.mediaSpectrumBars).fill(0)
+    // How many times in a row cava has stopped without sending any levels.
+    // Each one doubles the wait before the next start, so a cava that keeps
+    // failing is not restarted every second for as long as media plays.
+    property int failures: 0
 
     onActiveChanged: {
         if (!active) {
+            failures = 0;
             restartTimer.stop();
             values = Array(Theme.spectrumBars).fill(0);
             mediaValues = Array(Theme.mediaSpectrumBars).fill(0);
@@ -40,8 +45,10 @@ Scope {
         // Both paths come from Nix through Theme.qml. See ../quickshell.nix.
         command: [Theme.cavaCommand, "-p", Theme.cavaConfig]
         onExited: {
-            if (root.active)
+            if (root.active) {
+                root.failures++;
                 restartTimer.restart();
+            }
         }
 
         stdout: SplitParser {
@@ -56,6 +63,7 @@ Scope {
                     .map(value => Math.max(0, Math.min(1, Number(value) / 1000)));
 
                 if (levels.length === Theme.spectrumBars) {
+                    root.failures = 0;
                     root.values = levels;
                     root.mediaValues = root.reduceLevels(levels, Theme.mediaSpectrumBars);
                 }
@@ -66,6 +74,8 @@ Scope {
     Timer {
         id: restartTimer
 
-        interval: 1000
+        // 1 second after the first failure, then 2, 4, 8, and 16, and at most
+        // 30 seconds.
+        interval: Math.min(30000, 1000 * Math.pow(2, Math.max(0, root.failures - 1)))
     }
 }
