@@ -184,8 +184,17 @@ let
               home-manager.backupCommand = pkgs.writeShellScript "home-manager-backup" ''
                 exec ${pkgs.coreutils}/bin/mv --backup=numbered --no-target-directory -- "$1" "$1.hm-backup"
               '';
-              # Makes `inputs` available as an argument in Home Manager modules.
-              home-manager.extraSpecialArgs = { inherit inputs; };
+              # Arguments every Home Manager module can take, next to the usual
+              # `config`, `lib`, and `pkgs`.
+              #   inputs    The flake's inputs.
+              #   unstable  The nixpkgs-unstable package set for this host's
+              #             platform, for packages that are newer there.
+              #             `legacyPackages` is the name nixpkgs uses for its
+              #             package set in flakes.
+              home-manager.extraSpecialArgs = {
+                inherit inputs;
+                unstable = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+              };
               # One Home Manager configuration for each user folder.
               home-manager.users = builtins.listToAttrs (map userModules userNames);
             })

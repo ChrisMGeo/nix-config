@@ -12,17 +12,14 @@
 # The bar works on any computer. It shows the battery level only when
 # `machine.formFactor` is "laptop". See modules/features/nixos/form-factor.nix.
 #
-# `{ config, osConfig, inputs, pkgs, ... }:` makes this file a function.
+# `{ config, osConfig, pkgs, unstable, ... }:` makes this file a function.
 # `config` is this user's final Home Manager settings. `osConfig` is the whole
-# system's final settings. `inputs` is the flake's inputs. `pkgs` is the
-# package set.
-{ config, osConfig, inputs, pkgs, ... }:
+# system's final settings. `pkgs` is the package set. `unstable` is the
+# nixpkgs-unstable package set, which machines.nix passes to Home Manager.
+{ config, osConfig, pkgs, unstable, ... }:
 
 # `let ... in` defines local names. The names exist only between `let` and `in`.
 let
-  # The nixpkgs-unstable package set. See default.nix.
-  unstable = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
-
   # The Stylix colors as "#rrggbb" strings.
   colors = config.lib.stylix.colors.withHashtag;
   # Turns a Stylix color slot, such as "base00", into a quoted QML string.

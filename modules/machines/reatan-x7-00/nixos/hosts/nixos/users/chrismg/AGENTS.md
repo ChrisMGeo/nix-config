@@ -29,6 +29,7 @@ Home Manager settings for the user `chrismg` on the host `nixos`.
 ## Rules
 
 - Add a package to `home.packages`. Items in a Nix list are separated by spaces, not commas.
+- For a package from nixpkgs-unstable, take the `unstable` argument, as `default.nix` does, and use `unstable.<name>`. `machines.nix` passes it to every Home Manager module, so do not define it again.
 - Run the host's rebuild command to apply these settings. No separate command exists for Home Manager.
 - Find package names at search.nixos.org.
 - `niri.nix` replaces niri's default settings completely. Add every key binding you want to its `binds` set. Check the result with `niri validate`.
