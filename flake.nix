@@ -20,8 +20,16 @@
     # than in the stable set. See users/chrismg/default.nix for an example.
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
-    # Packages for AI coding agents (Codex, OpenCode, and Claude Code), from Numtide.
-    llm-agents.url = "github:numtide/llm-agents.nix";
+    llm-agents = {
+      # Packages for AI coding agents (Codex, OpenCode, and Claude Code), from Numtide.
+      url = "github:numtide/llm-agents.nix";
+      # Its nixpkgs is not shared. With its own nixpkgs, its packages match the
+      # ones in Numtide's binary cache, so they download instead of building.
+      # flake-parts and systems only arrange its outputs and change no package,
+      # so it shares this flake's copies of them.
+      inputs.flake-parts.follows = "flake-parts";
+      inputs.systems.follows = "systems";
+    };
 
     home-manager = {
       # Home Manager manages one user's packages and dotfiles, separately from the system.
@@ -37,6 +45,9 @@
       url = "github:nix-community/stylix/release-26.05";
       # Same as Home Manager above: share one nixpkgs.
       inputs.nixpkgs.follows = "nixpkgs";
+      # Share this flake's flake-parts and systems too, instead of more copies.
+      inputs.flake-parts.follows = "flake-parts";
+      inputs.systems.follows = "systems";
     };
 
     darwin = {
@@ -55,10 +66,17 @@
       # Builds the extensions with nixpkgs-unstable, the same set the Vicinae
       # launcher itself comes from, instead of a separate copy of nixpkgs.
       inputs.nixpkgs.follows = "nixpkgs-unstable";
+      # Same as Stylix above: share one systems list.
+      inputs.systems.follows = "systems";
     };
 
     # flake-parts splits a flake's outputs into modules. See `imports` below.
     flake-parts.url = "github:hercules-ci/flake-parts";
+
+    # The standard list of CPU and OS types, such as x86_64-linux. This flake
+    # does not use it itself. It is here so llm-agents, Stylix, and the Vicinae
+    # extensions share one copy instead of each locking its own.
+    systems.url = "github:nix-systems/default";
   };
 
   # `outputs` is a function. Nix calls it with every input and uses the result as
