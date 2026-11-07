@@ -26,6 +26,11 @@ let
   loginctl = "${osConfig.systemd.package}/bin/loginctl";
   # Sends commands to the running Quickshell bar. See quickshell.nix.
   quickshell = lib.getExe' config.programs.quickshell.package "quickshell";
+  # The start of every command sent to the bar. `-c` names the bar's config,
+  # the same name quickshell.nix sets as `activeConfig`. A key binding adds
+  # the target and the function to call with `++`, which joins two lists:
+  # `quickshellCall ++ [ "bar" "toggle" ]`.
+  quickshellCall = [ quickshell "ipc" "-c" config.programs.quickshell.activeConfig "call" ];
 
   # Changes the volume of the default speaker or microphone. Part of WirePlumber,
   # which PipeWire uses. See audio.nix.
@@ -218,13 +223,13 @@ let
       # Keeps the Quickshell bar shown, or lets it hide again. It also shows in
       # the overview, when the mouse touches the top edge, and for a moment
       # after a workspace change. See quickshell/shell.qml.
-      "Mod+B".spawn = [ quickshell "ipc" "-c" "chrismg" "call" "bar" "toggle" ];
+      "Mod+B".spawn = quickshellCall ++ [ "bar" "toggle" ];
       # Opens or closes the activity monitor, like the same keys on Windows.
       # Clicking a usage gauge in the bar opens it too.
-      "Ctrl+Shift+Escape".spawn = [ quickshell "ipc" "-c" "chrismg" "call" "shell" "toggleActivity" ];
+      "Ctrl+Shift+Escape".spawn = quickshellCall ++ [ "shell" "toggleActivity" ];
       # Opens or closes the Quickshell clock window. It opens by itself when
       # the bar starts. T stands for time.
-      "Mod+T".spawn = [ quickshell "ipc" "-c" "chrismg" "call" "shell" "toggleClock" ];
+      "Mod+T".spawn = quickshellCall ++ [ "shell" "toggleClock" ];
 
       # Windows.
       "Mod+Q"."close-window" = { };

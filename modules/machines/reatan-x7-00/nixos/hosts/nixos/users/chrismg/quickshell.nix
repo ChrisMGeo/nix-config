@@ -450,11 +450,12 @@ in
     Install.WantedBy = [ "niri.service" ];
   };
 
-  # Puts the bar's files in ~/.config/quickshell/chrismg. This is done here
-  # instead of with `programs.quickshell.configs`, which would link the whole
-  # folder at once. `recursive` links each file on its own, which keeps the
-  # existing folder in place.
-  xdg.configFile."quickshell/chrismg" = {
+  # Puts the bar's files in ~/.config/quickshell/chrismg, the folder named by
+  # `activeConfig` above. This is done here instead of with
+  # `programs.quickshell.configs`, which would link the whole folder at once.
+  # `recursive` links each file on its own, which keeps the existing folder in
+  # place.
+  xdg.configFile."quickshell/${config.programs.quickshell.activeConfig}" = {
     source = quickshellConfig;
     recursive = true;
   };
