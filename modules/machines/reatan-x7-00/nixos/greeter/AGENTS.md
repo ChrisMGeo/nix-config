@@ -12,6 +12,7 @@ The login screen. `../greeter.nix` copies these files into the Nix store and sta
 ## Rules
 
 - `../greeter.nix` puts two files next to `shell.qml`: the bar's `Theme.qml`, shared by `../hosts/nixos/users/chrismg/quickshell.nix` as `lib.quickshell.themeFile`, and a generated `Greeter.qml`. Every color and size that `shell.qml` uses must come from `Theme`. Values only the login screen needs, such as the wallpaper, go in `Greeter.qml`.
+- `../greeter.nix` also copies four of the bar's QML files next to `shell.qml`: `UiText.qml`, `TextButton.qml`, `IconButton.qml`, and `ThemedTextField.qml`, listed in `sharedQml`. Use them instead of writing new copies in `shell.qml`. `shell.qml` sets the login screen's larger sizes on them, in `LoginField` and `LoginIconButton` at its end. To use another bar file, add its name to `sharedQml`.
 - The look follows the desktop bar automatically, because the login screen uses the bar's `Theme.qml`. If you rename or remove a `Theme` property, check that `shell.qml` does not use it.
 - The login screen runs as the `greeter` account, not as a user. It can only use fonts, cursors, and programs installed for the whole system or named by store path.
 

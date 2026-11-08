@@ -29,9 +29,10 @@ The QML files for the Quickshell bar of the user `chrismg`. These files are not 
 | `ClockCard.qml` | The clock window, with the time and the date. Opens when the bar starts. Mod+T opens and closes it. |
 | `MediaCard.qml` | The now-playing window, opened from the media button in the bar while media plays. Closes when the music stops. |
 | `IconButton.qml` | A round button with one icon. |
-| `TextButton.qml` | A small rounded button with a word on it, such as "Join". |
+| `TextButton.qml` | A small rounded button with a word on it, such as "Join". Its word size, height, and side space can be set. |
 | `ThemedSlider.qml` | A slider in the theme colors. Use it instead of the plain `Slider`, whose default style is blue. |
 | `ThemedSwitch.qml` | An on and off switch in the theme colors, used for Wi-Fi and Bluetooth. Use it instead of the plain `Switch`, whose default style is blue. |
+| `ThemedTextField.qml` | A text box in the theme colors, used for the Wi-Fi password form. Use it instead of the plain `TextField`, whose default style is blue. |
 | `UiText.qml` | Text in the theme font and color. |
 
 ## Rules
@@ -46,6 +47,7 @@ The QML files for the Quickshell bar of the user `chrismg`. These files are not 
 - A `PopupWindow` must never have a width or height of 0, even for a moment. Wayland treats it as an error and closes the connection, which stops the whole bar. Give it a minimum size, as `VolumeMixer.qml` does.
 - The bar supports niri only. It reads workspaces and windows with `niri msg` and has no code for other compositors.
 - The login screen in `modules/machines/reatan-x7-00/nixos/greeter/` uses the generated `Theme.qml` too. `../quickshell.nix` shares it as `lib.quickshell.themeFile`. If you rename or remove a `Theme` property, check `greeter/shell.qml` as well.
+- The login screen also uses `UiText.qml`, `TextButton.qml`, `IconButton.qml`, and `ThemedTextField.qml` as they are. `../quickshell.nix` shares this folder as `lib.quickshell.qmlDir`, and `greeter.nix` picks those four files. Before you rename or remove one of their properties, or make them use another file from this folder, check `greeter/shell.qml` and the `sharedQml` list in `greeter.nix`.
 
 ## Keeping this file current
 

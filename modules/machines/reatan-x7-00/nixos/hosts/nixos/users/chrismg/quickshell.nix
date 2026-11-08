@@ -414,6 +414,10 @@ in
   # where modules can put values for other modules to read. greeter.nix, at the
   # NixOS level, reads it as `config.home-manager.users.chrismg.lib.quickshell.themeFile`.
   lib.quickshell.themeFile = generatedTheme;
+  # Shares the bar's QML folder too, so the login screen can copy small parts
+  # such as TextButton.qml instead of keeping its own copies. greeter.nix
+  # picks the files.
+  lib.quickshell.qmlDir = ./quickshell;
 
   # Font Awesome supplies the bar's icons. Theme.qml names its "Free Solid" and
   # "Brands" fonts. theme.nix turns on fontconfig, which lets the bar find them.

@@ -408,7 +408,7 @@ Column {
                     // Puts the cursor in the first box, so typing can start at once.
                     Component.onCompleted: (networkItem.enterprise ? usernameField : passwordField).forceActiveFocus()
 
-                    LoginField {
+                    ThemedTextField {
                         id: usernameField
 
                         visible: networkItem.enterprise
@@ -419,7 +419,7 @@ Column {
 
                     // The server's name, such as radius.example.edu. The certificate
                     // must match it, so a fake network with the same name is refused.
-                    LoginField {
+                    ThemedTextField {
                         id: domainField
 
                         visible: networkItem.enterprise
@@ -428,7 +428,7 @@ Column {
                         onAccepted: passwordField.forceActiveFocus()
                     }
 
-                    LoginField {
+                    ThemedTextField {
                         id: passwordField
 
                         width: parent.width - 28
@@ -466,26 +466,6 @@ Column {
                     }
                 }
             }
-        }
-    }
-
-    // A text box in the theme colors, for the login form.
-    component LoginField: TextField {
-        color: Theme.text
-        placeholderTextColor: Theme.textMuted
-        selectionColor: Theme.accent
-        selectedTextColor: Theme.accentText
-        font.family: Theme.fontFamily
-        font.pixelSize: Theme.scaled(12)
-        leftPadding: 8
-        rightPadding: 8
-
-        background: Rectangle {
-            implicitHeight: Theme.scaled(30)
-            radius: Theme.radius - 5
-            color: Theme.subtleButton
-            border.color: parent.activeFocus ? Theme.accent : Theme.outlineTranslucent
-            border.width: Theme.outlineWidth
         }
     }
 }

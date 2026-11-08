@@ -58,8 +58,8 @@ Item {
         anchors.fill: parent
         enabled: root.enabled
         hoverEnabled: true
+        cursorShape: Qt.PointingHandCursor
         acceptedButtons: root.acceptedButtons
         onClicked: mouse => root.clicked(mouse)
-
     }
 }

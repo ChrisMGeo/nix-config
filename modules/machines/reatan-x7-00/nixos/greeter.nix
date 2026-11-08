@@ -54,7 +54,8 @@ let
     import QtQuick
 
     QtObject {
-        // The picture behind the login form, already the size of the screen.
+        // The picture behind the login form, at full size. shell.qml fills
+        // the screen with it.
         property url wallpaper: "file://${home.stylix.image}"
         // Filled in as the user name.
         property string defaultUser: ${builtins.toJSON user}
@@ -65,18 +66,31 @@ let
     }
   '';
 
-  # One folder with shell.qml, the bar's Theme.qml, Greeter.qml, and a qmldir
-  # file that names Theme and Greeter as singletons, which QML files can use
-  # by name. The bar's Theme.qml also holds paths to the bar's helper
-  # programs, such as cava. The login screen never runs them.
-  # `runCommandLocal` runs a small shell script that builds the folder in
-  # `$out`.
+  # The parts of the bar that the login screen uses as they are, by file name
+  # without `.qml`. They come from the bar's QML folder, shared by
+  # users/chrismg/quickshell.nix as `lib.quickshell.qmlDir`.
+  sharedQml = [ "UiText" "TextButton" "IconButton" "ThemedTextField" ];
+
+  # One folder with shell.qml, the bar's Theme.qml, Greeter.qml, the shared
+  # parts above, and a qmldir file. The qmldir names Theme and Greeter as
+  # singletons and lists the shared parts, so QML files can use them by name.
+  # The bar's Theme.qml also holds paths to the bar's helper programs, such as
+  # cava. The login screen never runs them. `runCommandLocal` runs a small
+  # shell script that builds the folder in `$out`. `map` runs a function on
+  # each name in a list, and `concatStringsSep` joins the results with
+  # newlines, so each shared part gets its own `cp` line and qmldir line.
   greeterConfig = pkgs.runCommandLocal "quickshell-greeter-config" { } ''
     mkdir "$out"
     cp ${./greeter/shell.qml} "$out/shell.qml"
     cp ${home.lib.quickshell.themeFile} "$out/Theme.qml"
     cp ${greeterSettings} "$out/Greeter.qml"
-    printf '%s\n' "singleton Theme 1.0 Theme.qml" "singleton Greeter 1.0 Greeter.qml" > "$out/qmldir"
+    ${builtins.concatStringsSep "\n" (map (name:
+      ''cp ${home.lib.quickshell.qmlDir}/${name}.qml "$out/${name}.qml"'') sharedQml)}
+    {
+      printf '%s\n' "singleton Theme 1.0 Theme.qml" "singleton Greeter 1.0 Greeter.qml"
+      ${builtins.concatStringsSep "\n" (map (name:
+        ''printf '%s\n' "${name} 1.0 ${name}.qml"'') sharedQml)}
+    } > "$out/qmldir"
   '';
 
   # greeter/niri.kdl with the words between @ signs filled in. `replaceVars`

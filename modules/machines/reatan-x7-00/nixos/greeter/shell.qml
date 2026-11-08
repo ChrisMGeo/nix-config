@@ -254,7 +254,7 @@ ShellRoot {
                         RowLayout {
                             Layout.fillWidth: true
 
-                            IconButton {
+                            LoginIconButton {
                                 glyph: form.showPassword ? "" : ""
                                 onClicked: form.showPassword = !form.showPassword
                             }
@@ -263,7 +263,11 @@ ShellRoot {
                                 Layout.fillWidth: true
                             }
 
+                            // A little larger than in the bar.
                             TextButton {
+                                labelSize: Theme.scaled(12)
+                                buttonHeight: Theme.scaled(30)
+                                sidePadding: Theme.scaled(12)
                                 primary: true
                                 text: root.busy ? "Logging in" : "Log in"
                                 enabled: !root.busy && passwordField.text.length > 0
@@ -325,13 +329,13 @@ ShellRoot {
                         anchors.centerIn: parent
                         spacing: 4
 
-                        IconButton {
+                        LoginIconButton {
                             glyph: ""
                             highlighted: powerPanel.armedAction === "reboot"
                             onClicked: powerPanel.activate("reboot", ["systemctl", "reboot"])
                         }
 
-                        IconButton {
+                        LoginIconButton {
                             glyph: ""
                             highlighted: powerPanel.armedAction === "poweroff"
                             onClicked: powerPanel.activate("poweroff", ["systemctl", "poweroff"])
@@ -386,106 +390,24 @@ ShellRoot {
         }
     }
 
-    // Text in the bar's font and color.
-    component UiText: Text {
-        color: Theme.text
-        font.family: Theme.fontFamily
-        font.pixelSize: Theme.textSize
-        renderType: Text.NativeRendering
-    }
+    // UiText, TextButton, IconButton, and ThemedTextField are the bar's own
+    // files, which greeter.nix copies next to this one. The two below set the
+    // larger sizes the login screen uses.
 
-    // A text box with the same look as the Wi-Fi password box in the bar.
-    component LoginField: TextField {
-        color: Theme.text
-        placeholderTextColor: Theme.textMuted
-        selectionColor: Theme.accent
-        selectedTextColor: Theme.accentText
-        font.family: Theme.fontFamily
+    // A text box for the login form.
+    component LoginField: ThemedTextField {
+        boxHeight: Theme.scaled(34)
         font.pixelSize: Theme.scaled(13)
         leftPadding: 10
         rightPadding: 10
         opacity: enabled ? 1 : 0.6
-
-        background: Rectangle {
-            implicitHeight: Theme.scaled(34)
-            radius: Theme.radius - 5
-            color: Theme.subtleButton
-            border.color: parent.activeFocus ? Theme.accent : Theme.outlineTranslucent
-            border.width: Theme.outlineWidth
-        }
-    }
-
-    // A small rounded button with a word on it. `primary` fills it with the
-    // accent color. The same as TextButton.qml in the bar.
-    component TextButton: Rectangle {
-        id: button
-
-        property string text
-        property bool primary: false
-
-        signal clicked()
-
-        implicitWidth: buttonLabel.implicitWidth + Theme.scaled(24)
-        implicitHeight: Theme.scaled(30)
-        radius: Theme.radius - 5
-        opacity: enabled ? 1 : 0.4
-        color: primary
-            ? Theme.accent
-            : buttonMouse.containsMouse ? Theme.surfaceHover : Theme.subtleButton
-
-        UiText {
-            id: buttonLabel
-
-            anchors.centerIn: parent
-            text: button.text
-            color: button.primary ? Theme.accentText : Theme.text
-            font.pixelSize: Theme.scaled(12)
-            font.weight: Font.DemiBold
-        }
-
-        MouseArea {
-            id: buttonMouse
-
-            anchors.fill: parent
-            enabled: button.enabled
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
-            onClicked: button.clicked()
-        }
     }
 
     // A square button with a Font Awesome icon. `highlighted` fills it with
     // the accent color.
-    component IconButton: Rectangle {
-        id: iconButton
-
-        property string glyph
-        property bool highlighted: false
-
-        signal clicked()
-
-        implicitWidth: Theme.scaled(30)
-        implicitHeight: Theme.scaled(30)
-        radius: Theme.radius - 5
-        color: highlighted
-            ? Theme.accent
-            : iconMouse.containsMouse ? Theme.surfaceHover : "transparent"
-
-        UiText {
-            anchors.centerIn: parent
-            text: iconButton.glyph
-            color: iconButton.highlighted ? Theme.accentText : Theme.text
-            font.family: Theme.iconFontFamily
-            font.pixelSize: Theme.scaled(13)
-        }
-
-        MouseArea {
-            id: iconMouse
-
-            anchors.fill: parent
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
-            onClicked: iconButton.clicked()
-        }
+    component LoginIconButton: IconButton {
+        buttonSize: Theme.scaled(30)
+        glyphFontFamily: Theme.iconFontFamily
+        glyphSize: Theme.scaled(13)
     }
 }

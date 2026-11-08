@@ -12,7 +12,7 @@ Settings for every NixOS host on the machine `reatan-x7-00`. Each `.nix` file he
 | `browsers.nix` | Installs Firefox for every user. |
 | `desktop.nix` | Turns on the niri desktop, xwayland-satellite for X11 apps, the Soteria password prompt, the PAM entry that lets swaylock unlock, gpu-screen-recorder, which the user's Vicinae extension starts and stops, and gvfs and udisks2, which the file manager needs for the Trash and removable drives. |
 | `form-factor.nix` | Marks this machine as a desktop with `machine.formFactor`. |
-| `greeter.nix` | Turns on greetd with a Quickshell login screen that runs inside niri. Uses the Theme.qml of the Quickshell bar of the first user folder (`chrismg` today), builds a Greeter.qml with that user's wallpaper and user name, builds niri settings with that user's cursor, and installs that font, Font Awesome, and the cursor for the whole system. Exposes its niri config and QML under `system.build` so `modules/checks.nix` can check them. |
+| `greeter.nix` | Turns on greetd with a Quickshell login screen that runs inside niri. Uses the Theme.qml and four small QML parts, such as TextButton.qml, of the Quickshell bar of the first user folder (`chrismg` today), builds a Greeter.qml with that user's wallpaper and user name, builds niri settings with that user's cursor, and installs that font, Font Awesome, and the cursor for the whole system. Exposes its niri config and QML under `system.build` so `modules/checks.nix` can check them. |
 | `keyboard.nix` | Sets the US keyboard layout for the console and the desktop. |
 | `power.nix` | Turns on UPower and power-profiles-daemon, and turns off sleep. |
 | `printing.nix` | Turns on CUPS printing. |
