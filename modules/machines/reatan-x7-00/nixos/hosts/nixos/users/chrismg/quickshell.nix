@@ -255,7 +255,7 @@ let
   # Exits with 0 when power-profiles-daemon is running. The bar uses it to decide
   # whether to show the profile buttons.
   powerProfilesProbe = pkgs.writeShellScript "quickshell-power-profiles-available" ''
-    ${pkgs.systemd}/bin/busctl --system --quiet status net.hadess.PowerProfiles \
+    ${osConfig.systemd.package}/bin/busctl --system --quiet status net.hadess.PowerProfiles \
       >/dev/null 2>&1
   '';
 
@@ -333,9 +333,16 @@ let
         property string powerProfilesCommand: "${powerProfilesProbe}"
         property string nmcliCommand: "${nmcli}"
         property string wifiEnterpriseCommand: "${wifiEnterpriseJoin}"
-        // Starts and stops the Bluetooth pairing agent in bluetooth.nix. It is
-        // the systemctl that matches the system's systemd.
+        // The programs the bar and the login screen start, by exact store
+        // path, so they do not depend on what is in PATH. systemctl and
+        // loginctl come from the system's systemd, and niri from the niri the
+        // system runs. systemctl starts and stops the Bluetooth pairing agent
+        // in bluetooth.nix, and restarts and shuts down the computer. loginctl
+        // locks the session. niri reads workspaces and windows, switches
+        // workspaces, and logs out.
         property string systemctlCommand: "${osConfig.systemd.package}/bin/systemctl"
+        property string loginctlCommand: "${osConfig.systemd.package}/bin/loginctl"
+        property string niriCommand: "${osConfig.programs.niri.package}/bin/niri"
         // Exact store paths, so the visualizer does not depend on any profile.
         property string cavaCommand: "${pkgs.cava}/bin/cava"
         property string cavaConfig: "${cavaConfig}"

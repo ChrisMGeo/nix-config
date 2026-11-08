@@ -128,11 +128,12 @@ ShellRoot {
 
     function activateWorkspace(outputName, number) {
         // focus-workspace acts on the focused monitor, so focus the bar's monitor
-        // first. The names are passed as arguments, not pasted into the shell text.
+        // first. The names and niri's path are passed as arguments, not pasted
+        // into the shell text.
         Quickshell.execDetached([
             "sh", "-c",
-            'niri msg action focus-monitor "$1" && niri msg action focus-workspace "$2"',
-            "sh", outputName, String(number)
+            '"$1" msg action focus-monitor "$2" && "$1" msg action focus-workspace "$3"',
+            "sh", Theme.niriCommand, outputName, String(number)
         ]);
     }
 
@@ -186,7 +187,7 @@ ShellRoot {
         id: niriEvents
 
         running: !niriRestart.running
-        command: ["niri", "msg", "-j", "event-stream"]
+        command: [Theme.niriCommand, "msg", "-j", "event-stream"]
         // If the stream ends, for example after niri restarts, wait a second
         // and connect again. The new stream starts with the full state.
         onExited: niriRestart.restart()

@@ -38,6 +38,7 @@ The QML files for the Quickshell bar of the user `chrismg`. These files are not 
 ## Rules
 
 - `Theme.qml` is generated. Change colors, sizes, and fonts in `../quickshell.nix`, not here.
+- Start a program by its store path from `Theme`, such as `Theme.niriCommand` or `Theme.systemctlCommand`, not by its bare name. Add a new one next to them in `../quickshell.nix`.
 - Change the number of visualizer bars with `spectrumBars` in `../quickshell.nix`. It fills in both `cava.conf` and `Theme.qml`.
 - Quickshell comes from nixpkgs-unstable, because 0.3.0 crashes when a Wi-Fi access point disappears. See `programs.quickshell.package` in `../quickshell.nix`.
 - `Theme.showBattery` is true only when `machine.formFactor` is "laptop". Hide any laptop-only control behind it.

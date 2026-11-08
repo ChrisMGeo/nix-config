@@ -332,13 +332,13 @@ ShellRoot {
                         LoginIconButton {
                             glyph: ""
                             highlighted: powerPanel.armedAction === "reboot"
-                            onClicked: powerPanel.activate("reboot", ["systemctl", "reboot"])
+                            onClicked: powerPanel.activate("reboot", [Theme.systemctlCommand, "reboot"])
                         }
 
                         LoginIconButton {
                             glyph: ""
                             highlighted: powerPanel.armedAction === "poweroff"
-                            onClicked: powerPanel.activate("poweroff", ["systemctl", "poweroff"])
+                            onClicked: powerPanel.activate("poweroff", [Theme.systemctlCommand, "poweroff"])
                         }
                     }
 

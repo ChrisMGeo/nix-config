@@ -22,7 +22,7 @@ PanelWindow {
             label: "Lock",
             glyph: "",
             // Asks logind to lock. swayidle then starts swaylock. See ../lock.nix.
-            command: ["loginctl", "lock-session"],
+            command: [Theme.loginctlCommand, "lock-session"],
             confirm: false
         },
         {
@@ -30,19 +30,19 @@ PanelWindow {
             label: "Log out",
             glyph: "",
             // Ends the niri session and returns to the login screen.
-            command: ["niri", "msg", "action", "quit", "--skip-confirmation"]
+            command: [Theme.niriCommand, "msg", "action", "quit", "--skip-confirmation"]
         },
         {
             id: "reboot",
             label: "Restart",
             glyph: "",
-            command: ["systemctl", "reboot"]
+            command: [Theme.systemctlCommand, "reboot"]
         },
         {
             id: "poweroff",
             label: "Shut down",
             glyph: "",
-            command: ["systemctl", "poweroff"]
+            command: [Theme.systemctlCommand, "poweroff"]
         }
     ]
 
