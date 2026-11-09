@@ -70,16 +70,17 @@ in
 
     # Three fonts. `package` is what gets installed. `name` is the font family
     # name that programs ask for.
-    # - Iosevka for monospace text, such as the terminal.
+    # - Iosevka for monospace text, such as the terminal. `iosevka-bin` is
+    #   the prebuilt release, so nothing has to be compiled. Both Iosevka
+    #   fonts come from it, so they are always the same version.
     # - Iosevka Aile for sans-serif text, which covers the bar, the launcher,
     #   notifications, and most app interfaces. It is Iosevka with normal
     #   letter widths instead of fixed ones, so it matches the terminal font.
-    #   `iosevka-bin` is the prebuilt release, so nothing has to be compiled.
-    #   `override { variant = "Aile"; }` picks the Aile variant of it.
+    #   `override { variant = "Aile"; }` picks the Aile variant of iosevka-bin.
     # - Libron, defined above, for serif text, such as web pages that ask for
     #   a serif font.
     fonts = {
-      monospace = { package = pkgs.iosevka; name = "Iosevka"; };
+      monospace = { package = pkgs.iosevka-bin; name = "Iosevka"; };
       sansSerif = {
         package = pkgs.iosevka-bin.override { variant = "Aile"; };
         name = "Iosevka Aile";
