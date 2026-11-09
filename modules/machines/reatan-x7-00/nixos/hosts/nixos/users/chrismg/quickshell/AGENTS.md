@@ -28,7 +28,7 @@ The QML files for the Quickshell bar of the user `chrismg`. These files are not 
 | `AudioVisualizer.qml` | Draws the audio bars. |
 | `ClockCard.qml` | The clock window, with the time and the date. Opens when the bar starts. Mod+T opens and closes it. |
 | `MediaCard.qml` | The now-playing window, opened from the media button in the bar while media plays. Closes when the music stops. |
-| `IconButton.qml` | A round button with one icon. |
+| `IconButton.qml` | A round button with one icon. Its `tooltip` text shows in a small label under it after the mouse rests on it for half a second. |
 | `TextButton.qml` | A small rounded button with a word on it, such as "Join". Its word size, height, and side space can be set. |
 | `ThemedSlider.qml` | A slider in the theme colors. Use it instead of the plain `Slider`, whose default style is blue. |
 | `ThemedSwitch.qml` | An on and off switch in the theme colors, used for Wi-Fi and Bluetooth. Use it instead of the plain `Switch`, whose default style is blue. |
