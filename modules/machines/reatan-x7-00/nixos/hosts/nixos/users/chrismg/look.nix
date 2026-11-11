@@ -2,9 +2,10 @@
 # `nixos`. Loaded by machines.nix as a Home Manager module.
 #
 # Stylix sets colors, fonts, and opacity, but it has no setting for shapes
-# and spacing, such as rounded corners, outline width, and margins. This
-# file adds them, so niri, the notifications, the launcher, and the
-# Quickshell bar all read the same values instead of each typing its own.
+# and spacing, such as rounded corners, outline width, margins, and the glow
+# around the focused window. This file adds them, so niri, the notifications,
+# the launcher, and the Quickshell bar all read the same values instead of
+# each typing its own.
 #
 # `{ lib, ... }:` makes this file a function. `lib` is the nixpkgs helper
 # library.
@@ -12,7 +13,7 @@
 
 {
   # `options` declares new settings that other modules can read. Here it adds
-  # `look.cornerRadius`, the outline width, and the margins, read as
+  # `look.cornerRadius`, the outline width, the margins, and the glow, read as
   # `config.look.cornerRadius` and so on.
   options.look = {
     # `mkOption` declares one setting. `type` makes Nix reject a value that
@@ -42,6 +43,36 @@
       type = lib.types.ints.unsigned;
       default = 16;
       description = "Space between windows, and between windows and the screen edges, in pixels.";
+    };
+
+    # The soft light glow around the focused niri window. niri.nix reads
+    # these.
+    # Softness is how far the glow fades out. niri blurs with a Gaussian
+    # curve whose width, called sigma, is half the softness, and the glow
+    # reaches about three sigma past its edge.
+    glowSoftness = lib.mkOption {
+      type = lib.types.ints.unsigned;
+      default = 12;
+      description = "How far the glow around the focused window fades out, in pixels.";
+    };
+
+    # How far the glow's starting edge sits outside the window. A blurred
+    # rectangle is fainter at its corners than along its sides, because both
+    # edges fade there at once, so the glow looks rounded. Moving the edge out
+    # by half the softness makes the glow almost full strength at the window's
+    # corners, so they look square.
+    glowSpread = lib.mkOption {
+      type = lib.types.ints.unsigned;
+      default = 6;
+      description = "How far outside the window the glow starts to fade, in pixels. Half of glowSoftness keeps the corners square.";
+    };
+
+    # How strong the glow is at its brightest, from 0 (clear) to 255 (solid).
+    # 64 is about a quarter.
+    glowAlpha = lib.mkOption {
+      type = lib.types.ints.between 0 255;
+      default = 64;
+      description = "How opaque the glow is at its brightest, from 0 to 255.";
     };
 
     # The space between the screen's left, right, and bottom edges and the
