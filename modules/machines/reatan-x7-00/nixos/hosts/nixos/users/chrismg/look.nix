@@ -68,10 +68,10 @@
     };
 
     # How strong the glow is at its brightest, from 0 (clear) to 255 (solid).
-    # 64 is about a quarter.
+    # 40 is about a sixth.
     glowAlpha = lib.mkOption {
       type = lib.types.ints.between 0 255;
-      default = 64;
+      default = 40;
       description = "How opaque the glow is at its brightest, from 0 to 255.";
     };
 
