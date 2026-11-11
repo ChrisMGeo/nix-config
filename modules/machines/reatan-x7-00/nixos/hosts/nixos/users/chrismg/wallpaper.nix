@@ -17,13 +17,14 @@ let
 
   # The name of the chosen wallpaper in wallpapers/default.nix. Change it to
   # switch wallpapers.
-  name = "monochrome-mountain-in-the-void";
+  # A plain black background, which matches the black monochrome scheme.
+  name = "plain-black";
 
   # The chosen wallpaper, at full size. `wallpapers.${name}` looks up the entry
-  # whose name is the value of `name`. The picture is already edited, with
-  # darker blacks and a little sharpening, so it is used as it is. It is not
-  # shrunk to a monitor's size, so it works on any monitor without a list of
-  # resolutions. wpaperd shrinks it to each screen when it draws it.
+  # whose name is the value of `name`. The picture is used as it is, so nothing
+  # runs at build time. It is not cut to a monitor's size, so it works on any
+  # monitor without a list of resolutions. wpaperd scales it to each screen
+  # when it draws it.
   picture = wallpapers.${name};
 in
 {

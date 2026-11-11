@@ -7,7 +7,8 @@ Wallpaper pictures that any host or user can use. This folder sits outside `modu
 | File | What it does |
 | --- | --- |
 | `default.nix` | Maps each wallpaper's name to its picture. A module loads it with `import "${inputs.self}/wallpapers"`. |
-| `monochrome-mountain-in-the-void.jpg` | A black and white drawing of a jagged, snowy mountain peak in the lower right of a black background, generated with GPT and upscaled to 3344x1882 with waifu2x. Its blacks are already darkened and its detail sharpened with ImageMagick, so nothing runs at build time. `default.nix` has the command to redo it from the original PNG in git history. It has no wallhaven ID, so it is named after its title. Used by `chrismg` on the host `nixos`. |
+| `monochrome-mountain-in-the-void.jpg` | A black and white drawing of a jagged, snowy mountain peak in the lower right of a black background, generated with GPT and upscaled to 3344x1882 with waifu2x. Its blacks are already darkened and its detail sharpened with ImageMagick, so nothing runs at build time. `default.nix` has the command to redo it from the original PNG in git history. It has no wallhaven ID, so it is named after its title. Not in use today. |
+| `plain-black.png` | A plain black picture, 1920x1080, made with ImageMagick. `default.nix` has the command to redo it. It has no source, so it is named after what it shows. Used by `chrismg` on the host `nixos`. |
 
 ## Rules
 

@@ -28,4 +28,14 @@
   # true black and stretches the brighter tones for more contrast. -unsharp
   # sharpens fine detail, because the picture is slightly soft.
   monochrome-mountain-in-the-void = ./monochrome-mountain-in-the-void.jpg;
+
+  # A plain black picture, 1920x1080, with nothing else in it. It has no source,
+  # so it is named after what it shows. It matches the black background of the
+  # black monochrome scheme. It was made with ImageMagick:
+  #
+  #   magick -size 1920x1080 xc:'#000000' -strip PNG8:plain-black.png
+  #
+  # xc:'#000000' fills the whole picture with one color. PNG8 stores it with a
+  # small color table, so the file is about 2 KB.
+  plain-black = ./plain-black.png;
 }
