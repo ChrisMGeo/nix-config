@@ -381,6 +381,18 @@ let
         property color magenta: ${color "base0E"}
         property color cyan: ${color "base0C"}
 
+        // The soft light glow around the panels, the same as niri's glow
+        // around the focused window. See PanelGlow.qml and ../look.nix. The
+        // color is the Stylix base07 color at look.glowAlpha out of 255.
+        property color glowBase: ${color "base07"}
+        property color glow: Qt.rgba(glowBase.r, glowBase.g, glowBase.b, ${toString config.look.glowAlpha} / 255)
+        property int glowSoftness: ${toString config.look.glowSoftness}
+        property int glowSpread: ${toString config.look.glowSpread}
+        // How far the glow reaches past a panel's edge: the spread plus three
+        // sigma, where it has faded to almost nothing. Windows leave this much
+        // space around their panels.
+        property int glowReach: glowSpread + Math.ceil(glowSoftness * 1.5)
+
         property int outlineWidth: ${toString config.look.borderWidth}
         property int outerMargin: ${toString config.look.screenMargin}
         property int barTopGap: ${toString config.look.topMargin}
@@ -409,10 +421,14 @@ let
 
   # One folder with the QML files from quickshell/ plus the generated Theme.qml.
   # `runCommandLocal` runs a small shell script that builds the folder.
+  # It also compiles the panel glow shader, glow.frag, to glow.frag.qsb, the
+  # form Qt 6 reads. qsb comes from the same nixpkgs-unstable Qt that
+  # Quickshell uses. See quickshell/PanelGlow.qml.
   quickshellConfig = pkgs.runCommandLocal "quickshell-chrismg-config" { } ''
     cp -R ${./quickshell} "$out"
     chmod -R u+w "$out"
     cp ${generatedTheme} "$out/Theme.qml"
+    ${unstable.qt6.qtshadertools}/bin/qsb --qt6 -o "$out/glow.frag.qsb" "$out/glow.frag"
   '';
 in
 {

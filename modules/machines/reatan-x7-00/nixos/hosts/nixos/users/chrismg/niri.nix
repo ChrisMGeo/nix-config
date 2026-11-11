@@ -193,7 +193,8 @@ let
       # color, with look.glowAlpha added as its alpha in two hex digits.
       # Other windows get a fully clear shadow, so they have none. niri draws
       # the shadow only outside the window, so it does not show through a
-      # see-through window such as kitty. The sizes come from look.nix.
+      # see-through window such as kitty. The sizes come from look.nix, which
+      # the Quickshell panels' glow reads too.
       shadow = {
         on = { };
         # How far the glow fades out, in pixels.

@@ -65,8 +65,12 @@ PanelWindow {
             armedAction = "";
     }
 
-    implicitWidth: Theme.scaled(200)
-    implicitHeight: column.implicitHeight + 16
+    // The window is the panel plus Theme.glowReach of space on the left, top,
+    // and bottom for the glow around it. On the right it reaches the screen
+    // edge and the panel keeps Theme.outerMargin from it, so the glow has
+    // room there too.
+    implicitWidth: Theme.glowReach + menuPanel.width + Theme.outerMargin
+    implicitHeight: menuPanel.height + Theme.glowReach * 2
     color: "transparent"
     exclusionMode: ExclusionMode.Ignore
 
@@ -75,17 +79,23 @@ PanelWindow {
         right: true
     }
 
+    // The panel's top sits Theme.outerMargin below the bar. The window starts
+    // Theme.glowReach above that, to fit the glow.
     margins {
-        top: Theme.barHeight + Theme.outerMargin * 2
-        right: Theme.outerMargin
+        top: Theme.barHeight + Theme.outerMargin * 2 - Theme.glowReach
     }
 
-    // Asks niri to blur what is behind the whole window, for a frosted
-    // glass look. Theme.panel is see-through, so the blur shows. Only this
-    // region is blurred.
+    // Asks niri to blur what is behind the panel, for a frosted glass look.
+    // Theme.panel is see-through, so the blur shows. Only this region is
+    // blurred, so the glow space around the panel stays clear.
     BackgroundEffect.blurRegion: Region {
-        width: root.width
-        height: root.height
+        item: menuPanel
+    }
+
+    // Only the panel takes clicks. Clicks on the glow around it go through
+    // to the windows below.
+    mask: Region {
+        item: menuPanel
     }
 
     Timer {
@@ -95,8 +105,17 @@ PanelWindow {
         onTriggered: root.armedAction = ""
     }
 
+    PanelGlow {
+        target: menuPanel
+    }
+
     Rectangle {
-        anchors.fill: parent
+        id: menuPanel
+
+        x: Theme.glowReach
+        y: Theme.glowReach
+        width: Theme.scaled(200)
+        height: column.implicitHeight + 16
         color: Theme.panel
 
         ColumnLayout {

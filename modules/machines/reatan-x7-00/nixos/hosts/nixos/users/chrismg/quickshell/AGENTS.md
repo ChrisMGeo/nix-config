@@ -28,6 +28,8 @@ The QML files for the Quickshell bar of the user `chrismg`. These files are not 
 | `AudioVisualizer.qml` | Draws the audio bars. |
 | `ClockCard.qml` | The clock window, with the time and the date. Opens when the bar starts. Mod+T opens and closes it. |
 | `MediaCard.qml` | The now-playing window, opened from the media button in the bar while media plays. Closes when the music stops. |
+| `PanelGlow.qml` | A soft light glow around a panel, the same as niri's glow around the focused window. Placed before a panel with `target` set to it. Draws only outside the panel, so the see-through panel does not look lighter. Used by the bar's two panels, the settings drawer, the volume mixer, the power menu, and the tray drop-down. |
+| `glow.frag` | The shader `PanelGlow.qml` runs, with niri's glow math. `../quickshell.nix` compiles it to `glow.frag.qsb`, which Qt 6 reads. |
 | `IconButton.qml` | A round button with one icon. Its `tooltip` text shows in a small label under it after the mouse rests on it for half a second. |
 | `TextButton.qml` | A small rounded button with a word on it, such as "Join". Its word size, height, and side space can be set. |
 | `ThemedSlider.qml` | A slider in the theme colors. Use it instead of the plain `Slider`, whose default style is blue. |
@@ -44,6 +46,7 @@ The QML files for the Quickshell bar of the user `chrismg`. These files are not 
 - `Theme.showBattery` is true only when `machine.formFactor` is "laptop". Hide any laptop-only control behind it.
 - When you add a QML file, list it in `qmldir` too.
 - `Theme.panel` is see-through. A new window that draws it needs a `BackgroundEffect.blurRegion` that covers the panel, or it looks dim instead of frosted. The blur shows only where that region is.
+- A new panel window gets the glow with a `PanelGlow` before its panel. Make the window `Theme.glowReach` larger than the panel on each side the glow shows, place the panel inside that space, and limit `mask` and `BackgroundEffect.blurRegion` to the panel, so the glow space neither takes clicks nor gets blurred. Tooltips have no glow.
 - `ActivityMonitor.qml`, `ClockCard.qml`, and `MediaCard.qml` are normal windows, not panels, so the blur rule above does not apply to them. niri places, moves, and sizes them, so they do not save a position. A niri window rule in `../niri.nix` matches their titles, "Activity monitor", "Clock", and "Now playing", to make them float and blur them. Change both together.
 - A `PopupWindow` must never have a width or height of 0, even for a moment. Wayland treats it as an error and closes the connection, which stops the whole bar. Give it a minimum size, as `VolumeMixer.qml` does.
 - The bar supports niri only. It reads workspaces and windows with `niri msg` and has no code for other compositors.

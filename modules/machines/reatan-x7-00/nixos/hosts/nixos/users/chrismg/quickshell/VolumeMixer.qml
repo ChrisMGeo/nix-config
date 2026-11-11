@@ -20,39 +20,51 @@ PopupWindow {
 
     signal closeRequested()
 
-    // Opens to the left of the drawer, lined up with its top. The anchor is
-    // the drawer's top left corner. `gravity` makes the popup grow left and
-    // down from there.
+    // Opens to the left of the drawer's panel, lined up with its top. The
+    // anchor is the panel's left edge, Theme.glowReach above its top, where
+    // the drawer's window starts. `gravity` makes the popup grow left and down
+    // from there, so this panel's top also sits Theme.glowReach down.
     anchor.window: parentWindow
-    anchor.rect.x: 0
+    anchor.rect.x: parentWindow ? parentWindow.panel.x : 0
     anchor.rect.y: 0
     anchor.rect.width: 1
     anchor.rect.height: 1
     anchor.edges: Edges.Top | Edges.Left
     anchor.gravity: Edges.Bottom | Edges.Left
     color: "transparent"
-    // The window is a gap wider than the panel. The gap is the transparent
-    // strip between the panel and the drawer.
-    implicitWidth: Theme.drawerWidth + Theme.gap
-    // As tall as the rows need, but no taller than the drawer. Wayland stops
-    // the whole bar with an error if a popup has no height, which can happen
-    // for a moment while the drawer is still being sized, so it is never
-    // shorter than 120 pixels.
-    implicitHeight: Math.max(Theme.scaled(120),
-        Math.min(column.implicitHeight + 24, parentWindow ? parentWindow.height : Theme.scaled(500)))
+    // The window is the panel plus Theme.glowReach on the left, top, and
+    // bottom for the glow around it, and a gap on the right. The gap is the
+    // transparent strip between this panel and the drawer's.
+    implicitWidth: Theme.glowReach + Theme.drawerWidth + Theme.gap
+    implicitHeight: panel.height + Theme.glowReach * 2
 
     // Blurs what is behind the panel, for a frosted glass look. See
-    // Theme.panel. The gap is left out.
+    // Theme.panel. The gap and the glow space are left out.
     BackgroundEffect.blurRegion: Region {
-        width: panel.width
-        height: panel.height
+        item: panel
+    }
+
+    // Only the panel takes clicks.
+    mask: Region {
+        item: panel
+    }
+
+    PanelGlow {
+        target: panel
     }
 
     Rectangle {
         id: panel
 
+        x: Theme.glowReach
+        y: Theme.glowReach
         width: Theme.drawerWidth
-        height: parent.height
+        // As tall as the rows need, but no taller than the drawer's panel.
+        // Wayland stops the whole bar with an error if a popup has no height,
+        // which can happen for a moment while the drawer is still being sized,
+        // so it is never shorter than 120 pixels.
+        height: Math.max(Theme.scaled(120),
+            Math.min(column.implicitHeight + 24, parentWindow ? parentWindow.panel.height : Theme.scaled(500)))
         color: Theme.panel
 
         ColumnLayout {

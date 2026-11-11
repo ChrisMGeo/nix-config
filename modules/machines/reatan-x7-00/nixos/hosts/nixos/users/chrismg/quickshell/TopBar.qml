@@ -33,7 +33,11 @@ PanelWindow {
     // The bar floats over windows instead of pushing them down. Ignore reserves
     // no space and lets the window reach the very top edge of the screen, where
     // the mouse can touch it. Setting exclusiveZone would undo this.
-    implicitHeight: Theme.barTopGap + Theme.barHeight
+    // The window is Theme.glowReach taller than the bar and spans the whole
+    // screen width, so the glow around the panels has room below and beside
+    // them. The panels keep Theme.outerMargin from the screen's sides, inside
+    // the window. The mask below keeps the extra space from taking clicks.
+    implicitHeight: Theme.barTopGap + Theme.barHeight + Theme.glowReach
     color: "transparent"
     exclusionMode: ExclusionMode.Ignore
 
@@ -43,30 +47,26 @@ PanelWindow {
         right: true
     }
 
-    margins {
-        left: Theme.outerMargin
-        right: Theme.outerMargin
-    }
-
     // The parts of the window that take the mouse. Clicks anywhere else go
     // through to the windows below. While hidden, only a 2 pixel strip along
     // the top edge does. While shown, the gap above the bar and the two panels
-    // do too.
+    // do too. `bar.x` turns a panel's place inside the bar into its place in
+    // the window.
     mask: Region {
-        x: 0
+        x: bar.x
         y: 0
-        width: root.width
+        width: bar.width
         height: root.revealed ? Theme.barTopGap : 2
 
         Region {
-            x: workspacePanel.x
+            x: bar.x + workspacePanel.x
             y: Theme.barTopGap
             width: root.revealed ? workspacePanel.width : 0
             height: Theme.barHeight
         }
 
         Region {
-            x: statusPanel.x
+            x: bar.x + statusPanel.x
             y: Theme.barTopGap
             width: root.revealed ? statusPanel.width : 0
             height: Theme.barHeight
@@ -80,14 +80,14 @@ PanelWindow {
     // above it, and the empty top Region adds nothing.
     BackgroundEffect.blurRegion: Region {
         Region {
-            x: workspacePanel.x
+            x: bar.x + workspacePanel.x
             y: Theme.barTopGap + slide.y
             width: workspacePanel.width
             height: Theme.barHeight
         }
 
         Region {
-            x: statusPanel.x
+            x: bar.x + statusPanel.x
             y: Theme.barTopGap + slide.y
             width: statusPanel.width
             height: Theme.barHeight
@@ -138,9 +138,9 @@ PanelWindow {
     Item {
         id: bar
 
-        x: 0
+        x: Theme.outerMargin
         y: Theme.barTopGap
-        width: parent.width
+        width: parent.width - Theme.outerMargin * 2
         height: Theme.barHeight
         opacity: root.revealed ? 1 : 0
 
@@ -162,6 +162,16 @@ PanelWindow {
 
         Behavior on opacity {
             NumberAnimation { duration: 180 }
+        }
+
+        // The glow around each panel. They come first, so they are drawn
+        // underneath the panels, and they slide and fade with them.
+        PanelGlow {
+            target: workspacePanel
+        }
+
+        PanelGlow {
+            target: statusPanel
         }
 
         // The left panel: the workspace buttons of this monitor.

@@ -10,6 +10,7 @@ BluetoothDevices 1.0 BluetoothDevices.qml
 ClockCard 1.0 ClockCard.qml
 IconButton 1.0 IconButton.qml
 MediaCard 1.0 MediaCard.qml
+PanelGlow 1.0 PanelGlow.qml
 PowerMenu 1.0 PowerMenu.qml
 SettingsDrawer 1.0 SettingsDrawer.qml
 SettingsSection 1.0 SettingsSection.qml

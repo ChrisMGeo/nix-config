@@ -3,7 +3,7 @@
 #
 # Stylix sets colors, fonts, and opacity, but it has no setting for shapes
 # and spacing, such as rounded corners, outline width, margins, and the glow
-# around the focused window. This file adds them, so niri, the notifications,
+# around windows and panels. This file adds them, so niri, the notifications,
 # the launcher, and the Quickshell bar all read the same values instead of
 # each typing its own.
 #
@@ -45,15 +45,16 @@
       description = "Space between windows, and between windows and the screen edges, in pixels.";
     };
 
-    # The soft light glow around the focused niri window. niri.nix reads
-    # these.
+    # The soft light glow around the focused niri window and around the
+    # Quickshell panels. niri.nix and quickshell/PanelGlow.qml both read
+    # these, so the two glows look the same.
     # Softness is how far the glow fades out. niri blurs with a Gaussian
     # curve whose width, called sigma, is half the softness, and the glow
     # reaches about three sigma past its edge.
     glowSoftness = lib.mkOption {
       type = lib.types.ints.unsigned;
       default = 12;
-      description = "How far the glow around the focused window fades out, in pixels.";
+      description = "How far the glow around the focused window and the panels fades out, in pixels.";
     };
 
     # How far the glow's starting edge sits outside the window. A blurred
@@ -64,7 +65,7 @@
     glowSpread = lib.mkOption {
       type = lib.types.ints.unsigned;
       default = 6;
-      description = "How far outside the window the glow starts to fade, in pixels. Half of glowSoftness keeps the corners square.";
+      description = "How far outside the window or panel the glow starts to fade, in pixels. Half of glowSoftness keeps the corners square.";
     };
 
     # How strong the glow is at its brightest, from 0 (clear) to 255 (solid).

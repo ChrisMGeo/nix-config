@@ -22,27 +22,42 @@ PopupWindow {
     // Opens below the bar, centered on the button. The anchor is a strip as
     // wide as the button that starts under the bar's panel plus a small gap.
     // `edges` picks the middle of that strip's top edge, and `gravity` makes
-    // the drop-down grow downward from there.
+    // the drop-down grow downward from there. The window starts
+    // Theme.glowReach higher, because it leaves that much space for the glow
+    // on every side of the panel.
     anchor.item: anchorItem
     anchor.rect.x: 0
-    anchor.rect.y: anchorItem ? anchorItem.height + (Theme.barHeight - anchorItem.height) / 2 + Theme.gap : 0
+    anchor.rect.y: anchorItem ? anchorItem.height + (Theme.barHeight - anchorItem.height) / 2 + Theme.gap - Theme.glowReach : 0
     anchor.rect.width: anchorItem ? anchorItem.width : 1
     anchor.rect.height: 1
     anchor.edges: Edges.Top
     anchor.gravity: Edges.Bottom
     color: "transparent"
-    implicitWidth: Theme.scaled(220)
-    implicitHeight: column.implicitHeight + 16
+    implicitWidth: menuPanel.width + Theme.glowReach * 2
+    implicitHeight: menuPanel.height + Theme.glowReach * 2
 
     // Blurs what is behind the drop-down, for a frosted glass look. See
-    // Theme.panel.
+    // Theme.panel. The glow space around it is left out.
     BackgroundEffect.blurRegion: Region {
-        width: root.width
-        height: root.height
+        item: menuPanel
+    }
+
+    // Only the panel takes clicks.
+    mask: Region {
+        item: menuPanel
+    }
+
+    PanelGlow {
+        target: menuPanel
     }
 
     Rectangle {
-        anchors.fill: parent
+        id: menuPanel
+
+        x: Theme.glowReach
+        y: Theme.glowReach
+        width: Theme.scaled(220)
+        height: column.implicitHeight + 16
         color: Theme.panel
 
         ColumnLayout {

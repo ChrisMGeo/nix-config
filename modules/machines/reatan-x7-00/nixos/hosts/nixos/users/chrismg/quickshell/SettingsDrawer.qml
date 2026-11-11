@@ -40,20 +40,33 @@ PanelWindow {
             mixerOpen = false;
     }
 
-    // Asks niri to blur what is behind the whole window, for a frosted
-    // glass look. Theme.panel is see-through, so the blur shows. Only this
-    // region is blurred.
+    // The drawer's panel. VolumeMixer.qml lines itself up with it.
+    readonly property Item panel: drawerPanel
+
+    // Asks niri to blur what is behind the panel, for a frosted glass look.
+    // Theme.panel is see-through, so the blur shows. Only this region is
+    // blurred, so the glow space around the panel stays clear.
     BackgroundEffect.blurRegion: Region {
-        width: root.width
-        height: root.height
+        item: drawerPanel
+    }
+
+    // Only the panel takes clicks. Clicks on the glow around it go through
+    // to the windows below.
+    mask: Region {
+        item: drawerPanel
     }
 
     PwObjectTracker {
         objects: [Pipewire.defaultAudioSink]
     }
 
-    implicitWidth: Theme.drawerWidth
+    // The window is the panel plus Theme.glowReach of space on the left, top,
+    // and bottom for the glow around it. On the right it reaches the screen
+    // edge and the panel keeps Theme.outerMargin from it, so the glow has
+    // room there too.
+    implicitWidth: Theme.glowReach + Theme.drawerWidth + Theme.outerMargin
     implicitHeight: Math.min(Theme.scaled(680), screen.height - Theme.barHeight - Theme.outerMargin * 4)
+        + Theme.glowReach * 2
     color: "transparent"
     focusable: true
     exclusionMode: ExclusionMode.Ignore
@@ -63,13 +76,23 @@ PanelWindow {
         right: true
     }
 
+    // The panel's top sits Theme.outerMargin below the bar. The window starts
+    // Theme.glowReach above that, to fit the glow.
     margins {
-        top: Theme.barHeight + Theme.outerMargin * 2
-        right: Theme.outerMargin
+        top: Theme.barHeight + Theme.outerMargin * 2 - Theme.glowReach
+    }
+
+    PanelGlow {
+        target: drawerPanel
     }
 
     Rectangle {
-        anchors.fill: parent
+        id: drawerPanel
+
+        x: Theme.glowReach
+        y: Theme.glowReach
+        width: Theme.drawerWidth
+        height: root.height - Theme.glowReach * 2
         color: Theme.panel
 
         ColumnLayout {
