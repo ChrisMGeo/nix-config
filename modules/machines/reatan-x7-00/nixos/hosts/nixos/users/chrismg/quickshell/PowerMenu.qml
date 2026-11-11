@@ -79,10 +79,10 @@ PanelWindow {
         right: true
     }
 
-    // The panel's top sits Theme.outerMargin below the bar. The window starts
-    // Theme.glowReach above that, to fit the glow.
+    // The panel's top is at Theme.menuTop, like the other menus under the
+    // bar. The window starts Theme.glowReach above that, to fit the glow.
     margins {
-        top: Theme.barHeight + Theme.outerMargin * 2 - Theme.glowReach
+        top: Theme.menuTop - Theme.glowReach
     }
 
     // Asks niri to blur what is behind the panel, for a frosted glass look.

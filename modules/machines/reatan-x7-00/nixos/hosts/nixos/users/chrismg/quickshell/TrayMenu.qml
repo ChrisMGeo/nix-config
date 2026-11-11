@@ -15,19 +15,24 @@ PopupWindow {
 
     // The button the drop-down hangs from.
     property Item anchorItem
+    // How far the button's top is from the top of the screen. Set by
+    // TopBar.qml, whose window starts at the top of the screen.
+    property real anchorItemTop: 0
 
     // Asks TopBar.qml to close the drop-down, after a program was activated.
     signal closeRequested()
 
     // Opens below the bar, centered on the button. The anchor is a strip as
-    // wide as the button that starts under the bar's panel plus a small gap.
-    // `edges` picks the middle of that strip's top edge, and `gravity` makes
-    // the drop-down grow downward from there. The window starts
-    // Theme.glowReach higher, because it leaves that much space for the glow
-    // on every side of the panel.
+    // wide as the button at Theme.menuTop, where the settings drawer and the
+    // power menu start too. The anchor is measured from the button's top, so
+    // subtracting the button's own distance from the top of the screen puts
+    // it at Theme.menuTop exactly. `edges` picks the middle of that strip's
+    // top edge, and `gravity` makes the drop-down grow downward from there.
+    // The window starts Theme.glowReach higher, because it leaves that much
+    // space for the glow on every side of the panel.
     anchor.item: anchorItem
     anchor.rect.x: 0
-    anchor.rect.y: anchorItem ? anchorItem.height + (Theme.barHeight - anchorItem.height) / 2 + Theme.gap - Theme.glowReach : 0
+    anchor.rect.y: Theme.menuTop - Theme.glowReach - anchorItemTop
     anchor.rect.width: anchorItem ? anchorItem.width : 1
     anchor.rect.height: 1
     anchor.edges: Edges.Top

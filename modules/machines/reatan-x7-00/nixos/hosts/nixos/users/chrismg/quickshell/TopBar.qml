@@ -127,6 +127,11 @@ PanelWindow {
     // The drop-down under the tray button.
     TrayMenu {
         anchorItem: trayButton
+        // The button's top, from the top of the screen: the bar's place in
+        // the window, the row's place in the right panel, and the button's
+        // place in the row. The bar is in place whenever the drop-down is
+        // open, so the slide is left out.
+        anchorItemTop: bar.y + statusPanel.y + statusRow.y + trayButton.y
         visible: root.trayOpen
         onCloseRequested: root.trayOpen = false
     }

@@ -400,6 +400,10 @@ let
         property int gap: 8
         property int radius: ${toString config.look.cornerRadius}
         property int barHeight: scaled(46)
+        // Where the settings drawer, the power menu, and the tray drop-down
+        // start, measured from the top of the screen. They all use it, so
+        // the space between them and the bar is the same.
+        property int menuTop: barHeight + outerMargin * 2
         property int drawerWidth: scaled(352)
         property int textSize: scaled(13)
         property int topBarIconSize: scaled(11)
