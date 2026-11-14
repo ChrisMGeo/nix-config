@@ -354,9 +354,11 @@ let
         // system runs. systemctl starts and stops the Bluetooth pairing agent
         // in bluetooth.nix, and restarts and shuts down the computer. loginctl
         // locks the session. niri reads workspaces and windows, switches
-        // workspaces, and logs out.
+        // workspaces, and logs out. busctl, also from systemd, sends BlueZ the
+        // call that stops a Bluetooth connection attempt.
         property string systemctlCommand: "${osConfig.systemd.package}/bin/systemctl"
         property string loginctlCommand: "${osConfig.systemd.package}/bin/loginctl"
+        property string busctlCommand: "${osConfig.systemd.package}/bin/busctl"
         property string niriCommand: "${osConfig.programs.niri.package}/bin/niri"
         // Exact store paths, so the visualizer does not depend on any profile.
         property string cavaCommand: "${pkgs.cava}/bin/cava"

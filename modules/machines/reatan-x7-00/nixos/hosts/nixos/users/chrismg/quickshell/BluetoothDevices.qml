@@ -5,6 +5,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Bluetooth
+import Quickshell.Io
 
 // The open Bluetooth section of the settings drawer: the on/off switch, the
 // paired devices with Connect and Disconnect buttons, and a Scan button that
@@ -163,9 +164,38 @@ Column {
             || waitingForAgent
             || device?.state === BluetoothDeviceState.Connecting
             || device?.state === BluetoothDeviceState.Disconnecting
+        // True while the bar is connecting to a paired device. Quickshell sets
+        // this state when connect() is called and clears it when BlueZ answers.
+        // The button then offers Cancel.
+        readonly property bool connecting: (device?.paired ?? false)
+            && device?.state === BluetoothDeviceState.Connecting
+        // True from Cancel until the attempt ends.
+        property bool cancelling: false
         // Set when Pair is pressed, so the device connects once pairing ends.
         property bool connectAfterPair: false
         property bool pairFailed: false
+
+        onConnectingChanged: {
+            if (!connecting)
+                cancelling = false;
+        }
+
+        // Stops a connection attempt. BlueZ's Device1.Disconnect also cancels
+        // a Connect that has not been answered yet, and BlueZ then answers it
+        // with an error, which sets the state back to Disconnected. Quickshell's
+        // own disconnect() refuses to run until the device is connected, so
+        // busctl sends the call to the device's D-Bus path directly.
+        Process {
+            id: cancelConnect
+
+            command: [Theme.busctlCommand, "--system", "call", "org.bluez",
+                row.device?.dbusPath ?? "", "org.bluez.Device1", "Disconnect"]
+            onExited: exitCode => {
+                // The call failed, so the attempt goes on. Offer Cancel again.
+                if (exitCode !== 0)
+                    row.cancelling = false;
+            }
+        }
 
         width: root.width
         height: Theme.scaled(42)
@@ -234,6 +264,8 @@ Column {
                     text: {
                         if (row.device?.pairing || row.waitingForAgent)
                             return "Pairing…";
+                        if (row.cancelling)
+                            return "Cancelling…";
                         if (row.device?.state === BluetoothDeviceState.Connecting)
                             return "Connecting…";
                         if (row.device?.state === BluetoothDeviceState.Disconnecting)
@@ -252,12 +284,20 @@ Column {
                 }
             }
 
+            // One button for the next step. While the bar connects to a paired
+            // device it reads Cancel, in the plain style of Disconnect, and
+            // stays clickable.
             TextButton {
-                enabled: !row.busy
-                primary: !row.device?.connected
-                text: row.device?.connected ? "Disconnect" : row.device?.paired ? "Connect" : "Pair"
+                enabled: row.connecting ? !row.cancelling : !row.busy
+                primary: !row.device?.connected && !row.connecting
+                text: row.connecting
+                    ? "Cancel"
+                    : row.device?.connected ? "Disconnect" : row.device?.paired ? "Connect" : "Pair"
                 onClicked: {
-                    if (row.device?.connected) {
+                    if (row.connecting) {
+                        row.cancelling = true;
+                        cancelConnect.running = true;
+                    } else if (row.device?.connected) {
                         row.device?.disconnect();
                     } else if (row.device?.paired) {
                         row.device?.connect();
