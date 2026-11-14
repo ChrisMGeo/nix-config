@@ -263,6 +263,15 @@ let
   # drawer uses it to rescan for Wi-Fi networks.
   nmcli = "${osConfig.networking.networkmanager.package}/bin/nmcli";
 
+  # The file with every certificate authority the system trusts, such as
+  # /etc/ssl/certs/ca-certificates.crt. NixOS writes it into /etc with
+  # `environment.etc`, and `target` is its place under /etc. Reading the name
+  # from the system settings, instead of typing the path, makes evaluation stop
+  # if NixOS ever stops providing the file. The path under /etc stays the same
+  # when the certificates are updated, unlike a path in the Nix store, which a
+  # saved Wi-Fi profile would keep pointing at after it is deleted.
+  caBundle = "/etc/${osConfig.environment.etc."ssl/certs/ca-certificates.crt".target}";
+
   # Saves and joins an enterprise Wi-Fi network, such as eduroam, that logs in
   # with a username and a password. Quickshell can only join networks that use
   # one password, so the settings drawer runs this for the others.
@@ -272,10 +281,15 @@ let
   # in the process list. It uses PEAP with MSCHAPv2, which most of these
   # networks use.
   # The domain is required. NetworkManager checks the server's certificate
-  # against the system's certificate authorities (`system-ca-certs`) and only
+  # against the certificate authorities in `caBundle` above (`ca-cert`), and only
   # accepts a certificate whose name ends in that domain (`domain-suffix-match`).
   # Without this check, a fake access point with the same name could collect
   # the password.
+  # NetworkManager's own `system-ca-certs` option is turned off on purpose. It
+  # points at the folder /etc/ssl/certs, and a folder only works if it holds one
+  # file per certificate, named by a hash. NixOS keeps only bundle files there,
+  # so no certificate would be found and every join would fail. Setting it to
+  # `no` also clears it on a profile that an older version of this script saved.
   # `password-flags 0` lets NetworkManager save the password, so the next
   # connection does not ask again. The password reaches NetworkManager through
   # `passwd-file`, which nmcli reads from stdin here. If a saved connection with
@@ -299,7 +313,8 @@ let
       802-1x.eap peap
       802-1x.phase2-auth mschapv2
       802-1x.identity "$identity"
-      802-1x.system-ca-certs yes
+      802-1x.system-ca-certs no
+      802-1x.ca-cert ${caBundle}
       802-1x.domain-suffix-match "$domain"
       802-1x.password-flags 0
     )
