@@ -494,6 +494,17 @@ in
   systemd.user.services.quickshell = {
     Unit.After = [ "niri.service" ];
     Install.WantedBy = [ "niri.service" ];
+
+    # Stops the Bluetooth pairing agent from bluetooth.nix before the bar
+    # starts and after it stops. The bar starts the agent only while it scans
+    # or pairs, and the agent accepts pairing requests from any device. If the
+    # bar crashed or quit while the agent ran, nothing else would stop it.
+    # ExecStopPost runs after every stop, even a crash, and ExecStartPre covers
+    # a bar that was started some other way and left it running.
+    # The `-` in front lets the bar start even if systemctl fails, and
+    # `--no-block` returns without waiting for the agent to stop.
+    Service.ExecStartPre = [ "-${osConfig.systemd.package}/bin/systemctl --user --no-block stop bluetooth-agent.service" ];
+    Service.ExecStopPost = [ "-${osConfig.systemd.package}/bin/systemctl --user --no-block stop bluetooth-agent.service" ];
   };
 
   # Puts the bar's files in ~/.config/quickshell/chrismg, the folder named by

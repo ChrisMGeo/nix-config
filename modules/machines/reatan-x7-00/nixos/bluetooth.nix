@@ -23,6 +23,8 @@
   # The agent accepts pairing requests from any device, so it does not run all
   # the time. It is not started at login. The Quickshell bar starts it while a
   # scan runs or a pairing from the bar is in progress, and stops it afterward.
+  # The bar's own service also stops it whenever the bar starts or stops,
+  # including after a crash. See users/chrismg/quickshell.nix under hosts/nixos/.
   #
   # `systemd.user.services` defines a service that runs once per logged-in
   # user, not once for the whole system.
@@ -33,12 +35,28 @@
       # not have. It also makes bt-agent move itself to the background, which
       # `forking` tells systemd to expect.
       Type = "forking";
+      # bt-agent signs up with BlueZ before it moves to the background, so
+      # `systemctl start` returns only once the agent is ready. The bar waits
+      # for that before it pairs.
       ExecStart = "${pkgs.bluez-tools}/bin/bt-agent --capability=NoInputNoOutput --daemon";
-      Restart = "on-failure";
-      # bt-agent ignores the normal stop signal, so systemd would wait its
-      # default 90 seconds at logout before killing it. This cuts the wait to
-      # 3 seconds.
-      TimeoutStopSec = 3;
+      # A last safety net. If the bar is gone and nothing stops the agent, for
+      # example a test copy of the bar that quit, systemd stops it after 10
+      # minutes. A scan stops by itself after 1 minute, and a pairing takes
+      # seconds, so this never cuts off normal use. The bar starts the agent
+      # again before every pairing, in case this limit stopped it.
+      RuntimeMaxSec = 600;
+      # Not restarted after it stops. With `on-failure`, systemd would treat
+      # the time limit above as a failure and start the agent again.
+      Restart = "no";
+      # bt-agent ignores the normal stop signal, SIGTERM, so systemd waited
+      # 3 seconds and then killed it with SIGKILL, and marked the service as
+      # failed. Sending SIGKILL at once ends the same way, without the wait.
+      # BlueZ forgets the agent as soon as its process is gone, so nothing is
+      # lost. The bar stops the agent after every scan, and a Pair right after
+      # would otherwise wait for those 3 seconds.
+      KillSignal = "SIGKILL";
+      # Counts the end by SIGKILL as a normal stop, not a failure.
+      SuccessExitStatus = "SIGKILL";
     };
   };
 }

@@ -1,6 +1,7 @@
 singleton Theme 1.0 Theme.qml
 singleton AppVolumes 1.0 AppVolumes.qml
 singleton AudioSpectrum 1.0 AudioSpectrum.qml
+singleton BluetoothAgent 1.0 BluetoothAgent.qml
 singleton Capabilities 1.0 Capabilities.qml
 singleton SystemUsage 1.0 SystemUsage.qml
 ActivityMonitor 1.0 ActivityMonitor.qml
