@@ -80,15 +80,20 @@ Item {
                 }
                 spacing: 2
 
+                // A fixed number of bars. Each bar reads its own entry of
+                // `levels` by index. AudioSpectrum.qml replaces that list on
+                // every cava frame, about 30 times a second. With the list
+                // itself as the model, every bar was thrown away and made
+                // again each frame, and the height animation never ran.
                 Repeater {
-                    model: root.levels
+                    model: Theme.spectrumBars
 
                     Rectangle {
-                        required property real modelData
+                        required property int index
 
                         anchors.verticalCenter: parent.verticalCenter
                         width: (parent.width - parent.spacing * (Theme.spectrumBars - 1)) / Theme.spectrumBars
-                        height: Math.max(2, modelData * parent.height)
+                        height: Math.max(2, (root.levels[index] ?? 0) * parent.height)
                         color: Theme.accent
 
                         Behavior on height {

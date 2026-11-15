@@ -170,13 +170,18 @@ FloatingWindow {
                     anchors.fill: parent
                     spacing: 4
 
+                    // A fixed number of bars, each reading its own entry of
+                    // AudioSpectrum.mediaValues by index. That list is replaced
+                    // on every cava frame, so using it as the model would
+                    // rebuild every bar each frame. See AudioVisualizer.qml.
                     Repeater {
-                        model: AudioSpectrum.mediaValues
+                        model: Theme.mediaSpectrumBars
 
                         Item {
                             id: waveformBar
 
-                            required property real modelData
+                            required property int index
+                            readonly property real level: AudioSpectrum.mediaValues[index] ?? 0
 
                             width: (waveform.width - waveform.spacing * (Theme.mediaSpectrumBars - 1)) / Theme.mediaSpectrumBars
                             height: waveform.height
@@ -184,7 +189,7 @@ FloatingWindow {
                             Rectangle {
                                 anchors.bottom: parent.bottom
                                 width: parent.width
-                                height: Math.max(4, waveformBar.modelData * parent.height)
+                                height: Math.max(4, waveformBar.level * parent.height)
                                 color: Theme.accent
 
                                 Behavior on height {
