@@ -42,9 +42,10 @@ Column {
     }
 
     // Closing the drawer or this section stops the scan. Pairs still waiting
-    // for the agent are dropped, because this section would no longer be
-    // there to trust and connect the device afterward. A pairing that already
-    // started finishes, and the agent stays until it does.
+    // for the agent are dropped, so no pairing starts that the user can no
+    // longer see. A pairing that already started finishes, the agent stays
+    // until it does, and BluetoothAgent.qml still trusts and connects the
+    // device, because the user did press Pair.
     onActiveChanged: {
         if (!active) {
             stopScan();
@@ -171,8 +172,10 @@ Column {
             && device?.state === BluetoothDeviceState.Connecting
         // True from Cancel until the attempt ends.
         property bool cancelling: false
-        // Set when Pair is pressed, so the device connects once pairing ends.
-        property bool connectAfterPair: false
+        // Set when BluetoothAgent.qml reports that the last Pair of this device
+        // failed. Trust and connect after a Pair that succeeds happen in
+        // BluetoothAgent.qml, because this row is destroyed when the device
+        // moves to the paired list, which can be before the pairing ends.
         property bool pairFailed: false
 
         onConnectingChanged: {
@@ -201,31 +204,18 @@ Column {
         height: Theme.scaled(42)
 
         Connections {
-            target: row.device
-
-            function onPairingChanged() {
-                if (row.device?.pairing || !row.connectAfterPair)
-                    return;
-                row.connectAfterPair = false;
-                if (row.device?.paired) {
-                    // Trusted devices may reconnect on their own later.
-                    row.device.trusted = true;
-                    row.device?.connect();
-                } else {
-                    row.pairFailed = true;
-                }
-            }
-        }
-
-        // The agent could not be started, so the pairing never began.
-        Connections {
             target: BluetoothAgent
 
+            // The agent could not be started, so the pairing never began.
             function onPairRefused(device) {
-                if (device !== row.device)
-                    return;
-                row.connectAfterPair = false;
-                row.pairFailed = true;
+                if (device === row.device)
+                    row.pairFailed = true;
+            }
+
+            // The pairing ended and the device is still not paired.
+            function onPairFailed(device) {
+                if (device === row.device)
+                    row.pairFailed = true;
             }
         }
 
@@ -303,10 +293,10 @@ Column {
                         row.device?.connect();
                     } else {
                         row.pairFailed = false;
-                        row.connectAfterPair = true;
                         // The agent has to be running before BlueZ asks it a
                         // question, so BluetoothAgent.qml starts it and pairs
-                        // once it is ready.
+                        // once it is ready. It then trusts and connects the
+                        // device.
                         BluetoothAgent.pairWhenReady(row.device);
                     }
                 }
