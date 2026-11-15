@@ -8,8 +8,9 @@ import Quickshell.Bluetooth
 import Quickshell.Io
 
 // The open Bluetooth section of the settings drawer: the on/off switch, the
-// paired devices with Connect and Disconnect buttons, and a Scan button that
-// lists nearby devices. Pairing a nearby device also trusts and connects it.
+// paired devices with Connect, Disconnect, and Forget device buttons, and a
+// Scan button that lists nearby devices. Pairing a nearby device also trusts
+// and connects it.
 Column {
     id: root
 
@@ -177,10 +178,80 @@ Column {
         // BluetoothAgent.qml, because this row is destroyed when the device
         // moves to the paired list, which can be before the pairing ends.
         property bool pairFailed: false
+        // Forget device deletes the pairing, so the device has to be put in
+        // pairing mode and paired again. It needs a second click within 3
+        // seconds, like the power menu. True between the two clicks.
+        property bool forgetArmed: false
+        // True from the second click until BlueZ answers.
+        property bool forgetting: false
+        // Why the last Forget device failed, or "" when it did not fail.
+        property string forgetError: ""
 
         onConnectingChanged: {
             if (!connecting)
                 cancelling = false;
+        }
+
+        // The first click arms, the second click within 3 seconds forgets.
+        function forgetClicked() {
+            if (!forgetArmed) {
+                forgetArmed = true;
+                forgetError = "";
+                disarmTimer.restart();
+                return;
+            }
+            forgetArmed = false;
+            disarmTimer.stop();
+            forgetting = true;
+            // Stops BluetoothAgent.qml from trusting and connecting this
+            // device if a pairing from the bar is still being watched.
+            BluetoothAgent.forgetPairing(device);
+            forgetDevice.running = true;
+        }
+
+        Timer {
+            id: disarmTimer
+
+            interval: 3000
+            onTriggered: row.forgetArmed = false
+        }
+
+        // Closing the drawer drops a half-finished Forget device and its
+        // error, like the power menu does when it closes.
+        Connections {
+            target: root
+
+            function onActiveChanged() {
+                if (!root.active) {
+                    row.forgetArmed = false;
+                    row.forgetError = "";
+                }
+            }
+        }
+
+        // Removes the device from BlueZ, the same Adapter1.RemoveDevice call
+        // that Quickshell's forget() sends. BlueZ disconnects a connected
+        // device first, then deletes its pairing keys. forget() only writes a
+        // failure to the log, so busctl sends the call instead, and its exit
+        // code tells the row whether it worked. On success BlueZ deletes the
+        // device object, and this row goes away with it.
+        Process {
+            id: forgetDevice
+
+            command: [Theme.busctlCommand, "--system", "call", "org.bluez",
+                root.adapter?.dbusPath ?? "", "org.bluez.Adapter1", "RemoveDevice",
+                "o", row.device?.dbusPath ?? ""]
+            stderr: StdioCollector {
+                id: forgetErrors
+            }
+            onExited: exitCode => {
+                row.forgetting = false;
+                if (exitCode !== 0) {
+                    // busctl writes "Call failed: " and BlueZ's reason.
+                    const reason = forgetErrors.text.trim().replace(/^Call failed: /, "");
+                    row.forgetError = reason || "Unknown error";
+                }
+            }
         }
 
         // Stops a connection attempt. BlueZ's Device1.Disconnect also cancels
@@ -252,6 +323,12 @@ Column {
                 UiText {
                     width: parent.width
                     text: {
+                        if (row.forgetting)
+                            return "Forgetting…";
+                        if (row.forgetArmed)
+                            return "Click again to forget";
+                        if (row.forgetError.length > 0)
+                            return `Could not forget · ${row.forgetError}`;
                         if (row.device?.pairing || row.waitingForAgent)
                             return "Pairing…";
                         if (row.cancelling)
@@ -268,7 +345,11 @@ Column {
                             return "Paired";
                         return row.pairFailed ? "Pairing failed" : "Not paired";
                     }
-                    color: row.pairFailed && !row.device?.paired ? Theme.destructive : Theme.textMuted
+                    // The armed note and a failure use the red of "Pairing
+                    // failed", so a second click is not made by accident.
+                    color: row.forgetArmed || row.forgetError.length > 0
+                        || (row.pairFailed && !row.device?.paired)
+                        ? Theme.destructive : Theme.textMuted
                     font.pixelSize: Theme.scaled(10)
                     elide: Text.ElideRight
                 }
@@ -276,9 +357,9 @@ Column {
 
             // One button for the next step. While the bar connects to a paired
             // device it reads Cancel, in the plain style of Disconnect, and
-            // stays clickable.
+            // stays clickable. It is off while the device is being forgotten.
             TextButton {
-                enabled: row.connecting ? !row.cancelling : !row.busy
+                enabled: !row.forgetting && (row.connecting ? !row.cancelling : !row.busy)
                 primary: !row.device?.connected && !row.connecting
                 text: row.connecting
                     ? "Cancel"
@@ -300,6 +381,21 @@ Column {
                         BluetoothAgent.pairWhenReady(row.device);
                     }
                 }
+            }
+
+            // Forget device, for paired devices only. It is the last button in
+            // the row with the same trash icon, like Forget network in
+            // WifiNetworks.qml, so the icons of all paired rows line up. It is
+            // off while a pairing runs, which BluetoothAgent.qml still watches.
+            IconButton {
+                objectName: "forgetButton"
+                visible: (row.device?.paired || row.device?.connected) ?? false
+                enabled: !row.forgetting && !row.device?.pairing && !row.waitingForAgent
+                glyph: ""
+                glyphFontFamily: Theme.iconFontFamily
+                glyphSize: Theme.scaled(11)
+                tooltip: "Forget device"
+                onClicked: row.forgetClicked()
             }
         }
     }
