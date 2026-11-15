@@ -8,7 +8,10 @@ import Quickshell.Io
 // Starts and stops the Bluetooth pairing agent, the bluetooth-agent service in
 // bluetooth.nix. The agent answers pairing requests from any device, so it
 // runs only while a scan or a pairing from the bar needs it. Also trusts and
-// connects each device once a pairing started from the bar succeeds.
+// connects each device once a pairing started from the bar succeeds. The
+// connect is a BlueZ Device1.Connect call sent with busctl, because
+// Quickshell's connect() refuses to run while pairing leaves the device
+// reported as Connected.
 //
 // This is a singleton, one object for the whole bar, instead of part of
 // BluetoothDevices.qml. The Bluetooth section is destroyed when it closes,
@@ -113,7 +116,7 @@ Singleton {
                 forgetPairing(device);
                 // Trusted devices may reconnect on their own later.
                 device.trusted = true;
-                device.connect();
+                connectProfiles(device);
             } else if (entry.failedAt === 0) {
                 // The entry stays for `lateSuccessWindow`, in case Paired
                 // comes in just after the answer to Pair.
@@ -124,6 +127,22 @@ Singleton {
         device.pairingChanged.connect(entry.check);
         device.pairedChanged.connect(entry.check);
         afterPair = afterPair.concat([entry]);
+    }
+
+    // Connects the audio and other profiles of a device that was just paired,
+    // by sending BlueZ's Device1.Connect call with busctl. Quickshell's own
+    // connect() is not used. Pairing brings up a raw link to the device, so
+    // BlueZ already reports it as Connected, and connect() then refuses to
+    // run. The link drops a little later, and the device would show Connect
+    // again. Each call gets its own Process, with the device's path fixed in
+    // its command, so two devices that finish pairing close together each
+    // get their own call.
+    function connectProfiles(device) {
+        const call = connectCall.createObject(root, {
+            command: [Theme.busctlCommand, "--system", "call", "org.bluez",
+                device.dbusPath, "org.bluez.Device1", "Connect"]
+        });
+        call.running = true;
     }
 
     // Stops watching the pairing of `device`, if it is watched. Also drops
@@ -172,6 +191,29 @@ Singleton {
             for (const entry of root.afterPair) {
                 if (entry.failedAt > 0 && now - entry.failedAt >= root.lateSuccessWindow)
                     root.forgetPairing(entry.device);
+            }
+        }
+    }
+
+    // The template for one Device1.Connect call from connectProfiles(). A
+    // `Component` is not created on its own. createObject() makes a new
+    // Process from it each time.
+    Component {
+        id: connectCall
+
+        Process {
+            id: call
+
+            stderr: StdioCollector {
+                id: callErrors
+            }
+            onExited: exitCode => {
+                // The device stays paired and trusted, and its row offers
+                // Connect, so the failure is only written to the log.
+                // busctl writes "Call failed: " and BlueZ's reason.
+                if (exitCode !== 0)
+                    console.warn(`BluetoothAgent: Connect of ${call.command[4]} failed: ${callErrors.text.trim()}`);
+                call.destroy();
             }
         }
     }
