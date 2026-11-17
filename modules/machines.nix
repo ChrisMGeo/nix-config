@@ -171,6 +171,12 @@ let
               # The machine's network name, taken from the host folder name.
               networking.hostName = nixlib.mkDefault hostName;
 
+              # Lets every system module take an `unstable` argument, the
+              # nixpkgs-unstable package set for this host's platform, the same
+              # one Home Manager modules get below. `_module.args` adds
+              # arguments to every module of this system.
+              _module.args.unstable = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+
               # Home Manager uses the system's nixpkgs instead of its own copy.
               home-manager.useGlobalPkgs = true;
               # Installs each user's packages under /etc/profiles/per-user/<name>.

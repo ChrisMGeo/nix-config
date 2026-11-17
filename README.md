@@ -59,7 +59,7 @@ New to Nix? Read the glossary below first. Then read the layout and the loading 
                 ├── audio.nix       PipeWire sound.
                 ├── bluetooth.nix   Bluetooth.
                 ├── browsers.nix    Firefox.
-                ├── desktop.nix     niri, X11 support, password prompts, and gpu-screen-recorder.
+                ├── desktop.nix     niri, pinned to a main commit, X11 support, password prompts, and gpu-screen-recorder.
                 ├── form-factor.nix Marks this machine as a desktop.
                 ├── greeter.nix     The greetd login screen, drawn by Quickshell.
                 ├── greeter/        The login screen QML and its niri settings.
@@ -222,6 +222,7 @@ Create a folder at `hosts/<host>/users/<login>/` with a `default.nix` file. The 
 - `hardware-configuration.nix` is generated, and its header says not to edit it. Regenerate it when the hardware changes.
 - `flake.lock` is generated. Use `nix flake update` instead of editing it by hand.
 - The Vicinae launcher comes from `nixpkgs-unstable`, and its extensions come from the `vicinae-extensions` input. A newer extension can need a newer Vicinae, so update the two together with `nix flake update nixpkgs-unstable vicinae-extensions`.
+- niri is built from a pinned commit of its main branch, because the 26.04 release cannot bind Mod on its own. `desktop.nix` switches to the nixpkgs-unstable niri by itself once that has a release newer than 26.04. Run `nix flake update nixpkgs-unstable` to pick it up, then delete the pin. To move the pin, see the comment in `desktop.nix`.
 - Do not change a `stateVersion` value after the first install. Changing it can change defaults and break existing data.
 - The `wsl` folder is built as NixOS, but no WSL support module is loaded. A WSL host needs its own WSL setup.
 - The `darwin` code path exists, but no macOS machine is defined yet.
