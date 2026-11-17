@@ -53,7 +53,7 @@ PanelWindow {
     // Gives the bar the keyboard without a click. niri gives on-demand focus
     // only to a window that just appeared or was clicked, and the bar is
     // already on screen. So the keyboard holder below appears, and niri gives
-    // it the keyboard. Used when Mod+B shows the bar, when the tray drop-down
+    // it the keyboard. Used when a tap of Mod shows the bar, when the tray drop-down
     // opens, and when a popup that had the keyboard closes.
     function takeKeyboard() {
         if (keyboardAllowed)

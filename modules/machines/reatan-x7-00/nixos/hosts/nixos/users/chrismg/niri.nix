@@ -228,7 +228,12 @@ let
       # Keeps the Quickshell bar shown, or lets it hide again. It also shows in
       # the overview, when the mouse touches the top edge, and for a moment
       # after a workspace change. See quickshell/shell.qml.
-      "Mod+B".spawn = quickshellCall ++ [ "bar" "toggle" ];
+      #
+      # It runs when Mod is pressed and let go with no other key in between, so
+      # shortcuts such as Mod+Return do not toggle the bar. `release` runs the
+      # action when the key is let go instead of when it is pressed. This needs
+      # the niri build from main pinned in desktop.nix. niri 26.04 rejects it.
+      Mod.release.spawn = quickshellCall ++ [ "bar" "toggle" ];
       # Opens or closes the activity monitor, like the same keys on Windows.
       # Clicking a usage gauge in the bar opens it too.
       "Ctrl+Shift+Escape".spawn = quickshellCall ++ [ "shell" "toggleActivity" ];

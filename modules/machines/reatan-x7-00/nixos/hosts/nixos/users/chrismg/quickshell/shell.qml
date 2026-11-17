@@ -10,7 +10,7 @@ ShellRoot {
 
     // Whether the bar and its open popup are on screen. While false, nothing
     // shows. While true with no popup open, the bar stays on screen until it
-    // is hidden again. Mod+B, Escape, and a click away change it. It never
+    // is hidden again. A tap of Mod, Escape, and a click away change it. It never
     // opens, closes, or resets a popup, so a hidden popup comes back exactly
     // as it was.
     property bool barVisible: false
@@ -121,7 +121,7 @@ ShellRoot {
     // switches workspace or opens a window. The next window focus change that
     // niri reports within `timeout` milliseconds is that move, not a click
     // away. Only that one change is skipped, so a real click right after
-    // still hides the bar. Mod+B and opening a popup do not call this,
+    // still hides the bar. A tap of Mod and opening a popup do not call this,
     // because they only take the keyboard, which niri reports as no window
     // focused, and the bar ignores that.
     function expectFocusMove(timeout) {
@@ -130,7 +130,7 @@ ShellRoot {
     }
 
     // A click landed outside the bar and its popups. The bar and its popups
-    // hide, and stay open, for the next Mod+B.
+    // hide, and stay open, for the next tap of Mod.
     function clickedAway() {
         if (barVisible)
             barVisible = false;
@@ -188,13 +188,13 @@ ShellRoot {
             barVisible = false;
     }
 
-    // The toggle key, Mod+B. It shows the bar and its open popup, or hides
-    // them. Neither opens nor closes a popup. Showing the bar takes the
-    // keyboard, so niri counts no window as focused. A click on any window,
-    // even the one that had the keyboard before, then makes niri report a
-    // focus change, which hides the bar. The drawer and the power menu take
-    // the keyboard themselves when they appear, so the bar only takes it when
-    // neither is open.
+    // The toggle key, Mod tapped on its own. It shows the bar and its open
+    // popup, or hides them. Neither opens nor closes a popup. Showing the
+    // bar takes the keyboard, so niri counts no window as focused. A click
+    // on any window, even the one that had the keyboard before, then makes
+    // niri report a focus change, which hides the bar. The drawer and the
+    // power menu take the keyboard themselves when they appear, so the bar
+    // only takes it when neither is open.
     function toggleBar() {
         barVisible = !barVisible;
         if (barVisible && openMenu !== "settings" && openMenu !== "power")
@@ -354,7 +354,7 @@ ShellRoot {
     }
 
     // `quickshell ipc -c chrismg call bar toggle` runs toggle() below. niri.nix
-    // binds it to Mod+B.
+    // binds it to a tap of Mod.
     IpcHandler {
         target: "bar"
 
