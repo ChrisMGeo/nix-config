@@ -1,6 +1,6 @@
 # The Vicinae app launcher for the user `chrismg` on the host `nixos`. Loaded by
 # machines.nix as a Home Manager module. The Vicinae server runs as a systemd user
-# service from login, and niri.nix opens the launcher with Mod+D.
+# service from login, and niri.nix opens the launcher with Mod+Space.
 #
 # `{ config, inputs, lib, pkgs, unstable, ... }:` makes this file a function.
 # `config` is this user's final Home Manager settings. `inputs` is the flake's

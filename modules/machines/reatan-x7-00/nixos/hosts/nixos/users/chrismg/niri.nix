@@ -221,7 +221,8 @@ let
     binds = workspaceBinds // laptopBinds // {
       # Programs.
       "Mod+Return".spawn = [ kitty ];
-      "Mod+D".spawn = [ vicinae "toggle" ];
+      # Opens or closes the Vicinae launcher. See vicinae.nix.
+      "Mod+Space".spawn = [ vicinae "toggle" ];
       # Opens or closes the notification panel. See notifications.nix.
       "Mod+N".spawn = [ swaync-client "-t" "-sw" ];
       # Keeps the Quickshell bar shown, or lets it hide again. It also shows in
