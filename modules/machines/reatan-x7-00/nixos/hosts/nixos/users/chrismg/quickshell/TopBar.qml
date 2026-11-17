@@ -12,27 +12,64 @@ PanelWindow {
     property int activeWorkspace: 1
     property var occupiedWorkspaces: ({})
     property var player: null
-    // Set by shell.qml: true while the toggle key, the overview, a workspace
-    // change, or an open drawer asks for the bar.
+    // Set by shell.qml: true while the bar is visible, or while the overview
+    // or a workspace change on this monitor shows it.
     property bool shown: false
-    // Whether the tray drop-down is open. The tray button toggles it.
+    // Set by shell.qml: false while the bar is hidden, so a hidden bar never
+    // holds the keyboard.
+    property bool keyboardAllowed: false
+    // Whether the tray drop-down is open. Set by shell.qml, which the tray
+    // button asks to open or close it.
     property bool trayOpen: false
-    // Whether the bar is on screen. Hovering the top edge, or the bar itself,
-    // also keeps it there, and so does an open tray drop-down.
-    readonly property bool revealed: shown || trayOpen || hover.hovered || hideDelay.running
+    // True while the bar's popups are not on screen, because the bar is
+    // hidden. The drop-down stays open but does not show.
+    property bool popupsHidden: false
+    // Whether the drop-down is open and on screen.
+    readonly property bool trayShown: trayOpen && !popupsHidden
+    // Whether the bar is on screen.
+    readonly property bool revealed: shown || trayShown
+    // Whether the bar has the keyboard, in its own window or in the keyboard
+    // holder below. shell.qml uses it to notice a click away.
+    readonly property bool hasKeyboard: keyProbe.windowActive || keyboardHolder.windowActive
     // Space between a panel's edge and its contents, in pixels.
     readonly property int sectionPadding: 6
+    // True while the keyboard holder below is on screen. See takeKeyboard().
+    property bool holdingKeyboard: false
 
     signal workspaceRequested(int number)
     signal settingsRequested()
     signal powerRequested()
+    // The tray button was clicked.
+    signal trayRequested()
+    // The drop-down asks to close, after a program was activated.
+    signal trayCloseRequested()
     signal mediaRequested()
     // A usage gauge was clicked. `metric` is "cpu", "memory", "gpu", or "vram".
     signal activityRequested(string metric)
+    // Escape was pressed while the bar had the keyboard. shell.qml decides
+    // what it closes or hides.
+    signal escapePressed()
+
+    // Gives the bar the keyboard without a click. niri gives on-demand focus
+    // only to a window that just appeared or was clicked, and the bar is
+    // already on screen. So the keyboard holder below appears, and niri gives
+    // it the keyboard. Used when Mod+B shows the bar, when the tray drop-down
+    // opens, and when a popup that had the keyboard closes.
+    function takeKeyboard() {
+        if (keyboardAllowed)
+            holdingKeyboard = true;
+    }
+
+    // The holder goes away once the bar hides, or once a click elsewhere took
+    // the keyboard from it.
+    onKeyboardAllowedChanged: {
+        if (!keyboardAllowed)
+            holdingKeyboard = false;
+    }
 
     // The bar floats over windows instead of pushing them down. Ignore reserves
-    // no space and lets the window reach the very top edge of the screen, where
-    // the mouse can touch it. Setting exclusiveZone would undo this.
+    // no space and lets the window start at the very top edge of the screen.
+    // Setting exclusiveZone would undo this.
     // The window is Theme.glowReach taller than the bar and spans the whole
     // screen width, so the glow around the panels has room below and beside
     // them. The panels keep Theme.outerMargin from the screen's sides, inside
@@ -40,6 +77,58 @@ PanelWindow {
     implicitHeight: Theme.barTopGap + Theme.barHeight + Theme.glowReach
     color: "transparent"
     exclusionMode: ExclusionMode.Ignore
+    // On-demand focus: a click on the bar gives it the keyboard, so Escape
+    // reaches it. See takeKeyboard() for the other ways it gets the keyboard.
+    // None while hidden, which also gives the keyboard back when the bar hides.
+    WlrLayershell.keyboardFocus: keyboardAllowed ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
+
+    // Holds the keyboard for the bar. A window of 1 by 1 pixels in the top
+    // right corner that draws nothing and takes no clicks, so it can neither
+    // be seen nor catch a click. It appears only when takeKeyboard() asks,
+    // and niri gives it the keyboard as it appears, through on-demand focus.
+    // Its keys count as the bar's: Escape goes to shell.qml.
+    PanelWindow {
+        id: keyboardHolder
+
+        readonly property bool windowActive: holderProbe.windowActive
+
+        screen: root.screen
+        visible: root.holdingKeyboard
+        implicitWidth: 1
+        implicitHeight: 1
+        color: "transparent"
+        exclusionMode: ExclusionMode.Ignore
+        focusable: true
+
+        anchors {
+            top: true
+            right: true
+        }
+
+        // No part of it takes clicks.
+        mask: Region {}
+
+        Item {
+            id: holderProbe
+
+            readonly property bool windowActive: Window.active
+
+            // A click elsewhere took the keyboard, so the holder is done.
+            onWindowActiveChanged: {
+                if (!windowActive)
+                    root.holdingKeyboard = false;
+            }
+
+            // Qt matches Shortcuts by the item they sit in, and treats this
+            // one as part of the bar's window too. Two enabled Escape
+            // Shortcuts there cancel each other, so only one is on at a time.
+            Shortcut {
+                sequence: "Escape"
+                enabled: root.holdingKeyboard
+                onActivated: root.escapePressed()
+            }
+        }
+    }
 
     anchors {
         top: true
@@ -48,15 +137,15 @@ PanelWindow {
     }
 
     // The parts of the window that take the mouse. Clicks anywhere else go
-    // through to the windows below. While hidden, only a 2 pixel strip along
-    // the top edge does. While shown, the gap above the bar and the two panels
-    // do too. `bar.x` turns a panel's place inside the bar into its place in
-    // the window.
+    // through to the windows below. While hidden, no part does, so the mouse
+    // at the top edge shows nothing. While shown, the gap above the bar and
+    // the two panels do. `bar.x` turns a panel's place inside the bar into
+    // its place in the window.
     mask: Region {
         x: bar.x
         y: 0
         width: bar.width
-        height: root.revealed ? Theme.barTopGap : 2
+        height: root.revealed ? Theme.barTopGap : 0
 
         Region {
             x: bar.x + workspacePanel.x
@@ -94,26 +183,22 @@ PanelWindow {
         }
     }
 
-    // Tracks whether the mouse is over the window's mask.
+    // Tracks whether the window has the keyboard, and holds the Escape key.
+    // A Shortcut and the attached `Window` must sit in an item, which tells
+    // them their window.
     Item {
+        id: keyProbe
+
+        readonly property bool windowActive: Window.active
+
         anchors.fill: parent
 
-        HoverHandler {
-            id: hover
-
-            // When the mouse leaves, wait a moment before hiding, so moving
-            // across the gaps between panels does not make the bar flicker.
-            onHoveredChanged: {
-                if (!hovered)
-                    hideDelay.restart();
-            }
+        // A Shortcut works wherever the keyboard focus is inside the window.
+        Shortcut {
+            sequence: "Escape"
+            enabled: root.keyboardAllowed && !root.holdingKeyboard
+            onActivated: root.escapePressed()
         }
-    }
-
-    Timer {
-        id: hideDelay
-
-        interval: 400
     }
 
     // The time for the clock in the right panel. Minutes are enough, so it
@@ -129,11 +214,15 @@ PanelWindow {
         anchorItem: trayButton
         // The button's top, from the top of the screen: the bar's place in
         // the window, the row's place in the right panel, and the button's
-        // place in the row. The bar is in place whenever the drop-down is
-        // open, so the slide is left out.
+        // place in the row. The slide is left out, because the drop-down
+        // only shows once the bar is in place.
         anchorItemTop: bar.y + statusPanel.y + statusRow.y + trayButton.y
-        visible: root.trayOpen
-        onCloseRequested: root.trayOpen = false
+        // Showing the bar again can show the drop-down while the bar is still
+        // sliding in. The drop-down takes its place from the button when it
+        // opens, so it waits until the slide ends, or it would stay over the
+        // bar.
+        visible: root.trayShown && slide.y === 0
+        onCloseRequested: root.trayCloseRequested()
     }
 
     // The bar is drawn as two separate panels with empty space between them:
@@ -296,12 +385,12 @@ PanelWindow {
 
                     Layout.alignment: Qt.AlignVCenter
                     // A chevron that points up while the drop-down is open.
-                    glyph: root.trayOpen ? "" : ""
+                    glyph: root.trayShown ? "" : ""
                     glyphFontFamily: Theme.iconFontFamily
                     glyphSize: Theme.topBarIconSize
-                    highlighted: root.trayOpen
+                    highlighted: root.trayShown
                     tooltip: "Tray"
-                    onClicked: root.trayOpen = !root.trayOpen
+                    onClicked: root.trayRequested()
                 }
 
                 // The usage gauges. Clicking one opens the activity monitor

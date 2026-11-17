@@ -13,8 +13,17 @@ PanelWindow {
 
     // The action waiting for its second click, or "" when none is.
     property string armedAction: ""
+    // Whether the menu is open, set by shell.qml. A hidden bar hides an open
+    // menu, so `visible` is false then while this stays true.
+    property bool open: false
+    // Whether this window has the keyboard. shell.qml uses it to notice a
+    // click away.
+    readonly property bool hasKeyboard: menuPanel.windowActive
 
     signal closeRequested()
+    // Escape was pressed in the menu. shell.qml closes it through the same
+    // path as closeRequested().
+    signal escapePressed()
 
     readonly property var actions: [
         {
@@ -59,9 +68,10 @@ PanelWindow {
         Quickshell.execDetached(action.command);
     }
 
-    // Forget a half-finished choice when the menu closes.
-    onVisibleChanged: {
-        if (!visible)
+    // Forget a half-finished choice when the menu closes. Hiding the
+    // bar keeps it, and the 3 second timer still ends it.
+    onOpenChanged: {
+        if (!open)
             armedAction = "";
     }
 
@@ -73,6 +83,11 @@ PanelWindow {
     implicitHeight: menuPanel.height + Theme.glowReach * 2
     color: "transparent"
     exclusionMode: ExclusionMode.Ignore
+    // The menu can take the keyboard, for Escape. This is on-demand focus:
+    // niri gives the menu the keyboard when it appears, so Escape works
+    // without a click first. It keeps the keyboard until a click on another
+    // window, which shell.qml treats as a click away.
+    focusable: true
 
     anchors {
         top: true
@@ -117,6 +132,17 @@ PanelWindow {
         width: Theme.scaled(200)
         height: column.implicitHeight + 16
         color: Theme.panel
+
+        // Whether the window has the keyboard. The attached `Window` must be
+        // read from an item, which tells it its window.
+        readonly property bool windowActive: Window.active
+
+        // A Shortcut works wherever the keyboard focus is in the window.
+        Shortcut {
+            sequence: "Escape"
+            enabled: root.visible
+            onActivated: root.escapePressed()
+        }
 
         ColumnLayout {
             id: column

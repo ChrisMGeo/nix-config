@@ -27,17 +27,29 @@ PanelWindow {
     // still look like a battery there, so its level stays hidden.
     readonly property bool showBattery: Theme.showBattery && batteryAvailable
     readonly property bool powerProfilesAvailable: Capabilities.powerProfiles
-    // Whether the volume mixer popup is open. It opens from the Sound section
-    // and closes with the drawer.
+    // Whether the volume mixer popup is open. It opens from the Sound section.
+    // shell.qml sets it, and closes it with the drawer.
     property bool mixerOpen: false
+    // Whether the drawer is open, set by shell.qml. A hidden bar hides an open
+    // drawer, so `visible` is false then while this stays true. The Wi-Fi
+    // and Bluetooth scans follow this, so a hidden drawer keeps scanning and
+    // keeps its state, as if it were still on screen.
+    property bool open: false
+    // Whether this window has the keyboard. shell.qml uses it to notice a
+    // click away.
+    readonly property bool hasKeyboard: drawerPanel.windowActive
 
     signal closeRequested()
+    // Asks shell.qml to open or close the volume mixer.
+    signal mixerOpenRequested(bool wanted)
+    // Escape was pressed in the drawer or the volume mixer, a popup of this
+    // window whose keys come here. shell.qml closes the volume mixer first,
+    // then the drawer, through the same path as their close buttons.
+    signal escapePressed()
 
     onVisibleChanged: {
         if (visible)
             Capabilities.refresh();
-        else
-            mixerOpen = false;
     }
 
     // The drawer's panel. VolumeMixer.qml lines itself up with it.
@@ -68,6 +80,10 @@ PanelWindow {
     implicitHeight: Math.min(Theme.scaled(680), screen.height - Theme.barHeight - Theme.outerMargin * 4)
         + Theme.glowReach * 2
     color: "transparent"
+    // The drawer can take the keyboard, for Escape and the Wi-Fi fields. This
+    // is on-demand focus: niri gives the drawer the keyboard when it appears,
+    // so Escape works without a click first. It keeps the keyboard until a
+    // click on another window, which shell.qml treats as a click away.
     focusable: true
     exclusionMode: ExclusionMode.Ignore
 
@@ -94,6 +110,18 @@ PanelWindow {
         width: Theme.drawerWidth
         height: root.height - Theme.glowReach * 2
         color: Theme.panel
+
+        // Whether the window has the keyboard. The attached `Window` must be
+        // read from an item, which tells it its window.
+        readonly property bool windowActive: Window.active
+
+        // A Shortcut works wherever the keyboard focus is in the window, even
+        // inside a Wi-Fi password field.
+        Shortcut {
+            sequence: "Escape"
+            enabled: root.visible
+            onActivated: root.escapePressed()
+        }
 
         ColumnLayout {
             anchors.fill: parent
@@ -239,7 +267,7 @@ PanelWindow {
                             WifiNetworks {
                                 width: sections.width
                                 device: root.wifiDevice
-                                scanning: root.visible
+                                scanning: root.open
                             }
                         }
                     }
@@ -258,7 +286,7 @@ PanelWindow {
                             BluetoothDevices {
                                 width: sections.width
                                 adapter: root.bluetoothAdapter
-                                active: root.visible
+                                active: root.open
                             }
                         }
                     }
@@ -323,7 +351,7 @@ PanelWindow {
                                         x: 12
                                         text: root.mixerOpen ? "Close volume mixer" : "Volume mixer"
                                         primary: root.mixerOpen
-                                        onClicked: root.mixerOpen = !root.mixerOpen
+                                        onClicked: root.mixerOpenRequested(!root.mixerOpen)
                                     }
                                 }
                             }
@@ -445,6 +473,6 @@ PanelWindow {
     VolumeMixer {
         parentWindow: root
         visible: root.visible && root.mixerOpen
-        onCloseRequested: root.mixerOpen = false
+        onCloseRequested: root.mixerOpenRequested(false)
     }
 }
