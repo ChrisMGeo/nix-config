@@ -120,6 +120,14 @@ sudo nixos-rebuild switch --flake .#nixos
 
 This builds the system, activates it now, and makes it the default for the next boot.
 
+The same build with nh, the Nix helper:
+
+```sh
+nh os switch .
+```
+
+The `.` is the repository folder. nh picks the flake output whose name matches the host name, here `nixos`. nh shows a live build tree, lists the packages that changed, and asks for the sudo password only to activate. `nh os test` and `nh os boot` match the `nixos-rebuild` commands of the same name. `nh clean all --keep 5` deletes old generations by hand. A weekly timer already runs it with the settings in `modules/features/nixos/nh.nix`.
+
 ### Try changes without a permanent boot entry
 
 ```sh

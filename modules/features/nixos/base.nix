@@ -11,16 +11,8 @@
   # and it creates the `networkmanager` group that admin.nix adds the user to.
   networking.networkmanager.enable = true;
 
-  # Deletes old system generations and every store path nothing uses anymore.
-  # Each generation keeps its own kernel and initrd on the small EFI boot
-  # partition, so without this the store and the boot partition keep growing.
-  # `dates` is a systemd calendar time, here once a week. `options` is passed to
-  # `nix-collect-garbage`, and `--delete-older-than 30d` keeps the last 30 days.
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 30d";
-  };
+  # Old generations and unused store paths are deleted by nh, once a week. See
+  # nh.nix in this folder.
 
   # Replaces identical files in the store with one hard-linked copy each, so
   # duplicates take less space. It runs in the background after builds.
