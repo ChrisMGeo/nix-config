@@ -8,6 +8,7 @@ Home Manager settings for the user `chrismg` on the host `nixos`.
 | --- | --- |
 | `browser.nix` | Makes Brave the default browser for web pages and links through `~/.config/mimeapps.list`, and sets `BROWSER` to `brave` for terminal programs. Also lists the link handlers for Claude Code, Vesktop, and T3 Code, because Home Manager now owns that file and replaces the hand-written one. |
 | `default.nix` | Installs packages for this user only: Codex, OpenCode, Claude Code, T3 Code, Brave, fastfetch, and Vesktop. |
+| `devbox.nix` | Installs Devbox from nixpkgs-unstable for per-project packages listed in a project's `devbox.json`, and direnv with nix-direnv, which loads a project's packages into zsh on `cd` once its `.envrc` is allowed. |
 | `kitty.nix` | Sets up the kitty terminal with an 80% opaque black background, frees Ctrl+Shift+Left and Right for zsh, and links its custom tab bar from `kitty/tab_bar.py`. |
 | `lock.nix` | Sets up swaylock as the lock screen and swayidle to start it when the session is locked. There are no idle timers. |
 | `look.nix` | Declares the shapes and spacing Stylix has no setting for, shared by niri windows, the notifications, the Vicinae launcher, and the Quickshell bar and login screen: `look.cornerRadius` (12) for the buttons, rows, and other parts inside windows and panels, which themselves are square, `look.borderWidth` (1) for the outline of small controls in the bar, such as switches, slider knobs, and text boxes, `look.windowGap` (16) between niri windows, `look.screenMargin` (12) between the screen edges and the bar, its drawers, and the notifications, `look.topMargin` (8) above the bar and the notification side panel, and `look.glowSoftness` (12), `look.glowSpread` (6), and `look.glowAlpha` (40) for the soft light glow around the focused niri window and the Quickshell panels. A spread of half the softness keeps the glow square at the corners. Change a `default` to change it everywhere. |
@@ -34,6 +35,7 @@ Home Manager settings for the user `chrismg` on the host `nixos`.
 - For a package from nixpkgs-unstable, take the `unstable` argument, as `zed.nix` does, and use `unstable.<name>`. `machines.nix` passes it to every Home Manager module, so do not define it again.
 - Run the host's rebuild command to apply these settings. No separate command exists for Home Manager.
 - Find package names at search.nixos.org.
+- Put a tool that only one project needs in that project's `devbox.json` with `devbox add`, not in `home.packages`.
 - `niri.nix` replaces niri's default settings completely. Add every key binding you want to its `binds` set. Check the result with `niri validate`.
 - Add a Vicinae extension to `programs.vicinae.extensions` in `vicinae.nix` as `extensions.<folder>`, where `<folder>` is the extension's folder name in github.com/vicinaehq/extensions. Check its README for programs it runs, and install those too.
 - Take colors from `config.lib.stylix.colors` instead of writing color codes, so every program keeps the same scheme.

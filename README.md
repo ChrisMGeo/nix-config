@@ -2,7 +2,7 @@
 
 This repository describes the operating system and user setup for the computers it manages. Nix builds each system from these files. Given the same pinned versions in `flake.lock`, the same files always produce the same system.
 
-Today the repository manages one computer, `reatan-x7-00`, with one NixOS host named `nixos`. That host runs the niri desktop with a Quickshell bar, the Vicinae launcher with community extensions, SwayNotificationCenter, and the kitty terminal, themed by Stylix. It also has PipeWire audio, Firefox, Brave as the default browser, the Zed editor, zsh with starship, and three AI coding agents, Codex, OpenCode, and Claude Code, with the T3 Code desktop app for running them.
+Today the repository manages one computer, `reatan-x7-00`, with one NixOS host named `nixos`. That host runs the niri desktop with a Quickshell bar, the Vicinae launcher with community extensions, SwayNotificationCenter, and the kitty terminal, themed by Stylix. It also has PipeWire audio, Firefox, Brave as the default browser, the Zed editor, zsh with starship, Devbox and direnv for per-project packages, and three AI coding agents, Codex, OpenCode, and Claude Code, with the T3 Code desktop app for running them.
 
 New to Nix? Read the glossary below first. Then read the layout and the loading order. Coding agents should start at [AGENTS.md](AGENTS.md).
 
@@ -76,6 +76,7 @@ New to Nix? Read the glossary below first. Then read the layout and the loading 
                             └── chrismg/                Home Manager settings for one user.
                                 ├── browser.nix     Brave as the default browser.
                                 ├── default.nix     Packages.
+                                ├── devbox.nix      Devbox and direnv for per-project packages.
                                 ├── kitty.nix       Terminal.
                                 ├── kitty/          The kitty tab bar.
                                 ├── lock.nix        Lock screen.
@@ -183,6 +184,19 @@ home.packages = [
 ```
 
 Search for package names at [search.nixos.org/packages](https://search.nixos.org/packages).
+
+### Add packages for one project
+
+Devbox and direnv are installed for the user `chrismg`, as set in `devbox.nix`. Run these in the project folder:
+
+```sh
+devbox init                 # Writes an empty devbox.json
+devbox add nodejs@22        # Adds a package to devbox.json
+devbox generate direnv      # Writes an .envrc for direnv
+direnv allow                # Lets direnv load it
+```
+
+After that, the packages load when you `cd` into the folder and unload when you leave. Commit `devbox.json` and `devbox.lock` with the project. Search for package names and versions with `devbox search <name>`.
 
 ### Add a package for every user
 
