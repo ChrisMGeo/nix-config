@@ -43,7 +43,12 @@
     # defaults.
     wireplumber.extraConfig."51-bluez-roles" = {
       "monitor.bluez.properties" = {
-        "bluez5.roles" = [ "a2dp_source" "bap_source" "bap_sink" "hfp_ag" ];
+        "bluez5.roles" = [
+          "a2dp_source"
+          "bap_source"
+          "bap_sink"
+          "hfp_ag"
+        ];
       };
     };
   };

@@ -9,7 +9,12 @@
 # `{ config, lib, pkgs, ... }:` makes this file a function. `config` is the whole
 # system's final settings, `lib` is the nixpkgs helper library, and `pkgs` is the
 # package set.
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 # `let ... in` defines local names. The names exist only between `let` and `in`.
 let
@@ -33,7 +38,10 @@ in
   # describes it.
   options.machine.formFactor = lib.mkOption {
     # `enum` allows only the listed strings, so a typo stops evaluation early.
-    type = lib.types.enum [ "desktop" "laptop" ];
+    type = lib.types.enum [
+      "desktop"
+      "laptop"
+    ];
     # Most settings in this repository were written for a desktop.
     default = "desktop";
     description = "Whether this computer is a desktop or a laptop.";

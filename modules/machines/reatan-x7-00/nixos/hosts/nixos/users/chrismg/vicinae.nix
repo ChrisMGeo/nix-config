@@ -7,7 +7,14 @@
 # inputs. `lib` is nixpkgs' library of helper functions. `pkgs` is the package
 # set. `unstable` is the nixpkgs-unstable package set. machines.nix passes
 # `inputs` and `unstable` to Home Manager.
-{ config, inputs, lib, pkgs, unstable, ... }:
+{
+  config,
+  inputs,
+  lib,
+  pkgs,
+  unstable,
+  ...
+}:
 
 # `let ... in` defines local names. The names exist only between `let` and `in`.
 let

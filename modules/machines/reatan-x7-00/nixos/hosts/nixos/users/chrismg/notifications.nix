@@ -21,7 +21,8 @@ let
 
   # Turns a color slot, such as "base03", and an opacity into a CSS rgba() value.
   # Stylix also provides each color as three numbers, such as "base03-rgb-r".
-  rgba = slot: alpha:
+  rgba =
+    slot: alpha:
     "rgba(${colors."${slot}-rgb-r"}, ${colors."${slot}-rgb-g"}, ${colors."${slot}-rgb-b"}, ${toString alpha})";
 
   # How opaque the popups and the side panel are, from 0 (invisible) to 1

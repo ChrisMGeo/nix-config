@@ -47,6 +47,7 @@ New to Nix? Read the glossary below first. Then read the layout and the loading 
 └── modules/
     ├── machines.nix                Finds machines, hosts, and users from folder names.
     ├── checks.nix                  Checks for `nix flake check`: niri configs and Quickshell QML.
+    ├── formatter.nix               The formatter for `nix fmt`: nixfmt on every .nix file.
     ├── features/                   Settings for every host.
     │   ├── base.nix                Packages, flakes, binary caches, and time zone for all platforms.
     │   └── nixos/                  Settings for NixOS hosts only.
@@ -151,6 +152,14 @@ nix flake check
 ```
 
 This runs the checks in `modules/checks.nix`. They validate the niri settings for the desktop and the login screen with `niri validate`, and they run `qmllint` on the Quickshell files. A failed check stops the command with an error. Run it after changing a niri or Quickshell file, before a rebuild.
+
+### Format the Nix files
+
+```sh
+nix fmt
+```
+
+This runs nixfmt, the official Nix formatter, on every `.nix` file, as set in `modules/formatter.nix`. It skips `hardware-configuration.nix`, which is generated. Formatting changes only spaces and line breaks, so the system build plan stays the same.
 
 ### Update the pinned versions
 

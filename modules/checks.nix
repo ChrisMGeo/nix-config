@@ -24,23 +24,27 @@ let
   # Runs `niri validate` on a config file. niri stops with an error when the file
   # is wrong. The check is an empty file, `touch $out`, which Nix only writes when
   # the command before it succeeded.
-  niriCheck = name: config: pkgs.runCommand name { } ''
-    ${host.programs.niri.package}/bin/niri validate -c ${config}
-    touch $out
-  '';
+  niriCheck =
+    name: config:
+    pkgs.runCommand name { } ''
+      ${host.programs.niri.package}/bin/niri validate -c ${config}
+      touch $out
+    '';
 
   # Runs `qmllint` over every .qml file in a folder. qmllint exits with an error
   # on a syntax error, and the check fails then. Its warnings are printed in the
   # build log but do not fail the check, because qmllint cannot see every type
   # that Quickshell provides. `-I` adds a folder to the places qmllint looks for
   # imports, here Quickshell's and Qt's QML modules.
-  qmlCheck = name: folder: quickshell: pkgs.runCommand name { } ''
-    ${pkgs.kdePackages.qtdeclarative}/bin/qmllint \
-      -I ${quickshell}/lib/qt-6/qml \
-      -I ${pkgs.kdePackages.qtdeclarative}/lib/qt-6/qml \
-      ${folder}/*.qml
-    touch $out
-  '';
+  qmlCheck =
+    name: folder: quickshell:
+    pkgs.runCommand name { } ''
+      ${pkgs.kdePackages.qtdeclarative}/bin/qmllint \
+        -I ${quickshell}/lib/qt-6/qml \
+        -I ${pkgs.kdePackages.qtdeclarative}/lib/qt-6/qml \
+        ${folder}/*.qml
+      touch $out
+    '';
 in
 {
   flake.checks.x86_64-linux = {
@@ -51,11 +55,13 @@ in
     niri-greeter-config = niriCheck "niri-greeter-config" host.system.build.greeterNiriConfig;
 
     # Every file of the desktop's Quickshell bar.
-    quickshell-bar-qml = qmlCheck "quickshell-bar-qml" user.xdg.configFile."quickshell/chrismg".source
-      user.programs.quickshell.package;
+    quickshell-bar-qml =
+      qmlCheck "quickshell-bar-qml" user.xdg.configFile."quickshell/chrismg".source
+        user.programs.quickshell.package;
 
     # Every file of the login screen's Quickshell config.
-    quickshell-greeter-qml = qmlCheck "quickshell-greeter-qml" host.system.build.greeterQuickshell
-      host.system.build.greeterQuickshellPackage;
+    quickshell-greeter-qml =
+      qmlCheck "quickshell-greeter-qml" host.system.build.greeterQuickshell
+        host.system.build.greeterQuickshellPackage;
   };
 }

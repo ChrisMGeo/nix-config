@@ -80,12 +80,18 @@ in
     # - Libron, defined above, for serif text, such as web pages that ask for
     #   a serif font.
     fonts = {
-      monospace = { package = pkgs.iosevka-bin; name = "Iosevka"; };
+      monospace = {
+        package = pkgs.iosevka-bin;
+        name = "Iosevka";
+      };
       sansSerif = {
         package = pkgs.iosevka-bin.override { variant = "Aile"; };
         name = "Iosevka Aile";
       };
-      serif = { package = libron; name = "Libron"; };
+      serif = {
+        package = libron;
+        name = "Libron";
+      };
       # Sizes in points.
       sizes.terminal = 13;
       sizes.popups = 13;

@@ -4,7 +4,12 @@
 # `{ config, lib, pkgs, ... }:` makes this file a function. `config` is the whole
 # system's final settings, `lib` is the nixpkgs helper library, and `pkgs` is the
 # package set.
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 # `let ... in` defines local names. The names exist only between `let` and `in`.
 let
@@ -34,7 +39,10 @@ in
     # Groups the user belongs to.
     #   networkmanager  Manages network connections without an admin password.
     #   wheel           May run commands as the administrator with `sudo`.
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+    ];
 
     # The shell that a terminal or a login opens. zsh replaces the default, bash.
     shell = pkgs.zsh;

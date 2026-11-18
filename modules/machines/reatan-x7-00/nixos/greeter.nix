@@ -69,7 +69,12 @@ let
   # The parts of the bar that the login screen uses as they are, by file name
   # without `.qml`. They come from the bar's QML folder, shared by
   # users/chrismg/quickshell.nix as `lib.quickshell.qmlDir`.
-  sharedQml = [ "UiText" "TextButton" "IconButton" "ThemedTextField" ];
+  sharedQml = [
+    "UiText"
+    "TextButton"
+    "IconButton"
+    "ThemedTextField"
+  ];
 
   # One folder with shell.qml, the bar's Theme.qml, Greeter.qml, the shared
   # parts above, and a qmldir file. The qmldir names Theme and Greeter as
@@ -84,12 +89,14 @@ let
     cp ${./greeter/shell.qml} "$out/shell.qml"
     cp ${home.lib.quickshell.themeFile} "$out/Theme.qml"
     cp ${greeterSettings} "$out/Greeter.qml"
-    ${builtins.concatStringsSep "\n" (map (name:
-      ''cp ${home.lib.quickshell.qmlDir}/${name}.qml "$out/${name}.qml"'') sharedQml)}
+    ${builtins.concatStringsSep "\n" (
+      map (name: ''cp ${home.lib.quickshell.qmlDir}/${name}.qml "$out/${name}.qml"'') sharedQml
+    )}
     {
       printf '%s\n' "singleton Theme 1.0 Theme.qml" "singleton Greeter 1.0 Greeter.qml"
-      ${builtins.concatStringsSep "\n" (map (name:
-        ''printf '%s\n' "${name} 1.0 ${name}.qml"'') sharedQml)}
+      ${builtins.concatStringsSep "\n" (
+        map (name: ''printf '%s\n' "${name} 1.0 ${name}.qml"'') sharedQml
+      )}
     } > "$out/qmldir"
   '';
 
@@ -118,7 +125,10 @@ in
 
   # The login screen's fonts: the user's sans-serif font for text, and Font
   # Awesome for the icons on the buttons.
-  fonts.packages = [ sansSerif.package pkgs.font-awesome ];
+  fonts.packages = [
+    sansSerif.package
+    pkgs.font-awesome
+  ];
 
   # The mouse pointer theme, so niri can find it for the login screen.
   environment.systemPackages = [ home.stylix.cursor.package ];

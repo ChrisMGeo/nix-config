@@ -47,6 +47,7 @@ Write for a reader who knows some programming but has never used Nix.
 
 Run these from the repository root. The first run downloads the inputs, so it can be slow.
 
+- `nix fmt` formats every `.nix` file with nixfmt. Run it before you commit.
 - `nix-instantiate --parse <file>.nix` checks the syntax of one file. It does not check that a setting is valid.
 - `nix eval .#nixosConfigurations.nixos.config.system.build.toplevel.drvPath` prints the path of the whole system's build plan. Run it before and after your change. A documentation-only change must leave the value the same.
 - Run `git add` on new files first. Nix ignores files that git does not track.

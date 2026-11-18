@@ -93,11 +93,19 @@
     flake-parts.lib.mkFlake { inherit inputs; } {
       # The CPU and OS types this flake knows about. The machine configurations pick
       # their own platform, so nothing in this repository uses this list yet.
-      systems = [ "x86_64-linux" "aarch64-darwin" ];
+      systems = [
+        "x86_64-linux"
+        "aarch64-darwin"
+      ];
 
       # Modules to load. machines.nix finds every machine from the folder layout
       # and sets the nixosConfigurations and darwinConfigurations outputs.
       # checks.nix sets the checks that `nix flake check` runs.
-      imports = [ ./modules/machines.nix ./modules/checks.nix ];
+      # formatter.nix sets the formatter that `nix fmt` runs.
+      imports = [
+        ./modules/machines.nix
+        ./modules/checks.nix
+        ./modules/formatter.nix
+      ];
     };
 }

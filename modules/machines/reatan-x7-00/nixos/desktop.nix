@@ -9,7 +9,12 @@
 # `{ lib, pkgs, unstable, ... }:` makes this file a function. `lib` is the
 # nixpkgs helper library. `pkgs` is the package set. `unstable` is the
 # nixpkgs-unstable package set, passed in by machines.nix.
-{ lib, pkgs, unstable, ... }:
+{
+  lib,
+  pkgs,
+  unstable,
+  ...
+}:
 
 # `let ... in` defines local names. The names exist only between `let` and `in`.
 let
@@ -47,7 +52,9 @@ let
       hash = "sha256-rLVTigIUf8rxn25bVdjVyOqPPjBq8KpKINoXQ/gFYxI=";
     };
     # `niri --version` names the commit instead of "Nixpkgs".
-    env = old.env // { NIRI_BUILD_COMMIT = builtins.substring 0 7 pinnedRev; };
+    env = old.env // {
+      NIRI_BUILD_COMMIT = builtins.substring 0 7 pinnedRev;
+    };
     # The package's install check expects `niri --version` to print the version
     # above, which a build from main does not.
     doInstallCheck = false;

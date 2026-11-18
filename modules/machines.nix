@@ -20,25 +20,29 @@ let
 
   # Returns the `.nix` files directly inside `dir`, as full paths.
   # Subfolders are skipped. The files come back in alphabetical order.
-  nixFilesIn = dir:
+  nixFilesIn =
+    dir:
     nixlib.mapAttrsToList
       # `dir + "/${name}"` joins the folder path and the file name into one path.
       (name: _: dir + "/${name}")
-      (nixlib.filterAttrs
-        # `_` marks a value we do not use. `hasSuffix` keeps names ending in ".nix".
-        (name: _: nixlib.hasSuffix ".nix" name)
-        # `builtins.readDir` returns a set that maps each name to its type,
-        # such as "regular" for a file or "directory" for a folder.
-        (builtins.readDir dir));
+      (
+        nixlib.filterAttrs
+          # `_` marks a value we do not use. `hasSuffix` keeps names ending in ".nix".
+          (name: _: nixlib.hasSuffix ".nix" name)
+          # `builtins.readDir` returns a set that maps each name to its type,
+          # such as "regular" for a file or "directory" for a folder.
+          (builtins.readDir dir)
+      );
 
   # Returns the names of the folders directly inside `dir`. Hidden folders, whose
   # names start with ".", are skipped.
-  subDirs = dir:
-    nixlib.mapAttrsToList
-      (name: _: name)
-      (nixlib.filterAttrs
-        (name: type: type == "directory" && !nixlib.hasPrefix "." name)
-        (builtins.readDir dir));
+  subDirs =
+    dir:
+    nixlib.mapAttrsToList (name: _: name) (
+      nixlib.filterAttrs (name: type: type == "directory" && !nixlib.hasPrefix "." name) (
+        builtins.readDir dir
+      )
+    );
 
   # Like `subDirs`, but returns [ ] when `dir` does not exist. Lets optional
   # folders such as `users/` be missing. `[ ]` is an empty list.
@@ -60,13 +64,18 @@ let
   # Turns each platform folder name into { name; class; }.
   # `?` asks whether a set has an attribute. `${platform}` plugs in the name.
   # Any unknown folder name stops evaluation with an error, so a typo fails early.
-  platformsOf = machineDir:
-    map
-      (platform:
-        if platformClass ? ${platform}
-        then { name = platform; class = platformClass.${platform}; }
-        else throw "unknown platform directory '${platform}' in ${toString machineDir} (expected darwin, nixos or wsl)")
-      (subDirs machineDir);
+  platformsOf =
+    machineDir:
+    map (
+      platform:
+      if platformClass ? ${platform} then
+        {
+          name = platform;
+          class = platformClass.${platform};
+        }
+      else
+        throw "unknown platform directory '${platform}' in ${toString machineDir} (expected darwin, nixos or wsl)"
+    ) (subDirs machineDir);
 
   # The shared feature files for one class.
   # `./features` is relative to this file, so it means modules/features.
@@ -79,7 +88,8 @@ let
   #   modules    The machine and platform files this host shares with its siblings.
   #   platformDir  The platform folder, such as machines/<machine>/nixos.
   #   hostName   The host's folder name, such as "nixos".
-  mkHost = class: modules: platformDir: hostName:
+  mkHost =
+    class: modules: platformDir: hostName:
     let
       # Files that belong to this one host.
       hostDir = platformDir + "/hosts/${hostName}";
@@ -97,8 +107,9 @@ let
           imports = nixFilesIn (usersDir + "/${userName}");
           # The login name and home folder. mkDefault lets another file replace them.
           home.username = nixlib.mkDefault userName;
-          home.homeDirectory = nixlib.mkDefault
-            (if class == "darwin" then "/Users/${userName}" else "/home/${userName}");
+          home.homeDirectory = nixlib.mkDefault (
+            if class == "darwin" then "/Users/${userName}" else "/home/${userName}"
+          );
           # The Home Manager state version. Do not change it. See the README.
           home.stateVersion = nixlib.mkDefault "26.05";
           # Installs the `home-manager` command for this user.
@@ -107,14 +118,15 @@ let
       };
 
       # The function that builds the system. nix-darwin for macOS, NixOS for Linux.
-      buildSystem = if class == "darwin"
-        then inputs.darwin.lib.darwinSystem
-        else inputs.nixpkgs.lib.nixosSystem;
+      buildSystem =
+        if class == "darwin" then inputs.darwin.lib.darwinSystem else inputs.nixpkgs.lib.nixosSystem;
 
       # The Home Manager module that matches the platform.
-      homeManagerModule = if class == "darwin"
-        then inputs.home-manager.darwinModules.home-manager
-        else inputs.home-manager.nixosModules.home-manager;
+      homeManagerModule =
+        if class == "darwin" then
+          inputs.home-manager.darwinModules.home-manager
+        else
+          inputs.home-manager.nixosModules.home-manager;
     in
     {
       # Shorthand for `hostName = hostName; class = class; hostDir = hostDir;`.
@@ -141,11 +153,12 @@ let
               # Creates a normal login account, with a home folder, for each user folder.
               # `builtins.listToAttrs` turns a list of { name; value; } pairs into
               # one set keyed by name.
-              users.users = builtins.listToAttrs
-                (map (userName: {
+              users.users = builtins.listToAttrs (
+                map (userName: {
                   name = userName;
                   value.isNormalUser = nixlib.mkDefault true;
-                }) userNames);
+                }) userNames
+              );
             })
 
             # darwin only. The state version for nix-darwin.
@@ -214,18 +227,19 @@ let
   #   platform        One entry from `platformsOf`.
   # Passing only some arguments returns a function that still waits for the last
   # one. `map` supplies one host folder name at a time.
-  mkPlatform = machineModules: machineDir: platform:
+  mkPlatform =
+    machineModules: machineDir: platform:
     let
       platformDir = machineDir + "/${platform.name}";
       # Shared files for every host on this platform. Machine files come first.
       platformModules = machineModules ++ nixFilesIn platformDir;
     in
-    map (mkHost platform.class platformModules platformDir)
-      (subDirsIf (platformDir + "/hosts"));
+    map (mkHost platform.class platformModules platformDir) (subDirsIf (platformDir + "/hosts"));
 
   # Builds every platform in one machine folder. The `_` argument is the folder
   # type from `mapAttrsToList`, which this function does not need.
-  mkMachine = machineName: _:
+  mkMachine =
+    machineName: _:
     let
       machineDir = ./machines + "/${machineName}";
       # .nix files directly in the machine folder. Every host on this machine loads them.
@@ -235,11 +249,13 @@ let
     nixlib.concatLists (map (mkPlatform machineModules machineDir) (platformsOf machineDir));
 
   # Every host on every machine, as one flat list. Hidden folders are skipped.
-  systems = nixlib.concatLists
-    (nixlib.mapAttrsToList mkMachine
-      (nixlib.filterAttrs
-        (name: type: type == "directory" && !nixlib.hasPrefix "." name)
-        (builtins.readDir ./machines)));
+  systems = nixlib.concatLists (
+    nixlib.mapAttrsToList mkMachine (
+      nixlib.filterAttrs (name: type: type == "directory" && !nixlib.hasPrefix "." name) (
+        builtins.readDir ./machines
+      )
+    )
+  );
 
   # Keeps the hosts for one class and returns them as a set keyed by host name,
   # such as { nixos = <system>; }.
@@ -247,22 +263,26 @@ let
   # cannot share a name, even on different machines. A shared name stops
   # evaluation with an error that lists the folders, instead of one host
   # silently replacing the other.
-  systemsOf = class:
+  systemsOf =
+    class:
     let
       hosts = nixlib.filter (s: s.class == class) systems;
       # The folders of every host with this name, written from modules/,
       # such as "machines/reatan-x7-00/nixos/hosts/nixos".
-      dirsNamed = name:
-        map (s: nixlib.removePrefix (toString ./. + "/") (toString s.hostDir))
-          (nixlib.filter (s: s.hostName == name) hosts);
+      dirsNamed =
+        name:
+        map (s: nixlib.removePrefix (toString ./. + "/") (toString s.hostDir)) (
+          nixlib.filter (s: s.hostName == name) hosts
+        );
       # `unique` drops repeats from a list, so each name is checked once.
-      duplicates = nixlib.filter (name: nixlib.length (dirsNamed name) > 1)
-        (nixlib.unique (map (s: s.hostName) hosts));
+      duplicates = nixlib.filter (name: nixlib.length (dirsNamed name) > 1) (
+        nixlib.unique (map (s: s.hostName) hosts)
+      );
     in
-    if duplicates != [ ]
-    then throw "two ${class} hosts are named '${nixlib.head duplicates}': ${nixlib.concatStringsSep ", " (dirsNamed (nixlib.head duplicates))}. Rename one host folder, because each host name is one flake output."
-    else builtins.listToAttrs
-      (map (s: nixlib.nameValuePair s.hostName s.system) hosts);
+    if duplicates != [ ] then
+      throw "two ${class} hosts are named '${nixlib.head duplicates}': ${nixlib.concatStringsSep ", " (dirsNamed (nixlib.head duplicates))}. Rename one host folder, because each host name is one flake output."
+    else
+      builtins.listToAttrs (map (s: nixlib.nameValuePair s.hostName s.system) hosts);
 in
 {
   # This module sets flake outputs. `nixos-rebuild --flake .#<name>` reads

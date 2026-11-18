@@ -12,7 +12,13 @@
 # this user's final Home Manager settings. `lib` is the nixpkgs helper library.
 # `osConfig` is the whole system's final settings, which Home Manager passes in.
 # `pkgs` is the package set.
-{ config, lib, osConfig, pkgs, ... }:
+{
+  config,
+  lib,
+  osConfig,
+  pkgs,
+  ...
+}:
 
 # `let ... in` defines local names. The names exist only between `let` and `in`.
 let
@@ -30,7 +36,13 @@ let
   # the same name quickshell.nix sets as `activeConfig`. A key binding adds
   # the target and the function to call with `++`, which joins two lists:
   # `quickshellCall ++ [ "bar" "toggle" ]`.
-  quickshellCall = [ quickshell "ipc" "-c" config.programs.quickshell.activeConfig "call" ];
+  quickshellCall = [
+    quickshell
+    "ipc"
+    "-c"
+    config.programs.quickshell.activeConfig
+    "call"
+  ];
 
   # Changes the volume of the default speaker or microphone. Part of WirePlumber,
   # which PipeWire uses. See audio.nix.
@@ -51,17 +63,33 @@ let
   # to Mod+Shift+9 move the focused column there. `genList` makes the list 1 to
   # 9, `concatMap` turns each number into two bindings, and `listToAttrs` turns
   # the list of { name; value; } pairs into one set.
-  workspaceBinds = lib.listToAttrs (lib.concatMap (n: [
-    { name = "Mod+${toString n}"; value."focus-workspace" = n; }
-    { name = "Mod+Shift+${toString n}"; value."move-column-to-workspace" = n; }
-  ]) (lib.genList (i: i + 1) 9));
+  workspaceBinds = lib.listToAttrs (
+    lib.concatMap (n: [
+      {
+        name = "Mod+${toString n}";
+        value."focus-workspace" = n;
+      }
+      {
+        name = "Mod+Shift+${toString n}";
+        value."move-column-to-workspace" = n;
+      }
+    ]) (lib.genList (i: i + 1) 9)
+  );
 
   # Brightness keys, only on laptops. A desktop monitor has no backlight that
   # brightnessctl can reach. `optionalAttrs cond set` returns `set` when `cond`
   # is true and an empty set otherwise.
   laptopBinds = lib.optionalAttrs (osConfig.machine.formFactor == "laptop") {
-    "XF86MonBrightnessUp" = whenLocked [ brightnessctl "set" "5%+" ];
-    "XF86MonBrightnessDown" = whenLocked [ brightnessctl "set" "5%-" ];
+    "XF86MonBrightnessUp" = whenLocked [
+      brightnessctl
+      "set"
+      "5%+"
+    ];
+    "XF86MonBrightnessDown" = whenLocked [
+      brightnessctl
+      "set"
+      "5%-"
+    ];
   };
 
   niriConfig = {
@@ -203,10 +231,15 @@ let
         # glow is fainter at the corners and looks rounded. See look.nix.
         spread = config.look.glowSpread;
         # Centered on the window, instead of niri's default drop downward.
-        offset._props = { x = 0; y = 0; };
+        offset._props = {
+          x = 0;
+          y = 0;
+        };
         # `toHexString` writes the number in hex, and `fixedWidthString`
         # pads it to two digits with a leading zero.
-        color = "#${config.lib.stylix.colors.base07}${lib.fixedWidthString 2 "0" (lib.toHexString config.look.glowAlpha)}";
+        color = "#${config.lib.stylix.colors.base07}${
+          lib.fixedWidthString 2 "0" (lib.toHexString config.look.glowAlpha)
+        }";
         "inactive-color" = "#00000000";
       };
     };
@@ -218,100 +251,156 @@ let
     # Key bindings. Mod is the Super (Windows) key. `{ }` means the action takes
     # no arguments. A list means a program and its arguments. `//` merges two
     # sets, so the generated workspace and laptop bindings join the ones below.
-    binds = workspaceBinds // laptopBinds // {
-      # Programs.
-      "Mod+Return".spawn = [ kitty ];
-      # Opens or closes the Vicinae launcher. See vicinae.nix.
-      "Mod+Space".spawn = [ vicinae "toggle" ];
-      # Opens or closes the notification panel. See notifications.nix.
-      "Mod+N".spawn = [ swaync-client "-t" "-sw" ];
-      # Keeps the Quickshell bar shown, or lets it hide again. It also shows in
-      # the overview, when the mouse touches the top edge, and for a moment
-      # after a workspace change. See quickshell/shell.qml.
-      #
-      # It runs when Mod is pressed and let go with no other key in between, so
-      # shortcuts such as Mod+Return do not toggle the bar. `release` runs the
-      # action when the key is let go instead of when it is pressed. This needs
-      # the niri build from main pinned in desktop.nix. niri 26.04 rejects it.
-      Mod.release.spawn = quickshellCall ++ [ "bar" "toggle" ];
-      # Opens or closes the activity monitor, like the same keys on Windows.
-      # Clicking a usage gauge in the bar opens it too.
-      "Ctrl+Shift+Escape".spawn = quickshellCall ++ [ "shell" "toggleActivity" ];
-      # Opens or closes the Quickshell clock window. It opens by itself when
-      # the bar starts. T stands for time.
-      "Mod+T".spawn = quickshellCall ++ [ "shell" "toggleClock" ];
+    binds =
+      workspaceBinds
+      // laptopBinds
+      // {
+        # Programs.
+        "Mod+Return".spawn = [ kitty ];
+        # Opens or closes the Vicinae launcher. See vicinae.nix.
+        "Mod+Space".spawn = [
+          vicinae
+          "toggle"
+        ];
+        # Opens or closes the notification panel. See notifications.nix.
+        "Mod+N".spawn = [
+          swaync-client
+          "-t"
+          "-sw"
+        ];
+        # Keeps the Quickshell bar shown, or lets it hide again. It also shows in
+        # the overview, when the mouse touches the top edge, and for a moment
+        # after a workspace change. See quickshell/shell.qml.
+        #
+        # It runs when Mod is pressed and let go with no other key in between, so
+        # shortcuts such as Mod+Return do not toggle the bar. `release` runs the
+        # action when the key is let go instead of when it is pressed. This needs
+        # the niri build from main pinned in desktop.nix. niri 26.04 rejects it.
+        Mod.release.spawn = quickshellCall ++ [
+          "bar"
+          "toggle"
+        ];
+        # Opens or closes the activity monitor, like the same keys on Windows.
+        # Clicking a usage gauge in the bar opens it too.
+        "Ctrl+Shift+Escape".spawn = quickshellCall ++ [
+          "shell"
+          "toggleActivity"
+        ];
+        # Opens or closes the Quickshell clock window. It opens by itself when
+        # the bar starts. T stands for time.
+        "Mod+T".spawn = quickshellCall ++ [
+          "shell"
+          "toggleClock"
+        ];
 
-      # Windows.
-      "Mod+Q"."close-window" = { };
-      "Mod+F"."maximize-column" = { };
-      "Mod+Shift+F"."fullscreen-window" = { };
-      "Mod+V"."toggle-window-floating" = { };
-      # Centers the focused column on the screen.
-      "Mod+C"."center-column" = { };
+        # Windows.
+        "Mod+Q"."close-window" = { };
+        "Mod+F"."maximize-column" = { };
+        "Mod+Shift+F"."fullscreen-window" = { };
+        "Mod+V"."toggle-window-floating" = { };
+        # Centers the focused column on the screen.
+        "Mod+C"."center-column" = { };
 
-      # Move the focus. H and L move between columns. J and K move between the
-      # windows stacked in one column.
-      "Mod+H"."focus-column-left" = { };
-      "Mod+L"."focus-column-right" = { };
-      "Mod+J"."focus-window-down" = { };
-      "Mod+K"."focus-window-up" = { };
+        # Move the focus. H and L move between columns. J and K move between the
+        # windows stacked in one column.
+        "Mod+H"."focus-column-left" = { };
+        "Mod+L"."focus-column-right" = { };
+        "Mod+J"."focus-window-down" = { };
+        "Mod+K"."focus-window-up" = { };
 
-      # Move the focused column or window. Same keys, plus Shift.
-      "Mod+Shift+H"."move-column-left" = { };
-      "Mod+Shift+L"."move-column-right" = { };
-      "Mod+Shift+J"."move-window-down" = { };
-      "Mod+Shift+K"."move-window-up" = { };
+        # Move the focused column or window. Same keys, plus Shift.
+        "Mod+Shift+H"."move-column-left" = { };
+        "Mod+Shift+L"."move-column-right" = { };
+        "Mod+Shift+J"."move-window-down" = { };
+        "Mod+Shift+K"."move-window-up" = { };
 
-      # Put windows in one column, or take them out. Comma pulls the window from
-      # the column to the right into the focused column. Period pushes the bottom
-      # window out into its own column. The brackets do either, toward the left or
-      # the right.
-      "Mod+Comma"."consume-window-into-column" = { };
-      "Mod+Period"."expel-window-from-column" = { };
-      "Mod+BracketLeft"."consume-or-expel-window-left" = { };
-      "Mod+BracketRight"."consume-or-expel-window-right" = { };
+        # Put windows in one column, or take them out. Comma pulls the window from
+        # the column to the right into the focused column. Period pushes the bottom
+        # window out into its own column. The brackets do either, toward the left or
+        # the right.
+        "Mod+Comma"."consume-window-into-column" = { };
+        "Mod+Period"."expel-window-from-column" = { };
+        "Mod+BracketLeft"."consume-or-expel-window-left" = { };
+        "Mod+BracketRight"."consume-or-expel-window-right" = { };
 
-      # Column width. R cycles through preset widths. Minus and Equal shrink and grow.
-      "Mod+R"."switch-preset-column-width" = { };
-      "Mod+Minus"."set-column-width" = "-10%";
-      "Mod+Equal"."set-column-width" = "+10%";
+        # Column width. R cycles through preset widths. Minus and Equal shrink and grow.
+        "Mod+R"."switch-preset-column-width" = { };
+        "Mod+Minus"."set-column-width" = "-10%";
+        "Mod+Equal"."set-column-width" = "+10%";
 
-      # Workspaces are stacked vertically. U and I move between them.
-      "Mod+U"."focus-workspace-down" = { };
-      "Mod+I"."focus-workspace-up" = { };
-      "Mod+Shift+U"."move-column-to-workspace-down" = { };
-      "Mod+Shift+I"."move-column-to-workspace-up" = { };
+        # Workspaces are stacked vertically. U and I move between them.
+        "Mod+U"."focus-workspace-down" = { };
+        "Mod+I"."focus-workspace-up" = { };
+        "Mod+Shift+U"."move-column-to-workspace-down" = { };
+        "Mod+Shift+I"."move-column-to-workspace-up" = { };
 
-      # Volume and media keys. They work on the lock screen too. 5% steps, with
-      # the volume capped at 100%.
-      "XF86AudioRaiseVolume" = whenLocked [ wpctl "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+" "-l" "1.0" ];
-      "XF86AudioLowerVolume" = whenLocked [ wpctl "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-" ];
-      "XF86AudioMute" = whenLocked [ wpctl "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle" ];
-      "XF86AudioMicMute" = whenLocked [ wpctl "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle" ];
-      "XF86AudioPlay" = whenLocked [ playerctl "play-pause" ];
-      "XF86AudioPause" = whenLocked [ playerctl "play-pause" ];
-      "XF86AudioNext" = whenLocked [ playerctl "next" ];
-      "XF86AudioPrev" = whenLocked [ playerctl "previous" ];
+        # Volume and media keys. They work on the lock screen too. 5% steps, with
+        # the volume capped at 100%.
+        "XF86AudioRaiseVolume" = whenLocked [
+          wpctl
+          "set-volume"
+          "@DEFAULT_AUDIO_SINK@"
+          "5%+"
+          "-l"
+          "1.0"
+        ];
+        "XF86AudioLowerVolume" = whenLocked [
+          wpctl
+          "set-volume"
+          "@DEFAULT_AUDIO_SINK@"
+          "5%-"
+        ];
+        "XF86AudioMute" = whenLocked [
+          wpctl
+          "set-mute"
+          "@DEFAULT_AUDIO_SINK@"
+          "toggle"
+        ];
+        "XF86AudioMicMute" = whenLocked [
+          wpctl
+          "set-mute"
+          "@DEFAULT_AUDIO_SOURCE@"
+          "toggle"
+        ];
+        "XF86AudioPlay" = whenLocked [
+          playerctl
+          "play-pause"
+        ];
+        "XF86AudioPause" = whenLocked [
+          playerctl
+          "play-pause"
+        ];
+        "XF86AudioNext" = whenLocked [
+          playerctl
+          "next"
+        ];
+        "XF86AudioPrev" = whenLocked [
+          playerctl
+          "previous"
+        ];
 
-      # Shows every workspace zoomed out.
-      "Mod+O"."toggle-overview" = { };
+        # Shows every workspace zoomed out.
+        "Mod+O"."toggle-overview" = { };
 
-      # Screenshots. Print picks an area, Ctrl+Print takes the screen, and
-      # Alt+Print takes the focused window. niri copies the result to the
-      # clipboard and saves it in ~/Pictures/Screenshots.
-      "Print".screenshot = { };
-      "Ctrl+Print"."screenshot-screen" = { };
-      "Alt+Print"."screenshot-window" = { };
+        # Screenshots. Print picks an area, Ctrl+Print takes the screen, and
+        # Alt+Print takes the focused window. niri copies the result to the
+        # clipboard and saves it in ~/Pictures/Screenshots.
+        "Print".screenshot = { };
+        "Ctrl+Print"."screenshot-screen" = { };
+        "Alt+Print"."screenshot-window" = { };
 
-      # Shows a list of the key bindings.
-      "Mod+Shift+Slash"."show-hotkey-overlay" = { };
+        # Shows a list of the key bindings.
+        "Mod+Shift+Slash"."show-hotkey-overlay" = { };
 
-      # Locks the screen. See lock.nix.
-      "Mod+Alt+L".spawn = [ loginctl "lock-session" ];
+        # Locks the screen. See lock.nix.
+        "Mod+Alt+L".spawn = [
+          loginctl
+          "lock-session"
+        ];
 
-      # Leaves niri and returns to the login screen. niri asks first.
-      "Mod+Shift+E".quit = { };
-    };
+        # Leaves niri and returns to the login screen. niri asks first.
+        "Mod+Shift+E".quit = { };
+      };
   };
 in
 {

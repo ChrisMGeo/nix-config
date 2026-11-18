@@ -8,7 +8,12 @@
 # flake's inputs. `pkgs` is the package set. `unstable` is the nixpkgs-unstable
 # package set, which is rolling and often has newer versions. machines.nix
 # passes `inputs` and `unstable` to Home Manager.
-{ inputs, pkgs, unstable, ... }:
+{
+  inputs,
+  pkgs,
+  unstable,
+  ...
+}:
 
 # `let ... in` defines local names. The names exist only between `let` and `in`.
 let

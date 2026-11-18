@@ -16,7 +16,13 @@
 # `config` is this user's final Home Manager settings. `osConfig` is the whole
 # system's final settings. `pkgs` is the package set. `unstable` is the
 # nixpkgs-unstable package set, which machines.nix passes to Home Manager.
-{ config, osConfig, pkgs, unstable, ... }:
+{
+  config,
+  osConfig,
+  pkgs,
+  unstable,
+  ...
+}:
 
 # `let ... in` defines local names. The names exist only between `let` and `in`.
 let
@@ -365,7 +371,9 @@ let
         property string cavaConfig: "${cavaConfig}"
         // True on laptops. Desktops hide the battery level. The power profile switch
         // shows on every machine that runs power-profiles-daemon.
-        property bool showBattery: ${if osConfig.machine.formFactor == "laptop" then "true" else "false"}
+        property bool showBattery: ${
+          if osConfig.machine.formFactor == "laptop" then "true" else "false"
+        }
         property real uiScale: 1.15
 
         function scaled(value) {
@@ -505,8 +513,12 @@ in
     # a bar that was started some other way and left it running.
     # The `-` in front lets the bar start even if systemctl fails, and
     # `--no-block` returns without waiting for the agent to stop.
-    Service.ExecStartPre = [ "-${osConfig.systemd.package}/bin/systemctl --user --no-block stop bluetooth-agent.service" ];
-    Service.ExecStopPost = [ "-${osConfig.systemd.package}/bin/systemctl --user --no-block stop bluetooth-agent.service" ];
+    Service.ExecStartPre = [
+      "-${osConfig.systemd.package}/bin/systemctl --user --no-block stop bluetooth-agent.service"
+    ];
+    Service.ExecStopPost = [
+      "-${osConfig.systemd.package}/bin/systemctl --user --no-block stop bluetooth-agent.service"
+    ];
   };
 
   # Puts the bar's files in ~/.config/quickshell/chrismg, the folder named by
