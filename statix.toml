@@ -1,0 +1,12 @@
+# Settings for statix, the Nix linter that `nix flake check` runs. See
+# modules/checks.nix.
+
+# Lints to skip.
+#   repeated_keys  Flags `nix.a = 1; nix.b = 2;` and asks for `nix = { a = 1; b = 2; };`.
+#                  This repository writes each setting on its own dotted line on
+#                  purpose, so every setting can have its own comment.
+disabled = ["repeated_keys"]
+
+# Files to skip. hardware-configuration.nix is generated, and its header forbids
+# edits, so a lint in it could not be fixed.
+ignore = ["**/hardware-configuration.nix"]

@@ -2,9 +2,10 @@
 # Files directly in features/ load for every platform. Files in features/nixos/
 # load only for NixOS hosts, so an option that exists only on NixOS belongs here.
 #
-# `{ ... }:` makes this file a function that ignores its arguments. The file
-# needs none of them.
-{ ... }:
+# `_:` makes this file a function. `_` is a name for an argument the file does
+# not use. Nix passes in a set of arguments, such as `pkgs` and `config`, and
+# this file needs none of them.
+_:
 
 {
   # Uses NetworkManager for networking. It handles Wi-Fi and wired connections,

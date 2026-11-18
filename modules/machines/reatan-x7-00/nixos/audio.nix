@@ -1,8 +1,10 @@
 # Sound setup for NixOS hosts on the machine reatan-x7-00.
 # PipeWire is the sound server. It replaces the older PulseAudio server.
 #
-# `{ ... }:` makes this file a function. It does not need any arguments.
-{ ... }:
+# `_:` makes this file a function. `_` is a name for an argument the file does
+# not use. Nix passes in a set of arguments, such as `pkgs` and `config`, and
+# this file needs none of them.
+_:
 
 {
   # Turns off the older PulseAudio server. Only one sound server runs at a time,

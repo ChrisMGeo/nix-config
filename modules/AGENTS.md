@@ -8,7 +8,7 @@ Everything the flake builds. `machines.nix` reads the folder layout and builds e
 | --- | --- |
 | `machines.nix` | Finds machines, hosts, and users from folder names. Builds every system and sets the flake outputs. Passes `inputs` and `unstable`, the nixpkgs-unstable package set, to every Home Manager module, and `unstable` to every system module. |
 | `formatter.nix` | Sets the formatter that `nix fmt` runs: nixfmt on every `.nix` file except `hardware-configuration.nix`, which is generated. flake.nix loads it next to `machines.nix`. |
-| `checks.nix` | Sets the checks that `nix flake check` runs: `niri validate` on the desktop and login-screen niri configs, and `qmllint` on the bar and login-screen QML. flake.nix loads it next to `machines.nix`. |
+| `checks.nix` | Sets the checks that `nix flake check` runs: `niri validate` on the desktop and login-screen niri configs, `qmllint` on the bar and login-screen QML, and the statix and deadnix linters on every `.nix` file. statix reads `statix.toml` at the repository root. flake.nix loads it next to `machines.nix`. |
 
 ## Subdirectories
 

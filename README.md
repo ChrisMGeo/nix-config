@@ -38,6 +38,7 @@ New to Nix? Read the glossary below first. Then read the layout and the loading 
 ├── README.md                       This file.
 ├── AGENTS.md                       Instructions for coding agents.
 ├── .gitignore                      Keeps `nix build` result links out of git.
+├── statix.toml                     Settings for the statix linter: which lints and files to skip.
 ├── themes/                         Color schemes any user can pick. Not loaded as modules.
 │   └── black-monochrome.nix        Black and white, with gray accents.
 ├── wallpapers/                     Wallpaper pictures any user can pick. Not loaded as modules.
@@ -46,7 +47,7 @@ New to Nix? Read the glossary below first. Then read the layout and the loading 
 │   └── plain-black.png             A plain black picture.
 └── modules/
     ├── machines.nix                Finds machines, hosts, and users from folder names.
-    ├── checks.nix                  Checks for `nix flake check`: niri configs and Quickshell QML.
+    ├── checks.nix                  Checks for `nix flake check`: niri configs, Quickshell QML, and Nix lints.
     ├── formatter.nix               The formatter for `nix fmt`: nixfmt on every .nix file.
     ├── features/                   Settings for every host.
     │   ├── base.nix                Packages, flakes, binary caches, and time zone for all platforms.
@@ -151,7 +152,7 @@ Nix evaluates the settings and prints the path of the build plan. It does not bu
 nix flake check
 ```
 
-This runs the checks in `modules/checks.nix`. They validate the niri settings for the desktop and the login screen with `niri validate`, and they run `qmllint` on the Quickshell files. A failed check stops the command with an error. Run it after changing a niri or Quickshell file, before a rebuild.
+This runs the checks in `modules/checks.nix`. They validate the niri settings for the desktop and the login screen with `niri validate`, they run `qmllint` on the Quickshell files, and they lint every `.nix` file with statix and deadnix. A failed check stops the command with an error. Run it after changing a niri, Quickshell, or Nix file, before a rebuild.
 
 ### Format the Nix files
 

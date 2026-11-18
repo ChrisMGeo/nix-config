@@ -45,6 +45,11 @@ let
         ${folder}/*.qml
       touch $out
     '';
+
+  # The repository's own files. `inputs.self` is this flake. Inside a string it
+  # becomes the folder in the Nix store that holds a copy of the files git
+  # tracks.
+  src = inputs.self;
 in
 {
   flake.checks.x86_64-linux = {
@@ -63,5 +68,25 @@ in
     quickshell-greeter-qml =
       qmlCheck "quickshell-greeter-qml" host.system.build.greeterQuickshell
         host.system.build.greeterQuickshellPackage;
+
+    # statix, a linter that finds Nix code with a simpler way to write it. It
+    # reads its settings from statix.toml at the repository root, so the check
+    # runs from there. Run `statix fix .` to apply its fixes.
+    statix = pkgs.runCommand "statix" { } ''
+      cd ${src}
+      ${pkgs.statix}/bin/statix check .
+      touch $out
+    '';
+
+    # deadnix, a linter that finds names that are defined but never used.
+    # `--fail` makes it exit with an error when it finds one. hardware-configuration.nix
+    # is generated and must not be edited, so it is skipped. Run
+    # `deadnix --edit .` to delete what it finds.
+    deadnix = pkgs.runCommand "deadnix" { } ''
+      cd ${src}
+      ${pkgs.deadnix}/bin/deadnix --fail \
+        --exclude modules/machines/reatan-x7-00/nixos/hosts/nixos/hardware-configuration.nix .
+      touch $out
+    '';
   };
 }

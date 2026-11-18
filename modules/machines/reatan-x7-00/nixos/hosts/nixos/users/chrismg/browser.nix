@@ -2,8 +2,10 @@
 # `nixos`. Loaded by machines.nix as a Home Manager module. Brave itself is
 # installed in default.nix.
 #
-# `{ ... }:` makes this file a function. It does not need any arguments.
-{ ... }:
+# `_:` makes this file a function. `_` is a name for an argument the file does
+# not use. Nix passes in a set of arguments, such as `pkgs` and `config`, and
+# this file needs none of them.
+_:
 
 # `let ... in` defines local names. The names exist only between `let` and `in`.
 let
