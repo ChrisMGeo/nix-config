@@ -7,7 +7,7 @@ Home Manager settings for the user `chrismg` on the host `nixos`.
 | File | What it does |
 | --- | --- |
 | `browser.nix` | Makes Brave the default browser for web pages and links through `~/.config/mimeapps.list`, and sets `BROWSER` to `brave` for terminal programs. Also lists the link handlers for Claude Code, Vesktop, and T3 Code, because Home Manager now owns that file and replaces the hand-written one. |
-| `default.nix` | Installs packages for this user only: Codex, OpenCode, Claude Code, T3 Code, Brave, fastfetch, Vesktop, and Zed. |
+| `default.nix` | Installs packages for this user only: Codex, OpenCode, Claude Code, T3 Code, Brave, fastfetch, and Vesktop. |
 | `kitty.nix` | Sets up the kitty terminal with an 80% opaque black background, frees Ctrl+Shift+Left and Right for zsh, and links its custom tab bar from `kitty/tab_bar.py`. |
 | `lock.nix` | Sets up swaylock as the lock screen and swayidle to start it when the session is locked. There are no idle timers. |
 | `look.nix` | Declares the shapes and spacing Stylix has no setting for, shared by niri windows, the notifications, the Vicinae launcher, and the Quickshell bar and login screen: `look.cornerRadius` (12) for the buttons, rows, and other parts inside windows and panels, which themselves are square, `look.borderWidth` (1) for the outline of small controls in the bar, such as switches, slider knobs, and text boxes, `look.windowGap` (16) between niri windows, `look.screenMargin` (12) between the screen edges and the bar, its drawers, and the notifications, `look.topMargin` (8) above the bar and the notification side panel, and `look.glowSoftness` (12), `look.glowSpread` (6), and `look.glowAlpha` (40) for the soft light glow around the focused niri window and the Quickshell panels. A spread of half the softness keeps the glow square at the corners. Change a `default` to change it everywhere. |
@@ -19,8 +19,9 @@ Home Manager settings for the user `chrismg` on the host `nixos`.
 | `theme.nix` | Loads Stylix and sets the black monochrome color scheme, Iosevka for monospace text, Iosevka Aile for sans-serif text, Libron for serif text (packaged in the file from its GitHub release), 80% opacity for popups such as the launcher and the bar, the Papirus-Dark icon theme with grey folders, and the Bibata cursor. |
 | `vicinae.nix` | Sets up the Vicinae app launcher from nixpkgs-unstable, which Mod+Space opens, and runs its server as a systemd user service. Installs nine extensions from the `vicinae-extensions` flake input: Niri, Nix, SuperGenPass, OTP, Kaomojis, Number converter, GPU Screen Recorder, Lorem Ipsum, and Reminders. Gives the Reminders extension the paths to Node.js and notify-send through the service's environment, and installs jq for the GPU Screen Recorder extension. |
 | `wallpaper.nix` | Picks a picture from the root `wallpapers/` folder and uses it at full size, so it works on any monitor without a list of resolutions. Sets it as the Stylix wallpaper, and runs wpaperd to draw it behind the windows. swaylock also shows it. |
+| `zed.nix` | Sets up the Zed editor from nixpkgs-unstable through Home Manager: its settings, such as font sizes, the Base16 Black Metal theme, and the git panel, the extensions Zed installs on start (Nix, HTML, and base16 for the Black Metal theme). Runs Claude Code in the agent panel through the Nix-built claude-agent-acp from the llm-agents flake, because the generic Linux build Zed downloads does not run on NixOS. Zed may still edit `settings.json`, and each rebuild merges these settings back in. Turns off the Stylix Zed target, so Zed keeps its own theme and fonts. |
 
-`default.nix` takes Codex, OpenCode, Claude Code, and T3 Code from the llm-agents flake. It takes Zed from nixpkgs-unstable. It takes Brave, fastfetch, and Vesktop from the stable nixpkgs set.
+`default.nix` takes Codex, OpenCode, Claude Code, and T3 Code from the llm-agents flake. It takes Brave, fastfetch, and Vesktop from the stable nixpkgs set.
 
 ## Subdirectories
 
@@ -30,12 +31,13 @@ Home Manager settings for the user `chrismg` on the host `nixos`.
 ## Rules
 
 - Add a package to `home.packages`. Items in a Nix list are separated by spaces, not commas.
-- For a package from nixpkgs-unstable, take the `unstable` argument, as `default.nix` does, and use `unstable.<name>`. `machines.nix` passes it to every Home Manager module, so do not define it again.
+- For a package from nixpkgs-unstable, take the `unstable` argument, as `zed.nix` does, and use `unstable.<name>`. `machines.nix` passes it to every Home Manager module, so do not define it again.
 - Run the host's rebuild command to apply these settings. No separate command exists for Home Manager.
 - Find package names at search.nixos.org.
 - `niri.nix` replaces niri's default settings completely. Add every key binding you want to its `binds` set. Check the result with `niri validate`.
 - Add a Vicinae extension to `programs.vicinae.extensions` in `vicinae.nix` as `extensions.<folder>`, where `<folder>` is the extension's folder name in github.com/vicinaehq/extensions. Check its README for programs it runs, and install those too.
 - Take colors from `config.lib.stylix.colors` instead of writing color codes, so every program keeps the same scheme.
+- Add a Zed extension to `programs.zed-editor.extensions` in `zed.nix` by its id in github.com/zed-industries/extensions. Zed downloads it on its next start.
 
 ## Keeping this file current
 

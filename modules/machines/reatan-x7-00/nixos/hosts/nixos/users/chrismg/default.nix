@@ -4,14 +4,12 @@
 # system-wide settings. Each .nix file in this folder is a Home Manager module,
 # and machines.nix loads it for this user.
 #
-# `{ inputs, pkgs, unstable, ... }:` makes this file a function. `inputs` is the
-# flake's inputs. `pkgs` is the package set. `unstable` is the nixpkgs-unstable
-# package set, which is rolling and often has newer versions. machines.nix
-# passes `inputs` and `unstable` to Home Manager.
+# `{ inputs, pkgs, ... }:` makes this file a function. `inputs` is the flake's
+# inputs, which machines.nix passes to Home Manager. `pkgs` is the package set.
+# The `...` ignores the other arguments.
 {
   inputs,
   pkgs,
-  unstable,
   ...
 }:
 
@@ -53,8 +51,5 @@ in
     # official client, it can share the screen with audio under Wayland.
     # From the stable nixpkgs set.
     pkgs.vesktop
-
-    # Zed code editor, from nixpkgs-unstable.
-    unstable.zed-editor
   ];
 }
