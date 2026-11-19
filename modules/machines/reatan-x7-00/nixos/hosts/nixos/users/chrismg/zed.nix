@@ -36,7 +36,8 @@ in
     # they are not pinned by flake.lock. Removing a name here does not uninstall
     # the extension. Uninstall it in Zed's extensions page too.
     extensions = [
-      # Language support. "nix" uses nixd from nix-tools.nix.
+      # Language support. "nix" uses nixd from nix-tools.nix. The
+      # `languages.Nix` setting below turns off its second server, nil.
       "nix"
       "html"
 
@@ -71,6 +72,15 @@ in
         light = "Zed (Default)";
         dark = "Zed (Default)";
       };
+
+      # The Nix extension starts two language servers by default, nil and nixd.
+      # Only nixd is installed, by nix-tools.nix, and the extension does not
+      # download nil, so Zed would show "nil must be installed manually". The
+      # list runs nixd, and "!nil" turns nil off.
+      languages.Nix.language_servers = [
+        "nixd"
+        "!nil"
+      ];
 
       # Color each tab's file name by its git status, such as changed or new.
       tabs.git_status = true;
