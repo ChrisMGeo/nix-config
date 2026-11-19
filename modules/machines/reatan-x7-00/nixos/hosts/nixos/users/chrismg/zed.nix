@@ -82,6 +82,37 @@ in
         "!nil"
       ];
 
+      # What Zed may send to Zed Industries. Everything is off.
+      telemetry = {
+        # Crash reports and other debug information.
+        diagnostics = false;
+        # Anonymous usage data, such as which languages are open.
+        metrics = false;
+        # Requests to Anthropic models that cannot run under Zero Data
+        # Retention, through Zed's own hosted models. False is Zed's default.
+        # It is set here so a click in the agent panel cannot turn it on for
+        # good, because each rebuild sets it back.
+        anthropic_retention = false;
+      };
+
+      # Edit Predictions, the AI suggestions shown in gray as you type.
+      edit_predictions = {
+        # "none" turns them off. No prediction service runs and no code is sent.
+        provider = "none";
+        # Hide the Edit Predictions button in the status bar, because it has
+        # nothing to control.
+        button = false;
+        # Never let Zed collect files from open-source projects as training
+        # data. "no" also overrides the toggle in the status bar. This still
+        # applies if a provider is picked in Zed's settings page before the
+        # next rebuild sets it back to "none".
+        allow_data_collection = "no";
+      };
+
+      # Hide the "Sign in" button in the title bar. Nothing here uses a Zed
+      # account. Claude Code in the agent panel signs in on its own.
+      title_bar.show_sign_in = false;
+
       # Color each tab's file name by its git status, such as changed or new.
       tabs.git_status = true;
 
