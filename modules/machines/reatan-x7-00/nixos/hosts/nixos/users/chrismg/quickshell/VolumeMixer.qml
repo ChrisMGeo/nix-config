@@ -20,6 +20,9 @@ PopupWindow {
 
     signal closeRequested()
 
+    // The mixer's panel. SettingsDrawer.qml reads its size for its glow.
+    readonly property Item mixerPanel: panel
+
     // Opens to the left of the drawer's panel, lined up with its top. The
     // anchor is the panel's left edge, Theme.glowReach above its top, where
     // the drawer's window starts. `gravity` makes the popup grow left and down
@@ -49,8 +52,15 @@ PopupWindow {
         item: panel
     }
 
+    // The glow, joined with the drawer's into one. The drawer's panel starts
+    // Theme.gap to the right of this one, at the same top. This window ends
+    // where that panel starts, so it draws the glow in the gap, and the
+    // drawer's glow leaves this window's area out.
     PanelGlow {
         target: panel
+        neighbor: root.parentWindow
+            ? Qt.rect(panel.width + Theme.gap, 0, root.parentWindow.panel.width, root.parentWindow.panel.height)
+            : Qt.rect(0, 0, 0, 0)
     }
 
     Rectangle {

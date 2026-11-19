@@ -26,6 +26,15 @@ layout(std140, binding = 0) uniform buf {
     float sigma;
     // How far outside the panel the glow starts to fade.
     float spread;
+    // A second panel next to this one, as x, y, width, and height in pixels
+    // from this panel's top left corner. A width of 0 means none. Its glow is
+    // added to this one, but the sum stops at the brightest point of a single
+    // glow, so where the two meet the glow is full, not doubled. Its panel
+    // stays clear, like this one.
+    vec4 neighbor;
+    // An area, in the same units, where this item draws nothing, because
+    // another window draws the glow there. A width of 0 means none.
+    vec4 skip;
 };
 
 // An approximation of the error function, the same one niri's shadow shader
@@ -46,22 +55,42 @@ float strip(float p, float low, float high) {
     return 0.5 * (erfApprox((high - p) * k) - erfApprox((low - p) * k));
 }
 
+// Whether the point `p` is inside the rectangle `r`, given as x, y, width,
+// and height. A rectangle with a width of 0 holds nothing.
+bool inside(vec2 p, vec4 r) {
+    return r.z > 0.0 && p.x >= r.x && p.y >= r.y
+        && p.x <= r.x + r.z && p.y <= r.y + r.w;
+}
+
+// How strong the glow around the panel `r` is at the point `p`. A blurred
+// rectangle is the product of a blurred strip on each axis. This gives
+// straight lines of equal brightness near the corners, which keeps them
+// square.
+float glowAround(vec2 p, vec4 r) {
+    return strip(p.x, r.x - spread, r.x + r.z + spread)
+        * strip(p.y, r.y - spread, r.y + r.w + spread);
+}
+
 void main() {
     // This pixel in pixels, measured from the panel's top left corner.
     vec2 p = qt_TexCoord0 * vec2(width, height) - vec2(reach);
-    vec2 panelSize = vec2(width, height) - vec2(2.0 * reach);
+    vec4 panel = vec4(0.0, 0.0, width - 2.0 * reach, height - 2.0 * reach);
 
-    // Nothing inside the panel itself, so the glow does not show through the
-    // see-through panel.
-    if (p.x >= 0.0 && p.y >= 0.0 && p.x <= panelSize.x && p.y <= panelSize.y) {
+    // Nothing inside either panel, so the glow does not show through the
+    // see-through panels, and nothing where another window draws the glow.
+    if (inside(p, panel) || inside(p, neighbor) || inside(p, skip)) {
         fragColor = vec4(0.0);
         return;
     }
 
-    // A blurred rectangle is the product of a blurred strip on each axis.
-    // This gives straight lines of equal brightness near the corners, which
-    // keeps them square.
-    float value = strip(p.x, -spread, panelSize.x + spread)
-        * strip(p.y, -spread, panelSize.y + spread);
+    float value = glowAround(p, panel);
+    if (neighbor.z > 0.0) {
+        // The brightest a single glow gets, right at its panel's edge. It is
+        // less than 1, because the glow has already started to fade there.
+        // The far side of the strip is put very far away, so only the near
+        // edge counts.
+        float peak = strip(0.0, -spread, 1.0e6);
+        value = min(value + glowAround(p, neighbor), peak);
+    }
     fragColor = glowColor * value * qt_Opacity;
 }

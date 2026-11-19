@@ -98,8 +98,20 @@ PanelWindow {
         top: Theme.menuTop - Theme.glowReach
     }
 
+    // The glow. While the volume mixer is open, its glow and this one are
+    // joined into one, so they do not double in the gap between the panels.
+    // The mixer's panel ends Theme.gap left of this one, at the same top. The
+    // mixer's window covers everything left of this panel, from the top of
+    // this window to Theme.glowReach below the mixer's panel, and draws the
+    // glow there, so this glow leaves that area out.
     PanelGlow {
         target: drawerPanel
+        neighbor: mixer.visible
+            ? Qt.rect(-Theme.gap - mixer.mixerPanel.width, 0, mixer.mixerPanel.width, mixer.mixerPanel.height)
+            : Qt.rect(0, 0, 0, 0)
+        skip: mixer.visible
+            ? Qt.rect(-Theme.glowReach, -Theme.glowReach, Theme.glowReach, mixer.mixerPanel.height + Theme.glowReach * 2)
+            : Qt.rect(0, 0, 0, 0)
     }
 
     Rectangle {
@@ -471,6 +483,8 @@ PanelWindow {
     }
 
     VolumeMixer {
+        id: mixer
+
         parentWindow: root
         visible: root.visible && root.mixerOpen
         onCloseRequested: root.mixerOpenRequested(false)
