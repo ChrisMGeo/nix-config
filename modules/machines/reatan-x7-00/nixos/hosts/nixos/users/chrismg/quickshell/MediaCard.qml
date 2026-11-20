@@ -51,7 +51,6 @@ FloatingWindow {
                 ClippingRectangle {
                     Layout.preferredWidth: 64
                     Layout.preferredHeight: 64
-                    radius: Theme.radius - 5
                     color: Theme.surfaceRaised
 
                     Image {
@@ -93,7 +92,6 @@ FloatingWindow {
                 IconButton {
                     glyph: "\uf00d"
                     glyphFontFamily: Theme.iconFontFamily
-                    buttonRadius: 0
                     tooltip: "Hide media"
                     onClicked: root.closeRequested()
                 }
@@ -113,7 +111,6 @@ FloatingWindow {
                     enabled: root.player !== null && root.player.canGoPrevious
                     glyph: "\uf048"
                     glyphFontFamily: Theme.iconFontFamily
-                    buttonRadius: 0
                     restingColor: Theme.subtleButton
                     tooltip: "Previous"
                     onClicked: root.player.previous()
@@ -122,7 +119,6 @@ FloatingWindow {
                 IconButton {
                     enabled: root.player !== null && root.player.canSeek
                     glyph: "-10"
-                    buttonRadius: 0
                     restingColor: Theme.subtleButton
                     tooltip: "Back 10 seconds"
                     onClicked: root.player.seek(-10)
@@ -130,7 +126,6 @@ FloatingWindow {
 
                 IconButton {
                     buttonSize: Theme.scaled(44)
-                    buttonRadius: 0
                     highlighted: true
                     enabled: root.player !== null && root.player.canTogglePlaying
                     glyph: root.player && root.player.isPlaying ? "\uf04c" : "\uf04b"
@@ -142,7 +137,6 @@ FloatingWindow {
                 IconButton {
                     enabled: root.player !== null && root.player.canSeek
                     glyph: "+10"
-                    buttonRadius: 0
                     restingColor: Theme.subtleButton
                     tooltip: "Forward 10 seconds"
                     onClicked: root.player.seek(10)
@@ -152,7 +146,6 @@ FloatingWindow {
                     enabled: root.player !== null && root.player.canGoNext
                     glyph: "\uf051"
                     glyphFontFamily: Theme.iconFontFamily
-                    buttonRadius: 0
                     restingColor: Theme.subtleButton
                     tooltip: "Next"
                     onClicked: root.player.next()

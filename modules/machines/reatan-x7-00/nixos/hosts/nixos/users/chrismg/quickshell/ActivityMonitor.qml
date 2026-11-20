@@ -580,7 +580,6 @@ FloatingWindow {
                         Layout.preferredWidth: 1
                         Layout.preferredHeight: Theme.scaled(108)
                         opacity: readable ? 1 : 0.45
-                        radius: Theme.radius - 3
                         // The chosen tile is tinted in its measure's color.
                         // The others have no fill until the pointer is over
                         // them, and no tile has an outline.
@@ -660,7 +659,6 @@ FloatingWindow {
             Rectangle {
                 Layout.fillWidth: true
                 Layout.preferredHeight: detailColumn.implicitHeight + 24
-                radius: Theme.radius - 3
                 color: "transparent"
 
                 ColumnLayout {
@@ -770,7 +768,6 @@ FloatingWindow {
                                 Layout.fillWidth: true
                                 Layout.preferredWidth: 1
                                 implicitHeight: statColumn.implicitHeight + 14
-                                radius: Theme.radius - 5
                                 color: Theme.subtleButton
 
                                 Column {
@@ -823,9 +820,6 @@ FloatingWindow {
 
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
-                                // A small fixed rounding for the thin bars. It does not follow
-                                // Theme.radius, which is for windows and panels.
-                                radius: 3
                                 color: Theme.subtleButton
 
                                 Rectangle {
@@ -835,7 +829,6 @@ FloatingWindow {
                                         bottom: parent.bottom
                                     }
                                     height: Math.max(2, parent.height * core.usage / 100)
-                                    radius: 3
                                     color: root.tint
 
                                     Behavior on height {
@@ -863,20 +856,17 @@ FloatingWindow {
                         Layout.fillWidth: true
                         Layout.preferredHeight: Theme.scaled(10)
                         visible: (root.shownMetric === "memory" || root.shownMetric === "vram") && total > 0
-                        radius: height / 2
                         color: Theme.subtleButton
 
                         Rectangle {
                             height: parent.height
                             width: parent.width * (memoryBar.used + memoryBar.cached) / Math.max(1, memoryBar.total)
-                            radius: height / 2
                             color: Qt.rgba(root.tint.r, root.tint.g, root.tint.b, 0.35)
                         }
 
                         Rectangle {
                             height: parent.height
                             width: parent.width * memoryBar.used / Math.max(1, memoryBar.total)
-                            radius: height / 2
                             color: root.tint
                         }
                     }
@@ -888,7 +878,6 @@ FloatingWindow {
             Rectangle {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                radius: Theme.radius - 3
                 color: "transparent"
 
                 ColumnLayout {
@@ -971,22 +960,17 @@ FloatingWindow {
 
                             width: ListView.view.width
                             height: Theme.scaled(28)
-                            radius: Theme.radius - 5
                             color: rowHover.hovered ? Theme.subtleButton : "transparent"
 
                             // A faint bar behind the row, as long as its share
-                            // of the busiest program in the sorted column. It
-                            // hides while shorter than its rounded ends, where
-                            // it would only be a sliver.
+                            // of the busiest program in the sorted column.
                             Rectangle {
-                                visible: width >= radius * 2
                                 anchors {
                                     left: parent.left
                                     top: parent.top
                                     bottom: parent.bottom
                                 }
                                 width: root.processMaximum > 0 ? parent.width * row.sorted / root.processMaximum : 0
-                                radius: parent.radius
                                 color: Qt.rgba(row.barColor.r, row.barColor.g, row.barColor.b, 0.1)
 
                                 Behavior on width {

@@ -65,7 +65,6 @@ Column {
             x: 6
             width: root.width - 12
             height: Theme.scaled(34)
-            radius: Theme.radius - 5
             color: outputMouse.containsMouse ? Theme.subtleButton : "transparent"
 
             MouseArea {

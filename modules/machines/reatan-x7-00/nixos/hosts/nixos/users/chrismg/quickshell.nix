@@ -423,7 +423,6 @@ let
         property int barTopGap: ${toString config.look.topMargin}
         property int barBottomGap: 8
         property int gap: 8
-        property int radius: ${toString config.look.cornerRadius}
         property int barHeight: scaled(46)
         // Where the settings drawer, the power menu, and the tray drop-down
         // start, measured from the top of the screen. They all use it, so

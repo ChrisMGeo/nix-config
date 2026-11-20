@@ -162,7 +162,6 @@ PanelWindow {
             Rectangle {
                 Layout.fillWidth: true
                 Layout.preferredHeight: Theme.scaled(70)
-                radius: Theme.radius - 3
                 // No fill, like the sections below, so the drawer's frosted
                 // glass shows through.
                 color: "transparent"
@@ -176,6 +175,7 @@ PanelWindow {
                     }
                     width: Theme.scaled(44)
                     height: Theme.scaled(44)
+                    // Half the width, so the avatar is a circle.
                     radius: width / 2
                     color: Theme.accent
 
@@ -419,7 +419,6 @@ PanelWindow {
                                         )
                                         height: Theme.scaled(32)
                                         y: Math.round((profileRow.height - height) / 2)
-                                        radius: Theme.radius - 5
                                         color: PowerProfiles.profile === modelData.profile
                                             ? Theme.accent
                                             : Theme.surfaceRaised

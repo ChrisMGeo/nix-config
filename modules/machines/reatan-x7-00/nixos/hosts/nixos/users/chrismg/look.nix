@@ -18,15 +18,16 @@
   options.look = {
     # `mkOption` declares one setting. `type` makes Nix reject a value that
     # is not a whole number. `default` is the value used when no module sets
-    # it, so changing this default changes the corners everywhere.
+    # it, so changing this default changes it everywhere it is read.
     # Windows, panels, popups, and cards have square corners. This radius is
-    # for the smaller things inside them, such as buttons, list rows, the
-    # workspace buttons, and the notification pictures, which use it or a few
-    # pixels less.
+    # for the smaller things inside the notifications, such as buttons and
+    # pictures, which use it or a few pixels less. The Quickshell bar and
+    # login screen do not read it: every corner there is square, and only
+    # the parts meant to be circles are round.
     cornerRadius = lib.mkOption {
       type = lib.types.ints.unsigned;
       default = 12;
-      description = "How round the corners of buttons, rows, and other parts inside windows and panels are, in pixels. Windows and panels themselves are square.";
+      description = "How round the corners of buttons and pictures inside the notifications are, in pixels. Windows, panels, and the Quickshell bar and login screen are square.";
     };
 
     # The outline around small controls in the bar: switches, slider knobs,

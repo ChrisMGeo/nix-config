@@ -38,7 +38,6 @@ Item {
         opacity: root.reveal
         scale: 0.85 + 0.15 * root.reveal
         transformOrigin: Item.Right
-        radius: Theme.radius - 5
         color: Theme.panelOverlay
 
         IconButton {

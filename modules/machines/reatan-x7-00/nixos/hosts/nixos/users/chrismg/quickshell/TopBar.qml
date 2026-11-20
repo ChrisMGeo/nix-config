@@ -296,7 +296,6 @@ PanelWindow {
 
                         width: Theme.scaled(32)
                         height: Theme.scaled(32)
-                        radius: Theme.radius - 5
                         color: modelData === root.activeWorkspace
                             ? Theme.accent
                             : workspaceMouse.containsMouse ? Theme.surfaceHover : Theme.surface

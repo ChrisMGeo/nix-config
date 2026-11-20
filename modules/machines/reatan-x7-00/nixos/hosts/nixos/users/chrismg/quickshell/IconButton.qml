@@ -15,7 +15,6 @@ Item {
     // Leave it empty for no label.
     property string tooltip
     property int buttonSize: Theme.scaled(28)
-    property int buttonRadius: Theme.radius - 5
     property bool highlighted: false
     property bool hoverBackground: true
     property color restingColor: "transparent"
@@ -35,7 +34,6 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        radius: root.buttonRadius
         color: root.highlighted
             ? Theme.accent
             : root.hoverBackground && buttonMouse.containsMouse ? Theme.surfaceHover : root.restingColor

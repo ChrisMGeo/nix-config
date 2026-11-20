@@ -95,7 +95,6 @@ PopupWindow {
 
                     Layout.fillWidth: true
                     Layout.preferredHeight: Theme.scaled(34)
-                    radius: Theme.radius - 4
                     color: trayMouse.containsMouse ? Theme.surfaceHover : "transparent"
 
                     RowLayout {

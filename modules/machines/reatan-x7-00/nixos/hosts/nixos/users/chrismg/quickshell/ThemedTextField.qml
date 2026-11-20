@@ -21,7 +21,6 @@ TextField {
 
     background: Rectangle {
         implicitHeight: root.boxHeight
-        radius: Theme.radius - 5
         color: Theme.subtleButton
         border.color: root.activeFocus ? Theme.accent : Theme.outlineTranslucent
         border.width: Theme.outlineWidth

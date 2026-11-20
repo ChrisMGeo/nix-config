@@ -1,6 +1,6 @@
 import QtQuick
 
-// A small rounded button with a word on it, such as "Join" or "Connect".
+// A small square button with a word on it, such as "Join" or "Connect".
 // `primary` fills it with the accent color for the main action in a row.
 // The login screen uses this file too, with a larger size.
 Rectangle {
@@ -18,7 +18,6 @@ Rectangle {
 
     implicitWidth: label.implicitWidth + 2 * sidePadding
     implicitHeight: buttonHeight
-    radius: Theme.radius - 5
     opacity: enabled ? 1 : 0.4
     color: primary
         ? Theme.accent

@@ -11,20 +11,18 @@ Slider {
     opacity: enabled ? 1 : 0.4
     implicitHeight: Theme.scaled(20)
 
-    // The track: a thin rounded bar across the middle of the slider.
+    // The track: a thin bar with square ends across the middle of the slider.
     background: Rectangle {
         x: root.leftPadding
         y: root.topPadding + (root.availableHeight - height) / 2
         width: root.availableWidth
         height: Theme.scaled(4)
-        radius: height / 2
         color: Theme.surfaceRaised
 
         // The filled part, from the left end to the knob.
         Rectangle {
             width: root.visualPosition * parent.width
             height: parent.height
-            radius: parent.radius
             color: Theme.accent
         }
     }
@@ -38,6 +36,7 @@ Slider {
         y: root.topPadding + (root.availableHeight - height) / 2
         width: size
         height: size
+        // Half the size, so the knob is a circle.
         radius: size / 2
         color: Theme.accent
         border.width: Theme.outlineWidth

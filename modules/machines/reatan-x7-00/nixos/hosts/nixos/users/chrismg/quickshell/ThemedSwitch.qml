@@ -21,13 +21,12 @@ Switch {
     implicitWidth: indicator.implicitWidth
     implicitHeight: indicator.implicitHeight
 
-    // The track: a rounded pill.
+    // The track: a rectangle with square corners.
     indicator: Rectangle {
         x: 0
         y: (root.height - height) / 2
         implicitWidth: Theme.scaled(34)
         implicitHeight: Theme.scaled(18)
-        radius: height / 2
         color: root.checked ? Theme.accent : Theme.surfaceRaised
         border.width: Theme.outlineWidth
         border.color: root.checked ? Theme.accent : Theme.outline
@@ -44,6 +43,7 @@ Switch {
             anchors.verticalCenter: parent.verticalCenter
             width: parent.height - inset * 2
             height: width
+            // Half the width, so the knob is a circle.
             radius: width / 2
             color: root.checked ? Theme.accentText : Theme.textMuted
 

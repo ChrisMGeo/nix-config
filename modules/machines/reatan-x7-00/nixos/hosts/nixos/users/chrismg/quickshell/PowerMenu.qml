@@ -164,7 +164,6 @@ PanelWindow {
 
                     Layout.fillWidth: true
                     Layout.preferredHeight: Theme.scaled(34)
-                    radius: Theme.radius - 4
                     color: armed
                         ? Theme.accent
                         : actionMouse.containsMouse ? Theme.surfaceHover : "transparent"
