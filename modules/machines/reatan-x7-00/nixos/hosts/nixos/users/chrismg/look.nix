@@ -2,10 +2,11 @@
 # `nixos`. Loaded by machines.nix as a Home Manager module.
 #
 # Stylix sets colors, fonts, and opacity, but it has no setting for shapes
-# and spacing, such as rounded corners, outline width, margins, and the glow
-# around windows and panels. This file adds them, so niri, the notifications,
-# the launcher, and the Quickshell bar all read the same values instead of
-# each typing its own.
+# and spacing, such as outline width, margins, and the glow around windows
+# and panels. This file adds them, so niri, the notifications, the launcher,
+# and the Quickshell bar all read the same values instead of each typing its
+# own. There is no corner radius: every corner on the desktop is square, and
+# only parts meant to be circles, such as the slider knobs, are round.
 #
 # `{ lib, ... }:` makes this file a function. `lib` is the nixpkgs helper
 # library.
@@ -13,29 +14,21 @@
 
 {
   # `options` declares new settings that other modules can read. Here it adds
-  # `look.cornerRadius`, the outline width, the margins, and the glow, read as
-  # `config.look.cornerRadius` and so on.
+  # `look.borderWidth`, the margins, and the glow, read as
+  # `config.look.borderWidth` and so on.
   options.look = {
     # `mkOption` declares one setting. `type` makes Nix reject a value that
     # is not a whole number. `default` is the value used when no module sets
     # it, so changing this default changes it everywhere it is read.
-    # Windows, panels, popups, and cards have square corners. This radius is
-    # for the smaller things inside the notifications, such as buttons and
-    # pictures, which use it or a few pixels less. The Quickshell bar and
-    # login screen do not read it: every corner there is square, and only
-    # the parts meant to be circles are round.
-    cornerRadius = lib.mkOption {
-      type = lib.types.ints.unsigned;
-      default = 12;
-      description = "How round the corners of buttons and pictures inside the notifications are, in pixels. Windows, panels, and the Quickshell bar and login screen are square.";
-    };
-
+    #
     # The outline around small controls in the bar: switches, slider knobs,
-    # and text boxes. Windows, panels, and cards have no outline.
+    # and text boxes. The Do Not Disturb switch in the notification panel
+    # has it too, so it matches the bar's switches. Windows, panels, and
+    # cards have no outline.
     borderWidth = lib.mkOption {
       type = lib.types.ints.unsigned;
       default = 1;
-      description = "How thick the outline around small controls in the bar is, in pixels.";
+      description = "How thick the outline around small controls in the bar and the notification panel's switch is, in pixels.";
     };
 
     # The space niri leaves between windows, and between windows and the

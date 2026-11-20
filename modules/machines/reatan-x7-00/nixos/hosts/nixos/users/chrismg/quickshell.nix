@@ -423,6 +423,12 @@ let
         property int barTopGap: ${toString config.look.topMargin}
         property int barBottomGap: 8
         property int gap: 8
+        // The height of every small control: icon buttons, text buttons,
+        // switches, text boxes, and the usage gauges and visualizer in the
+        // bar. Controls often sit side by side in a row, and one height for
+        // all of them keeps their tops and bottoms lined up. A file that
+        // needs a larger size, such as the login screen, sets its own.
+        property int controlHeight: scaled(28)
         property int barHeight: scaled(46)
         // Where the settings drawer, the power menu, and the tray drop-down
         // start, measured from the top of the screen. They all use it, so

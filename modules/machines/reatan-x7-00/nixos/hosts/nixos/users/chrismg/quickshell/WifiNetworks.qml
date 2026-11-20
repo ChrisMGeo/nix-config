@@ -193,6 +193,7 @@ Column {
     RowLayout {
         width: parent.width
         height: Theme.scaled(48)
+        spacing: Theme.gap
 
         UiText {
             Layout.leftMargin: 12
@@ -201,9 +202,13 @@ Column {
             color: Theme.textMuted
         }
 
+        // The rescan button. Like every button, it is as tall as the switch
+        // beside it. It has the same faint fill as the Scan button in the
+        // Bluetooth section, so the two header rows match.
         IconButton {
             visible: Networking.wifiEnabled
             enabled: !rescan.running
+            restingColor: Theme.subtleButton
             glyph: ""
             glyphFontFamily: Theme.iconFontFamily
             glyphSize: Theme.scaled(12)

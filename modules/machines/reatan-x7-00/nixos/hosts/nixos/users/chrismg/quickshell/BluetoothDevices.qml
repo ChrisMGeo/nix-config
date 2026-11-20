@@ -87,6 +87,7 @@ Column {
     RowLayout {
         width: parent.width
         height: Theme.scaled(48)
+        spacing: Theme.gap
 
         UiText {
             Layout.leftMargin: 12

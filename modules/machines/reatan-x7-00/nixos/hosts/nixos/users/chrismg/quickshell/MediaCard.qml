@@ -124,8 +124,9 @@ FloatingWindow {
                     onClicked: root.player.seek(-10)
                 }
 
+                // Play and pause. The same size as the buttons beside it, so the
+                // row lines up. The accent fill marks it as the main button.
                 IconButton {
-                    buttonSize: Theme.scaled(44)
                     highlighted: true
                     enabled: root.player !== null && root.player.canTogglePlaying
                     glyph: root.player && root.player.isPlaying ? "\uf04c" : "\uf04b"

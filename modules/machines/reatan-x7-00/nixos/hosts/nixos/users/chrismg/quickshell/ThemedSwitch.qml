@@ -6,7 +6,7 @@ import QtQuick.Controls
 // on, the track uses the accent color and the knob sits on the right in the
 // background color. When off, the track is the raised surface color with an
 // outline and the knob sits on the left in the muted text color. A disabled
-// switch is dimmed.
+// switch is dimmed. The track and the knob are square, like every other part.
 Switch {
     id: root
 
@@ -21,12 +21,13 @@ Switch {
     implicitWidth: indicator.implicitWidth
     implicitHeight: indicator.implicitHeight
 
-    // The track: a rectangle with square corners.
+    // The track. It is Theme.controlHeight tall, the same as the buttons
+    // beside it, and wide enough for the knob to move its own width.
     indicator: Rectangle {
         x: 0
         y: (root.height - height) / 2
-        implicitWidth: Theme.scaled(34)
-        implicitHeight: Theme.scaled(18)
+        implicitWidth: Theme.scaled(48)
+        implicitHeight: Theme.controlHeight
         color: root.checked ? Theme.accent : Theme.surfaceRaised
         border.width: Theme.outlineWidth
         border.color: root.checked ? Theme.accent : Theme.outline
@@ -35,16 +36,14 @@ Switch {
             ColorAnimation { duration: 120 }
         }
 
-        // The knob. It slides between the two ends of the track.
+        // The knob, a square that slides between the two ends of the track.
         Rectangle {
-            readonly property int inset: Theme.scaled(3)
+            readonly property int inset: Theme.scaled(4)
 
             x: root.checked ? parent.width - width - inset : inset
             anchors.verticalCenter: parent.verticalCenter
             width: parent.height - inset * 2
             height: width
-            // Half the width, so the knob is a circle.
-            radius: width / 2
             color: root.checked ? Theme.accentText : Theme.textMuted
 
             Behavior on x {

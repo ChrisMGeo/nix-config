@@ -5,8 +5,8 @@
 # panel that keeps past notifications and a do-not-disturb switch. Mod+N opens
 # the panel. See niri.nix.
 #
-# The look is plain and dark: a see-through black panel with square corners
-# and no outline. The colors and the opacity come from Stylix. See
+# The look is plain and dark: a see-through black panel with no outline and
+# square corners on everything, the buttons and the switch included. The colors and the opacity come from Stylix. See
 # theme.nix.
 #
 # `{ config, lib, ... }:` makes this file a function. `config` is this user's
@@ -30,17 +30,7 @@ let
   # and the launcher.
   opacity = config.stylix.opacity.popups;
 
-  # The corner radius of the buttons and the switch, in pixels. It is
-  # look.cornerRadius from look.nix. The popups and the side panel themselves
-  # are square, like every window and panel. See the end of the stylesheet.
-  radius = config.look.cornerRadius;
-
-  # The app picture's corners are a little tighter than the card around it.
-  # `lib.max 0` keeps the value from going below zero for a very small radius.
-  imageRadius = lib.max 0 (radius - 2);
-
-  # The progress bar's height in pixels. Its corners are half of it, so its
-  # ends are fully round whatever look.cornerRadius is.
+  # The progress bar's height in pixels.
   barHeight = 4;
 
   # The size of the picture or app icon in a notification, in pixels. swaync
@@ -105,7 +95,9 @@ in
       '')
 
       (lib.mkAfter ''
-        /* Values that swaync's own stylesheet reads. */
+        /* Values that swaync's own stylesheet reads. A --border-radius of 0
+           makes every part that swaync rounds with it square: the cards, the
+           side panel, the buttons, and the switch. */
         :root {
           --cc-bg: ${rgba "base00" opacity};
           --noti-bg: ${colors."base00-rgb-r"}, ${colors."base00-rgb-g"}, ${colors."base00-rgb-b"};
@@ -118,7 +110,7 @@ in
           --text-color: ${hex.base05};
           --text-color-disabled: ${hex.base03};
           --bg-selected: ${hex.base02};
-          --border-radius: ${toString radius}px;
+          --border-radius: 0;
           --notification-icon-size: ${toString iconSize}px;
           --notification-shadow: none;
           --font-size-summary: ${toString (fontSize + 1)}pt;
@@ -155,7 +147,7 @@ in
         }
 
         .notification-row .notification-background .notification .notification-default-action .notification-content .image {
-          border-radius: ${toString imageRadius}px;
+          border-radius: 0;
           margin: 2px 12px 2px 0;
         }
 
@@ -177,7 +169,7 @@ in
           color: ${hex.base04};
         }
 
-        /* A thin rounded progress bar, without Stylix's bright outline. */
+        /* A thin square-ended progress bar, without Stylix's bright outline. */
         .notification-row .notification-background .notification .notification-default-action .notification-content progressbar {
           margin-top: 8px;
         }
@@ -186,7 +178,7 @@ in
         .notification progressbar trough,
         .notification progressbar progress {
           border: none;
-          border-radius: ${toString (barHeight / 2)}px;
+          border-radius: 0;
           min-height: ${toString barHeight}px;
         }
 
@@ -198,9 +190,12 @@ in
           background: ${hex.base05};
         }
 
-        /* The round close button in the corner. */
+        /* The close button in the corner. swaync makes it a circle with a
+           radius of 100%, which does not read --border-radius, so it is set
+           here. */
         .close-button {
           background: var(--noti-close-bg);
+          border-radius: 0;
           color: ${hex.base05};
         }
 
@@ -255,29 +250,51 @@ in
           background: transparent;
         }
 
-        /* Stylix outlines the panel's buttons, the switch, and the media
-           player. Remove those outlines too. */
+        /* Stylix outlines the panel's buttons and the media player. Remove
+           those outlines too. */
         .widget-title > button,
-        .widget-dnd > switch,
         .widget-mpris .widget-mpris-player,
         .widget-mpris .widget-mpris-player > box > button {
           border: none;
         }
 
-        .widget-dnd > switch:checked {
+        /* The Do Not Disturb switch, drawn like the switches in the Quickshell
+           bar (quickshell/ThemedSwitch.qml): a 55 by 32 pixel square track
+           with a thin outline and a 22 pixel square knob 5 pixels in from its
+           edge. The bar's sizes are 48, 28, and 4 times its uiScale of 1.15.
+           Off, the track is the raised surface color with an outline and the
+           knob is the muted text color. On, the track is the accent color and
+           the knob is the background color. Hovering changes nothing, as in
+           the bar. GTK gives the knob half the track's inner width, so the
+           inner box is 45 by 22: the size minus the outline and 4 pixels of
+           padding on each side. */
+        .widget-dnd > switch,
+        .widget-dnd > switch:hover {
+          min-width: 45px;
+          min-height: 22px;
+          padding: 4px;
+          border: ${toString config.look.borderWidth}px solid ${hex.base03};
+          background: ${hex.base02};
+          box-shadow: none;
+        }
+
+        .widget-dnd > switch:checked,
+        .widget-dnd > switch:checked:hover {
+          border-color: ${hex.base0D};
+          background: ${hex.base0D};
+        }
+
+        .widget-dnd > switch slider {
+          min-width: 0;
+          min-height: 0;
+          margin: 0;
+          border: none;
+          box-shadow: none;
           background: ${hex.base04};
         }
 
-        /* Square corners on the popups, the cards, and the side panel, like
-           every window and panel. swaync rounds them, and the parts inside a
-           card, with --border-radius, so these rules repeat its selectors to
-           take their place. The buttons and the switch stay rounded. */
-        .notification-row .notification-background .notification,
-        .notification-row .notification-background .notification .notification-default-action,
-        .notification-row .notification-background .notification .notification-default-action .notification-content,
-        .notification-row .notification-background .notification .notification-alt-actions,
-        .control-center {
-          border-radius: 0;
+        .widget-dnd > switch:checked slider {
+          background: ${hex.base00};
         }
       '')
     ];

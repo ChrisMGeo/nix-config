@@ -19,7 +19,8 @@ Item {
     signal clicked()
 
     implicitWidth: Theme.scaled(300) * reveal
-    implicitHeight: Theme.scaled(30)
+    // As tall as the gauges and buttons beside it in the bar.
+    implicitHeight: Theme.controlHeight
     visible: reveal > 0
     enabled: active
     clip: true

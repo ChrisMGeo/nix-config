@@ -7,8 +7,8 @@ import QtQuick.Controls
 TextField {
     id: root
 
-    // The height of the box.
-    property int boxHeight: Theme.scaled(30)
+    // The height of the box, the same as the buttons beside it.
+    property int boxHeight: Theme.controlHeight
 
     color: Theme.text
     placeholderTextColor: Theme.textMuted

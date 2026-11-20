@@ -80,7 +80,7 @@ New to Nix? Read the glossary below first. Then read the layout and the loading 
                                 ├── kitty.nix       Terminal.
                                 ├── kitty/          The kitty tab bar.
                                 ├── lock.nix        Lock screen.
-                                ├── look.nix        Shared corner radius, outline width, margins, and glow.
+                                ├── look.nix        Shared outline width, margins, and glow.
                                 ├── niri.nix        niri settings and key bindings.
                                 ├── notifications.nix  SwayNotificationCenter.
                                 ├── quickshell.nix  The bar.

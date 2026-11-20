@@ -11,7 +11,7 @@ Rectangle {
     // The size of the word, the height of the button, and the space left and
     // right of the word.
     property int labelSize: Theme.scaled(11)
-    property int buttonHeight: Theme.scaled(26)
+    property int buttonHeight: Theme.controlHeight
     property int sidePadding: Theme.scaled(10)
 
     signal clicked()

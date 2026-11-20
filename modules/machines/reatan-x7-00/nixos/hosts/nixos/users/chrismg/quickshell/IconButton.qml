@@ -14,7 +14,9 @@ Item {
     // A short label that shows under the button after the mouse rests on it.
     // Leave it empty for no label.
     property string tooltip
-    property int buttonSize: Theme.scaled(28)
+    // The width and height. Theme.controlHeight, so the button lines up
+    // with text buttons, switches, and text boxes beside it.
+    property int buttonSize: Theme.controlHeight
     property bool highlighted: false
     property bool hoverBackground: true
     property color restingColor: "transparent"

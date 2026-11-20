@@ -13,8 +13,8 @@ Item {
     // Clicking the gauge opens the activity monitor. See TopBar.qml.
     signal clicked()
 
-    implicitWidth: Theme.scaled(28)
-    implicitHeight: Theme.scaled(28)
+    implicitWidth: Theme.controlHeight
+    implicitHeight: Theme.controlHeight
 
     Canvas {
         id: gauge
