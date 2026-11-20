@@ -39,9 +39,9 @@
       description = "Space between windows, and between windows and the screen edges, in pixels.";
     };
 
-    # The soft light glow around the focused niri window and around the
-    # Quickshell panels. niri.nix and quickshell/PanelGlow.qml both read
-    # these, so the two glows look the same.
+    # The soft light glow around the focused niri window, the workspaces in
+    # the niri overview, and the Quickshell panels. niri.nix and
+    # quickshell/PanelGlow.qml both read these, so the glows look the same.
     # Softness is how far the glow fades out. niri blurs with a Gaussian
     # curve whose width, called sigma, is half the softness, and the glow
     # reaches about three sigma past its edge.

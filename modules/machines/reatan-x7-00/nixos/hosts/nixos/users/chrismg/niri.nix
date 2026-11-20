@@ -92,6 +92,15 @@ let
     ];
   };
 
+  # The color of the glow around the focused window and around each workspace
+  # in the overview. It is the Stylix base07 color, the brightest text color,
+  # with look.glowAlpha added as its alpha in two hex digits. `toHexString`
+  # writes the number in hex, and `fixedWidthString` pads it to two digits
+  # with a leading zero.
+  glowColor = "#${config.lib.stylix.colors.base07}${
+    lib.fixedWidthString 2 "0" (lib.toHexString config.look.glowAlpha)
+  }";
+
   niriConfig = {
     # Use the same keyboard layout as the rest of the system, set in keyboard.nix.
     input.keyboard.xkb.layout = osConfig.services.xserver.xkb.layout;
@@ -217,8 +226,7 @@ let
       "focus-ring".off = { };
       # A soft light glow around the focused window, so it stands out without
       # an outline. A dark shadow would not show on the black wallpaper and
-      # windows. The glow is the Stylix base07 color, the brightest text
-      # color, with look.glowAlpha added as its alpha in two hex digits.
+      # windows. The glow is `glowColor`, defined at the top of this file.
       # Other windows get a fully clear shadow, so they have none. niri draws
       # the shadow only outside the window, so it does not show through a
       # see-through window such as kitty. The sizes come from look.nix, which
@@ -235,12 +243,29 @@ let
           x = 0;
           y = 0;
         };
-        # `toHexString` writes the number in hex, and `fixedWidthString`
-        # pads it to two digits with a leading zero.
-        color = "#${config.lib.stylix.colors.base07}${
-          lib.fixedWidthString 2 "0" (lib.toHexString config.look.glowAlpha)
-        }";
+        color = glowColor;
         "inactive-color" = "#00000000";
+      };
+    };
+
+    # The overview, opened with Mod+O, which shows every workspace zoomed out.
+    overview = {
+      # The color around and between the workspaces. niri's default is a dark
+      # grey. This is the Stylix base00 color, the black background.
+      "backdrop-color" = "#${config.lib.stylix.colors.base00}";
+      # The glow around each workspace, the same as the glow around the focused
+      # window in `layout`, so the overview matches the windows and the Quickshell
+      # panels. It replaces niri's default dark drop shadow, which would not
+      # show on the black backdrop. niri has no inactive color here, so every
+      # workspace gets the glow.
+      "workspace-shadow" = {
+        softness = config.look.glowSoftness;
+        spread = config.look.glowSpread;
+        offset._props = {
+          x = 0;
+          y = 0;
+        };
+        color = glowColor;
       };
     };
 
