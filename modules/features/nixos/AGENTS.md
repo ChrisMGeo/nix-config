@@ -6,7 +6,7 @@ Settings for NixOS hosts. These files load on top of the shared `features/*.nix`
 
 | File | What it does |
 | --- | --- |
-| `base.nix` | Turns on NetworkManager, sets the US English locale, and hard-links identical files in the store. |
+| `base.nix` | Turns on NetworkManager, sets loose reverse-path filtering in the firewall, sets the US English locale, and hard-links identical files in the store. |
 | `nh.nix` | Installs nh, the Nix helper, and has it delete old generations and unused store paths every week. It keeps the last 30 days and at least the 5 newest generations. Sets no flake path, so run `nh os switch .` from the repository root. |
 | `form-factor.nix` | Declares `machine.formFactor`, "desktop" or "laptop". On laptops it switches to the performance profile on the charger and to power-saver on battery. |
 

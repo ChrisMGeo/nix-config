@@ -12,6 +12,13 @@ _:
   # and it creates the `networkmanager` group that admin.nix adds the user to.
   networking.networkmanager.enable = true;
 
+  # Relaxes reverse-path filtering so incoming packets are accepted as long as
+  # their source address is reachable through any network interface, rather than
+  # requiring the exact same interface the packet arrived on. This prevents the
+  # firewall from dropping asymmetrically routed traffic such as VPNs or
+  # multi-interface setups.
+  networking.firewall.checkReversePath = "loose";
+
   # Old generations and unused store paths are deleted by nh, once a week. See
   # nh.nix in this folder.
 
