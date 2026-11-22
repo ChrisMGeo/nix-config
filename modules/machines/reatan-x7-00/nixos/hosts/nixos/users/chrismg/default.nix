@@ -37,12 +37,8 @@ in
     # the `agy` command, separate from the Antigravity IDE in nixpkgs.
     agents.antigravity-cli
 
-    # T3 Code, a desktop app for running and watching the coding agents above.
-    # This is the Electron build, which opens in its own window and shows up in
-    # the app launcher. The plain `t3code` package is a server that opens in a
-    # web browser instead. Also from the llm-agents flake, which has a newer
-    # version than nixpkgs.
-    agents.t3code-desktop
+    # T3 Code, the desktop app for running these agents, is in t3code.nix,
+    # which also lets it start Antigravity.
 
     # Web browser, from the stable nixpkgs set (`pkgs`).
     pkgs.brave
