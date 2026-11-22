@@ -6,6 +6,7 @@ Home Manager settings for the user `chrismg` on the host `nixos`.
 
 | File | What it does |
 | --- | --- |
+| `agent-rules.nix` | Links the global rules from `agent-rules/global.md` into the global rules file of every installed agent: `~/.claude/CLAUDE.md` for Claude Code, `~/.codex/AGENTS.md` for Codex, `~/.config/opencode/AGENTS.md` for OpenCode, and `~/.gemini/GEMINI.md` for Antigravity. The `ruleFiles` map in the file is the only place that names those files. The links are read-only, so change the rules in `agent-rules/global.md`, not in the agents. |
 | `browser.nix` | Makes Brave the default browser for web pages and links through `~/.config/mimeapps.list`, and sets `BROWSER` to `brave` for terminal programs. Also lists the link handlers for Claude Code, Vesktop, and T3 Code, because Home Manager now owns that file and replaces the hand-written one. |
 | `default.nix` | Installs packages for this user only: Codex, OpenCode, Claude Code, Antigravity CLI, Brave, fastfetch, and Vesktop. |
 | `devbox.nix` | Installs Devbox from nixpkgs-unstable for per-project packages listed in a project's `devbox.json`, and direnv with nix-direnv, which loads a project's packages into zsh on `cd` once its `.envrc` is allowed. |
@@ -29,6 +30,7 @@ Home Manager settings for the user `chrismg` on the host `nixos`.
 
 ## Subdirectories
 
+- [agent-rules/](agent-rules/AGENTS.md): the global rules for every coding agent.
 - [kitty/](kitty/AGENTS.md): the custom kitty tab bar.
 - [quickshell/](quickshell/AGENTS.md): the QML files for the Quickshell bar.
 
@@ -42,7 +44,7 @@ Home Manager settings for the user `chrismg` on the host `nixos`.
 - `niri.nix` replaces niri's default settings completely. Add every key binding you want to its `binds` set. Check the result with `niri validate`.
 - Add a Vicinae extension to `programs.vicinae.extensions` in `vicinae.nix` as `extensions.<folder>`, where `<folder>` is the extension's folder name in github.com/vicinaehq/extensions. Check its README for programs it runs, and install those too.
 - Take colors from `config.lib.stylix.colors` instead of writing color codes, so every program keeps the same scheme.
-- When you add a coding agent to `home.packages`, add its skills folder to `skillFolders` in `skills.nix`, so it gets the same skills as the others.
+- When you add a coding agent to `home.packages`, add its skills folder to `skillFolders` in `skills.nix`, so it gets the same skills as the others, and its global rules file to `ruleFiles` in `agent-rules.nix`, so it gets the same rules.
 - Add a Zed extension to `programs.zed-editor.extensions` in `zed.nix` by its id in github.com/zed-industries/extensions. Zed downloads it on its next start.
 
 ## Keeping this file current
