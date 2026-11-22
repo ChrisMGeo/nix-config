@@ -62,6 +62,7 @@ New to Nix? Read the glossary below first. Then read the layout and the loading 
                 ├── bluetooth.nix   Bluetooth.
                 ├── browsers.nix    Firefox.
                 ├── desktop.nix     niri, pinned to a main commit, X11 support, password prompts, and gpu-screen-recorder.
+                ├── docker.nix      The Docker daemon and the `docker` group.
                 ├── form-factor.nix Marks this machine as a desktop.
                 ├── greeter.nix     The greetd login screen, drawn by Quickshell.
                 ├── greeter/        The login screen QML and its niri settings.
