@@ -31,6 +31,16 @@
       inputs.systems.follows = "systems";
     };
 
+    tstack = {
+      # Theo Browne's agent skills, such as council, sol-loop, and modernize.
+      # users/chrismg/skills.nix picks the skills to install and the agents'
+      # skills folders to link them into.
+      url = "github:t3dotgg/tstack";
+      # The repository is plain files, not a flake. `flake = false` makes Nix
+      # download it as a folder and skip looking for a flake.nix.
+      flake = false;
+    };
+
     home-manager = {
       # Home Manager manages one user's packages and dotfiles, separately from the system.
       url = "github:nix-community/home-manager/release-26.05";

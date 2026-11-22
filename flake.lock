@@ -351,6 +351,7 @@
         "nixpkgs-unstable": "nixpkgs-unstable",
         "stylix": "stylix",
         "systems": "systems",
+        "tstack": "tstack",
         "vicinae-extensions": "vicinae-extensions"
       }
     },
@@ -489,6 +490,22 @@
       "original": {
         "owner": "numtide",
         "repo": "treefmt-nix",
+        "type": "github"
+      }
+    },
+    "tstack": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1794396782,
+        "narHash": "sha256-1N0fxvcM44NcGOZeYJiX/EAJuI9GoAj5rEXmu7mJc3w=",
+        "owner": "t3dotgg",
+        "repo": "tstack",
+        "rev": "11e37a74d0a6868c121cd0910ab2b3bd9873b92a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "t3dotgg",
+        "repo": "tstack",
         "type": "github"
       }
     },
