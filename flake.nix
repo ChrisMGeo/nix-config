@@ -21,7 +21,7 @@
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
     llm-agents = {
-      # Packages for AI coding agents (Codex, OpenCode, and Claude Code), from Numtide.
+      # Packages for AI coding agents (Codex, OpenCode, Claude Code, and Antigravity CLI), from Numtide.
       url = "github:numtide/llm-agents.nix";
       # Its nixpkgs is not shared. With its own nixpkgs, its packages match the
       # ones in Numtide's binary cache, so they download instead of building.

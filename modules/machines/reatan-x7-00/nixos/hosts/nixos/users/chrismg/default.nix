@@ -33,6 +33,10 @@ in
     agents.opencode
     agents.claude-code
 
+    # Google Antigravity's command-line agent, from the llm-agents flake. It is
+    # the `agy` command, separate from the Antigravity IDE in nixpkgs.
+    agents.antigravity-cli
+
     # T3 Code, a desktop app for running and watching the coding agents above.
     # This is the Electron build, which opens in its own window and shows up in
     # the app launcher. The plain `t3code` package is a server that opens in a
